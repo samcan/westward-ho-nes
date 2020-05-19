@@ -34,6 +34,8 @@
   * Set rations.
   * Rest.
   * Hunt for food.
+  * Display map.
+  * Quit game.
   
 ## General Store State
 * Display purchase options available. Allow user to select options.
