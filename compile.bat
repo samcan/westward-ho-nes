@@ -1,0 +1,1 @@
+NESASM3 -l 3 -s src\westward.asm
