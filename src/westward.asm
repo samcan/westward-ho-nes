@@ -10,6 +10,8 @@
   .rsset $0000  ;;start variables at ram location 0
   
 ; initialize variables here
+buttons1    .rs 1
+buttons2    .rs 1
 
 
 ;; DECLARE SOME CONSTANTS HERE
@@ -84,8 +86,8 @@ LoadPalettesLoop:
 
 
 ;;:Set starting game state
-  LDA #STATEPLAYING
-  STA gamestate
+  ;LDA #STATEPLAYING
+  ;STA gamestate
 
 
               
@@ -124,17 +126,17 @@ NMI:
   JSR ReadController2  ;;get the current button data for player 2
   
 GameEngine:  
-  LDA gamestate
-  CMP #STATETITLE
-  BEQ EngineTitle    ;;game is displaying title screen
+  ;LDA gamestate
+  ;CMP #STATETITLE
+  ;BEQ EngineTitle    ;;game is displaying title screen
     
-  LDA gamestate
-  CMP #STATEGAMEOVER
-  BEQ EngineGameOver  ;;game is displaying ending screen
+  ;LDA gamestate
+  ;CMP #STATEGAMEOVER
+  ;BEQ EngineGameOver  ;;game is displaying ending screen
   
-  LDA gamestate
-  CMP #STATEPLAYING
-  BEQ EnginePlaying   ;;game is playing
+  ;LDA gamestate
+  ;CMP #STATEPLAYING
+  ;BEQ EnginePlaying   ;;game is playing
 GameEngineDone:  
   
   JSR UpdateSprites  ;;set ball/paddle sprites from positions
@@ -214,8 +216,8 @@ ReadController2Loop:
   .org $E000
   ; set palettes
 palette:
-  ;.db $22,$29,$1A,$0F,  $22,$36,$17,$0F,  $22,$30,$21,$0F,  $22,$27,$17,$0F   ;;background palette
-  ;.db $22,$1C,$15,$14,  $22,$02,$38,$3C,  $22,$1C,$15,$14,  $22,$02,$38,$3C   ;;sprite palette
+  .db $22,$29,$1A,$0F,  $22,$36,$17,$0F,  $22,$30,$21,$0F,  $22,$27,$17,$0F   ;;background palette
+  .db $22,$1C,$15,$14,  $22,$02,$38,$3C,  $22,$1C,$15,$14,  $22,$02,$38,$3C   ;;sprite palette
 
 
   .org $FFFA     ;first of the three vectors starts here
@@ -231,4 +233,4 @@ palette:
   
   .bank 2
   .org $0000
-  ;.incbin "chrblock.chr"   ;includes 8KB graphics file
+  .incbin "src\chrblock.chr"   ;includes 8KB graphics file
