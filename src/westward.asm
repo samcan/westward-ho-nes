@@ -10,12 +10,30 @@
   .rsset $0000  ;;start variables at ram location 0
   
 ; initialize variables here
+gamestate	.rs 1		; current game state
 buttons1    .rs 1
 buttons2    .rs 1
 
 
-;; DECLARE SOME CONSTANTS HERE
-; initialize constants here
+;; DECLARE CONSTANTS HERE
+; game state constants
+STATETITLE		= $00
+STATENEWGAME	= $01
+STATETRAVELING	= $02
+STATELANDMARK	= $03
+STATESTORE		= $04
+STATEPAUSED		= $05
+STATEENDGAME	= $06
+
+; controller buttons
+BTN_A			= %10000000
+BTN_B			= %01000000
+BTN_START		= %00010000
+BTN_SELECT		= %00100000
+BTN_UPARROW		= %00001000
+BTN_DOWNARROW	= %00000100
+BTN_LEFTARROW	= %00000010
+BTN_RIGHTARROW	= %00000001
 
 ;;;;;;;;;;;;;;;;;;
 
@@ -79,16 +97,8 @@ LoadPalettesLoop:
                         ; if compare was equal to 32, keep going down
 
 
-  
-
-
 ;;;Set some initial stats in vars
-
-
-;;:Set starting game state
-  ;LDA #STATEPLAYING
-  ;STA gamestate
-
+  JSR SetInitialState
 
               
   LDA #%10010000   ; enable NMI, sprites from Pattern Table 0, background from Pattern Table 1
@@ -100,7 +110,11 @@ LoadPalettesLoop:
 Forever:
   JMP Forever     ;jump back to Forever, infinite loop, waiting for NMI
   
- 
+SetInitialState:
+  LDA #STATETITLE
+  STA gamestate
+  
+  RTS
 
 NMI:
   LDA #$00
@@ -126,9 +140,9 @@ NMI:
   JSR ReadController2  ;;get the current button data for player 2
   
 GameEngine:  
-  ;LDA gamestate
-  ;CMP #STATETITLE
-  ;BEQ EngineTitle    ;;game is displaying title screen
+  LDA gamestate
+  CMP #STATETITLE
+  BEQ EngineTitle    ;;game is displaying title screen
     
   ;LDA gamestate
   ;CMP #STATEGAMEOVER
@@ -147,8 +161,18 @@ GameEngineDone:
  
  
 ;;;;;;;;
- 
+; display title screen, check for Start button to be pressed to exit
+; title screen state
 EngineTitle:
+  JSR ReadController1
+  LDA buttons1
+  AND #BTN_START
+  BNE EndTitleState
+  JMP EngineTitle
+EndTitleState:
+  ; user is exiting title state, switch to new game state
+  LDA #STATENEWGAME
+  STA gamestate
   JMP GameEngineDone
 
 ;;;;;;;;; 
