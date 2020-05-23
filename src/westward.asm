@@ -143,7 +143,11 @@ NMI:
 GameEngine:  
   LDA gamestate
   CMP #STATETITLE
-  BEQ EngineTitle    ;;game is displaying title screen
+  BEQ EngineTitle		;; game is displaying title screen
+  
+  LDA gamestate
+  CMP #STATENEWGAME
+  BEQ EngineNewGame		;; game is displaying new game screen
     
   ;LDA gamestate
   ;CMP #STATEGAMEOVER
@@ -177,7 +181,21 @@ EndTitleState:
   JMP GameEngineDone
 
 ;;;;;;;;; 
- 
+
+EngineNewGame:
+  JSR ReadController1
+  LDA buttons1
+  AND #BTN_SELECT		; todo change to start once more function implemented
+  BNE EndNewGameState
+  JMP EngineNewGame
+EndNewGameState:
+  ; user is exiting new game state, switch to general store state
+  LDA #STATESTORE
+  STA gamestate
+  JMP GameEngineDone
+
+
+
 EngineGameOver:
   JMP GameEngineDone
  
