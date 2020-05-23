@@ -54,9 +54,7 @@ RESET:
   STX $2001    ; disable rendering
   STX $4010    ; disable DMC IRQs
 
-vblankwait1:       ; First wait for vblank to make sure PPU is ready
-  BIT $2002
-  BPL vblankwait1
+  JSR VBlankWait		; First wait for vblank to make sure PPU is ready
 
 clrmem:
   LDA #$00
@@ -72,10 +70,7 @@ clrmem:
   INX
   BNE clrmem
    
-vblankwait2:      ; Second wait for vblank, PPU is ready after this
-  BIT $2002
-  BPL vblankwait2
-
+  JSR VBlankWait		; Second wait for vblank, PPU is ready after this
 
 LoadPalettes:
   LDA $2002             ; read PPU status to reset the high/low latch
@@ -115,6 +110,12 @@ SetInitialState:
   STA gamestate
   
   RTS
+
+VBlankWait:
+  BIT $2002
+  BPL VBlankWait
+  RTS
+
 
 NMI:
   LDA #$00
