@@ -363,7 +363,7 @@ ReadController1Loop:
   ; set palettes
 palette:
   .db $22,$29,$1A,$0F,  $22,$36,$17,$0F,  $22,$30,$21,$0F,  $22,$27,$17,$0F   ;;background palette
-  .db $22,$1C,$15,$0F,  $22,$02,$38,$3C,  $22,$1C,$15,$14,  $22,$02,$38,$3C   ;;sprite palette
+  .db $30,$17,$28,$1F,  $30,$1C,$2B,$39,  $30,$06,$15,$36,  $30,$07,$17,$10   ;;sprite palette
 
 ; new line = $00, space char needs to be something else, $FF = done
 ; first byte is starting y pos
