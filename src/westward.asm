@@ -16,7 +16,6 @@ buttons2    .rs 1
 spritemem   .rs 1
 textxpos    .rs 1
 textypos	.rs 1
-textlen		.rs 1
 
 
 ;; DECLARE CONSTANTS HERE
@@ -178,15 +177,17 @@ EngineTitle:
   LDX #$00
   STX spritemem
   
-  LDA #$40
+  LDY #$00
+
+LoadTextParams:
+  LDA titlewestwardtext, y
   STA textypos
   
-  LDA #$60
+  INY
+  LDA titlewestwardtext, y
   STA textxpos
   
-  LDY titlewestwardtext
-  STY textlen
-  LDY #$01
+  INY
 EngineTopTitleTextLoop:
   LDX spritemem
   
@@ -212,51 +213,16 @@ EngineTopTitleTextLoop:
   STX spritemem
   
   INY
-  CPY textlen
-  BCC EngineTopTitleTextLoop
-  BEQ EngineTopTitleTextLoop
-  ; first line of title text displayed DONE
-  
-  LDA textypos
-  CLC
-  ADC #$10
-  STA textypos
-  
-  LDA #$76
-  STA textxpos
-  
-  LDY titlehotext
-  STY textlen
-  LDY #$01
-EngineBottomTitleTextLoop:
-  LDX spritemem
-  
-  LDA textypos
-  STA $0200, x
-  
-  INX
-  LDA titlehotext, y
-  STA $0200, x
-  
-  INX
-  LDA titletextattr
-  STA $0200, x
-  
-  INX
-  LDA textxpos
-  STA $0200, x
-  CLC
-  ADC #$08
-  STA textxpos
-  
-  INX
-  STX spritemem
-  
+  LDA titlewestwardtext, y
+  BEQ TextInsertLineBreak
+  CMP #$FF
+  BEQ TextDone
+  JMP EngineTopTitleTextLoop
+TextInsertLineBreak:
   INY
-  CPY textlen
-  BCC EngineBottomTitleTextLoop
-  BEQ EngineBottomTitleTextLoop
-  
+  JMP LoadTextParams
+TextDone:
+  ; title text displayed DONE
   
   
   JSR ReadController1
@@ -352,10 +318,13 @@ palette:
   .db $22,$29,$1A,$0F,  $22,$36,$17,$0F,  $22,$30,$21,$0F,  $22,$27,$17,$0F   ;;background palette
   .db $22,$1C,$15,$0F,  $22,$02,$38,$3C,  $22,$1C,$15,$14,  $22,$02,$38,$3C   ;;sprite palette
 
+; new line = $00, space char needs to be something else, $FF = done
+; first byte is starting y pos
+; second byte is starting x pos
+; third byte is first char of string
 titlewestwardtext:
-  .db $08,$66,$54,$62,$63,$66,$50,$61,$53
-titlehotext:
-  .db $03,$57,$5E,$31
+  .db $40,$60,$66,$54,$62,$63,$66,$50,$61,$53,$00
+  .db $50,$76,$57,$5E,$31,$FF
 titletextattr:
   .db $00
 
