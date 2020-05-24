@@ -369,7 +369,9 @@ palette:
 ; third byte is first char of string
 titlewestwardtext:
   .db $40,$60,$66,$54,$62,$63,$66,$50,$61,$53,$00
-  .db $50,$76,$57,$5E,$31,$FF
+  .db $50,$76,$57,$5E,$31,$00
+  .db $90,$6B,$5F,$7B,$6E,$7C,$7C,$00
+  .db $A0,$6B,$62,$63,$50,$61,$63,$FF
 titletextattr:
   .db $00
 
