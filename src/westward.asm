@@ -178,7 +178,8 @@ GameEngineDone:
 ; display title screen, check for Start button to be pressed to exit
 ; title screen state
 EngineTitle:
-  LDX #$00
+  LDX #$04				; start text display using sprite 1 rather than
+						; sprite 0
   STX spritemem
   
   LDA #LOW(titlewestwardtext)
