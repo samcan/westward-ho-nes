@@ -13,6 +13,10 @@
 gamestate	.rs 1		; current game state
 buttons1    .rs 1
 buttons2    .rs 1
+spritemem   .rs 1
+textxpos    .rs 1
+textypos	.rs 1
+textlen		.rs 1
 
 
 ;; DECLARE CONSTANTS HERE
@@ -147,7 +151,9 @@ GameEngine:
   
   LDA gamestate
   CMP #STATENEWGAME
-  BEQ EngineNewGame		;; game is displaying new game screen
+  BNE NotDisplayingNewGame		;; game is displaying new game screen
+  JMP EngineNewGame
+NotDisplayingNewGame:
     
   ;LDA gamestate
   ;CMP #STATEGAMEOVER
@@ -169,6 +175,90 @@ GameEngineDone:
 ; display title screen, check for Start button to be pressed to exit
 ; title screen state
 EngineTitle:
+  LDX #$00
+  STX spritemem
+  
+  LDA #$40
+  STA textypos
+  
+  LDA #$60
+  STA textxpos
+  
+  LDY titlewestwardtext
+  STY textlen
+  LDY #$01
+EngineTopTitleTextLoop:
+  LDX spritemem
+  
+  LDA textypos
+  STA $0200, x
+  
+  INX
+  LDA titlewestwardtext, y
+  STA $0200, x
+  
+  INX
+  LDA titletextattr
+  STA $0200, x
+  
+  INX
+  LDA textxpos
+  STA $0200, x
+  CLC
+  ADC #$08
+  STA textxpos
+  
+  INX
+  STX spritemem
+  
+  INY
+  CPY textlen
+  BCC EngineTopTitleTextLoop
+  BEQ EngineTopTitleTextLoop
+  ; first line of title text displayed DONE
+  
+  LDA textypos
+  CLC
+  ADC #$10
+  STA textypos
+  
+  LDA #$76
+  STA textxpos
+  
+  LDY titlehotext
+  STY textlen
+  LDY #$01
+EngineBottomTitleTextLoop:
+  LDX spritemem
+  
+  LDA textypos
+  STA $0200, x
+  
+  INX
+  LDA titlehotext, y
+  STA $0200, x
+  
+  INX
+  LDA titletextattr
+  STA $0200, x
+  
+  INX
+  LDA textxpos
+  STA $0200, x
+  CLC
+  ADC #$08
+  STA textxpos
+  
+  INX
+  STX spritemem
+  
+  INY
+  CPY textlen
+  BCC EngineBottomTitleTextLoop
+  BEQ EngineBottomTitleTextLoop
+  
+  
+  
   JSR ReadController1
   LDA buttons1
   AND #BTN_START
@@ -260,8 +350,14 @@ ReadController2Loop:
   ; set palettes
 palette:
   .db $22,$29,$1A,$0F,  $22,$36,$17,$0F,  $22,$30,$21,$0F,  $22,$27,$17,$0F   ;;background palette
-  .db $22,$1C,$15,$14,  $22,$02,$38,$3C,  $22,$1C,$15,$14,  $22,$02,$38,$3C   ;;sprite palette
+  .db $22,$1C,$15,$0F,  $22,$02,$38,$3C,  $22,$1C,$15,$14,  $22,$02,$38,$3C   ;;sprite palette
 
+titlewestwardtext:
+  .db $08,$66,$54,$62,$63,$66,$50,$61,$53
+titlehotext:
+  .db $03,$57,$5E,$31
+titletextattr:
+  .db $00
 
   .org $FFFA     ;first of the three vectors starts here
   .dw NMI        ;when an NMI happens (once per frame if enabled) the 
