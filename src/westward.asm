@@ -16,6 +16,10 @@ buttons2    .rs 1
 spritemem   .rs 1
 textxpos    .rs 1
 textypos	.rs 1
+textvarLo	.rs 1
+textvarHi	.rs 1
+textattrLo	.rs 1
+textattrHi	.rs 1
 
 
 ;; DECLARE CONSTANTS HERE
@@ -177,52 +181,16 @@ EngineTitle:
   LDX #$00
   STX spritemem
   
-  LDY #$00
-
-LoadTextParams:
-  LDA titlewestwardtext, y
-  STA textypos
+  LDA #LOW(titlewestwardtext)
+  STA textvarLo
+  LDA #HIGH(titlewestwardtext)
+  STA textvarHi
   
-  INY
-  LDA titlewestwardtext, y
-  STA textxpos
-  
-  INY
-EngineTopTitleTextLoop:
-  LDX spritemem
-  
-  LDA textypos
-  STA $0200, x
-  
-  INX
-  LDA titlewestwardtext, y
-  STA $0200, x
-  
-  INX
-  LDA titletextattr
-  STA $0200, x
-  
-  INX
-  LDA textxpos
-  STA $0200, x
-  CLC
-  ADC #$08
-  STA textxpos
-  
-  INX
-  STX spritemem
-  
-  INY
-  LDA titlewestwardtext, y
-  BEQ TextInsertLineBreak
-  CMP #$FF
-  BEQ TextDone
-  JMP EngineTopTitleTextLoop
-TextInsertLineBreak:
-  INY
-  JMP LoadTextParams
-TextDone:
-  ; title text displayed DONE
+  LDA #LOW(titletextattr)
+  STA textattrLo
+  LDA #HIGH(titletextattr)
+  STA textattrHi
+  JSR DisplayText
   
   
   JSR ReadController1
@@ -260,9 +228,85 @@ EngineGameOver:
 EnginePlaying:
   ;;update calculations here
   JMP GameEngineDone
- 
- 
- 
+
+;; DisplayText function will draw text sprites using the text
+;; strings given using the attributes given. 16-bit pointer to
+;; text string should be in textvarLo and textvarHi. 16-bit
+;; pointer to attribute should be in textattrLo and textattrHi.
+;;
+;; For text string:
+;; new line = $00, space char needs to be something else, $FF = done
+;; * first byte is starting y pos
+;; * second byte is starting x pos
+;; * third byte is first char of string
+;;
+;; Note that as this uses sprites you are limited to 8 sprites incl.
+;; spaces per line. We need to update this to use background graphics.
+;;
+;;
+;; Sample usage:
+;;   LDA #LOW(titlewestwardtext)
+;;   STA textvarLo
+;;   LDA #HIGH(titlewestwardtext)
+;;   STA textvarHi
+;;
+;;   LDA #LOW(titletextattr)
+;;   STA textattrLo
+;;   LDA #HIGH(titletextattr)
+;;   STA textattrHi
+;;   JSR DisplayText
+DisplayText:
+  LDY #$00
+LoadTextParams:
+  LDA [textvarLo], y
+  STA textypos
+  
+  INY
+  LDA [textvarLo], y
+  STA textxpos
+  
+  INY
+TextLoop:
+  LDX spritemem
+  
+  LDA textypos
+  STA $0200, x
+  
+  INX
+  LDA [textvarLo], y
+  STA $0200, x
+  
+  INX
+  TYA
+  PHA
+  LDY #$00
+  LDA [textattrLo], y
+  STA $0200, x
+  PLA
+  TAY
+  
+  INX
+  LDA textxpos
+  STA $0200, x
+  CLC
+  ADC #$08
+  STA textxpos
+  
+  INX
+  STX spritemem
+  
+  INY
+  LDA [textvarLo], y
+  BEQ TextInsertLineBreak
+  CMP #$FF
+  BEQ TextDone
+  JMP TextLoop
+TextInsertLineBreak:
+  INY
+  JMP LoadTextParams
+TextDone:
+  ; text displayed DONE
+  RTS
  
 UpdateSprites:
   ;;update sprites here
