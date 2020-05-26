@@ -20,6 +20,8 @@ textvarLo	.rs 1
 textvarHi	.rs 1
 textattrLo	.rs 1
 textattrHi	.rs 1
+paletteLo	.rs 1
+paletteHi	.rs 1
 
 
 ;; DECLARE CONSTANTS HERE
@@ -79,24 +81,11 @@ clrmem:
    
   JSR VBlankWait		; Second wait for vblank, PPU is ready after this
 
-LoadPalettes:
-  LDA $2002             ; read PPU status to reset the high/low latch
-  LDA #$3F
-  STA $2006             ; write the high byte of $3F00 address
-  LDA #$00
-  STA $2006             ; write the low byte of $3F00 address
-  LDX #$00              ; start out at 0
-LoadPalettesLoop:
-  LDA palette, x        ; load data from address (palette + the value in x)
-                          ; 1st time through loop it will load palette+0
-                          ; 2nd time through loop it will load palette+1
-                          ; 3rd time through loop it will load palette+2
-                          ; etc
-  STA $2007             ; write to PPU
-  INX                   ; X = X + 1
-  CPX #$20              ; Compare X to hex $20, decimal 32 - copying 32 bytes = 8 sprites
-  BNE LoadPalettesLoop  ; Branch to LoadPalettesLoop if compare was Not Equal to zero
-                        ; if compare was equal to 32, keep going down
+  LDA #LOW(palette)
+  STA paletteLo
+  LDA #HIGH(palette)
+  STA paletteHi
+  JSR LoadPalettes
 
 
 ;;;Set some initial stats in vars
@@ -308,7 +297,41 @@ TextInsertLineBreak:
 TextDone:
   ; text displayed DONE
   RTS
- 
+
+
+;;;;;;;;;;;;;;;;
+;; LoadPalettes will load your bg and character palettes into memory.
+;;
+;; Sample usage:
+;;   LDA #LOW(palette)
+;;   STA paletteLo
+;;   LDA #HIGH(palette)
+;;   STA palettehi
+;;   JSR LoadPalettes
+LoadPalettes:
+  LDA $2002             ; read PPU status to reset the high/low latch
+  LDA #$3F
+  STA $2006             ; write the high byte of $3F00 address
+  LDA #$00
+  STA $2006             ; write the low byte of $3F00 address
+  LDY #$00              ; start out at 0
+LoadPalettesLoop:
+  LDA [paletteLo], y        ; load data from address (palette + the value in x)
+                          ; 1st time through loop it will load palette+0
+                          ; 2nd time through loop it will load palette+1
+                          ; 3rd time through loop it will load palette+2
+                          ; etc
+  STA $2007             ; write to PPU
+  INY                   ; X = X + 1
+  CPY #$20              ; Compare X to hex $20, decimal 32 - copying 32 bytes = 8 sprites
+  BNE LoadPalettesLoop  ; Branch to LoadPalettesLoop if compare was Not Equal to zero
+                        ; if compare was equal to 32, keep going down
+  RTS
+;;;;;;;;;;;;;;;;;;;
+
+
+
+
 UpdateSprites:
   ;;update sprites here
   RTS
