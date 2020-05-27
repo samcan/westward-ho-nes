@@ -3,18 +3,25 @@
 * Independence, MO
 * _(102 miles)_
 * Kansas River Crossing
+    * ![](img/ot_kansas_river_crossing.png?raw=true)
 * _(83 miles)_
 * Big Blue River Crossing
+    * ![](img/ot_big_blue_river_crossing.gif?raw=true)
 * _(119 miles)_
 * Fort Kearney
+    * ![](img/ot_fort_kearney.png?raw=true)
 * _(250 miles)_
 * Chimney Rock
+    * ![](img/ot_chimney_rock.png?raw=true)
 * _(86 miles)_
 * Fort Laramie
+    * ![](img/ot_fort_laramie.png?raw=true)
 * _(190 miles)_
 * Independence Rock
+    * ![](img/ot_independence_rock.png?raw=true)
 * _(102 miles)_
 * South Pass
+    * ![](img/ot_south_pass.png?raw=true)
     * Green River Split:
         * _To Green River: (57 miles)_
         * Green River
@@ -44,6 +51,11 @@
     * Columbia River Split:
         * _(0 miles, action sequence)_
 * Willamette Valley (end)
+    * ![](img/ot_willamette_valley.jpg?raw=true)
+
+# Landmarks visible while traveling
+## Fort
+![](img/ot_fort.png?raw=true)
 
 # Trail Map (Mac/Deluxe)
 
