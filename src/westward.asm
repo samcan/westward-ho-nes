@@ -22,6 +22,7 @@ textattrLo	.rs 1
 textattrHi	.rs 1
 paletteLo	.rs 1
 paletteHi	.rs 1
+newgmstate	.rs 1
 
 
 ;; DECLARE CONSTANTS HERE
@@ -102,8 +103,10 @@ Forever:
   JMP Forever     ;jump back to Forever, infinite loop, waiting for NMI
   
 SetInitialState:
-  LDA #STATETITLE
+  LDA #$FF
   STA gamestate
+  LDA #STATETITLE
+  STA newgmstate
   
   RTS
 
@@ -113,13 +116,20 @@ VBlankWait:
   RTS
 
 
+;;;;;;
 NMI:
+  LDA newgmstate
+  CMP gamestate
+  BNE LoadNewScreen
+  
+UpdateCurrentScreen:
+  ; do sprite DMA
   LDA #$00
   STA $2003       ; set the low byte (00) of the RAM address
   LDA #$02
   STA $4014       ; set the high byte (02) of the RAM address, start the transfer
 
-  JSR DrawScore
+  ;JSR DrawScore
 
   ;;This is the PPU clean up section, so rendering the next frame starts properly.
   LDA #%10010000   ; enable NMI, sprites from Pattern Table 0, background from Pattern Table 1
@@ -139,8 +149,10 @@ NMI:
 GameEngine:  
   LDA gamestate
   CMP #STATETITLE
-  BEQ EngineTitle		;; game is displaying title screen
+  BNE NotDisplayingTitle
+  JMP EngineTitle  ;; game is displaying title screen
   
+NotDisplayingTitle:
   LDA gamestate
   CMP #STATENEWGAME
   BNE NotDisplayingNewGame		;; game is displaying new game screen
@@ -159,14 +171,33 @@ GameEngineDone:
   JSR UpdateSprites  ;;set ball/paddle sprites from positions
 
   RTI             ; return from interrupt
- 
- 
- 
- 
-;;;;;;;;
-; display title screen, check for Start button to be pressed to exit
-; title screen state
-EngineTitle:
+
+
+;;;;
+LoadNewScreen:
+  JSR DisableNMI
+  
+  JSR clr_sprite_mem
+
+  LDA newgmstate
+  CMP #STATETITLE
+  BEQ DisplayTitleScreen
+  
+  LDA newgmstate
+  CMP #STATENEWGAME
+  BEQ DisplayNewGameScreen
+  
+  LDA newgmstate
+  STA gamestate
+
+FinishLoadNewScreen:
+  JSR EnableNMI
+  RTI
+  
+DisplayTitleScreen:
+  LDA newgmstate
+  STA gamestate
+
   LDX #$04				; start text display using sprite 1 rather than
 						; sprite 0
   STX spritemem
@@ -182,16 +213,55 @@ EngineTitle:
   STA textattrHi
   JSR DisplayText
   
+  JMP FinishLoadNewScreen
   
-  JSR ReadController1
+DisplayNewGameScreen:
+  LDA newgmstate
+  STA gamestate
+  
+  LDA #LOW(palette_newgame)
+  STA paletteLo
+  LDA #HIGH(palette_newgame)
+  STA paletteHi
+  JSR LoadPalettes
+  
+  JMP FinishLoadNewScreen
+  
+DisableNMI:
+  ; disable rendering and NMIs
+  LDA #$00
+  STA $2000
+  STA $2001
+
+  ; set output address
+  LDA $2002
+  LDA #$20
+  STA $2006
+  LDA #$00
+  STA $2006
+  RTS
+
+EnableNMI:
+  LDA $2002
+  LDA #%10010000
+  STA $2000
+  
+  RTS
+;;;;;;;; NMI should be complete here
+ 
+
+;;;;;;;;
+; deal with title screen input; check for Start button to be pressed to exit
+; title screen state
+EngineTitle:
   LDA buttons1
   AND #BTN_START
   BNE EndTitleState
-  JMP EngineTitle
+  JMP GameEngineDone
 EndTitleState:
   ; user is exiting title state, switch to new game state
   LDA #STATENEWGAME
-  STA gamestate
+  STA newgmstate
   JMP GameEngineDone
 
 ;;;;;;;;; 
@@ -201,11 +271,11 @@ EngineNewGame:
   LDA buttons1
   AND #BTN_SELECT		; todo change to start once more function implemented
   BNE EndNewGameState
-  JMP EngineNewGame
+  JMP GameEngineDone
 EndNewGameState:
   ; user is exiting new game state, switch to general store state
   LDA #STATESTORE
-  STA gamestate
+  STA newgmstate
   JMP GameEngineDone
 
 
@@ -374,7 +444,12 @@ ReadController1Loop:
 ;  BNE ReadController2Loop
 ;  RTS  
   
-  
+clr_sprite_mem:
+  LDA #$FE
+  STA $0200, x
+  INX
+  BNE clr_sprite_mem
+  RTS
     
         
 ;;;;;;;;;;;;;;  
@@ -387,6 +462,10 @@ ReadController1Loop:
 palette:
   .db $22,$29,$1A,$0F,  $22,$36,$17,$0F,  $22,$30,$21,$0F,  $22,$27,$17,$0F   ;;background palette
   .db $30,$17,$28,$1F,  $30,$1C,$2B,$39,  $30,$06,$15,$36,  $30,$07,$17,$10   ;;sprite palette
+
+palette_newgame:
+  .db $22,$29,$1A,$0F,  $22,$36,$17,$0F,  $22,$30,$21,$0F,  $22,$27,$17,$0F   ;;background palette
+  .db $35,$17,$28,$1F,  $35,$1C,$2B,$39,  $35,$06,$15,$36,  $35,$07,$17,$10   ;;sprite palette
 
 ; new line = $00, space char needs to be something else, $FF = done
 ; first byte is starting y pos
