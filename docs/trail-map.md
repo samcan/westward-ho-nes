@@ -1,4 +1,51 @@
-# Trail Map
+# Trail Map (Apple II)
+(from https://gamefaqs.gamespot.com/appleii/579985-the-oregon-trail/faqs/9660)
+* Independence, MO
+* _(102 miles)_
+* Kansas River Crossing
+* _(83 miles)_
+* Big Blue River Crossing
+* _(119 miles)_
+* Fort Kearney
+* _(250 miles)_
+* Chimney Rock
+* _(86 miles)_
+* Fort Laramie
+* _(190 miles)_
+* Independence Rock
+* _(102 miles)_
+* South Pass
+    * Green River Split:
+        * _To Green River: (57 miles)_
+        * Green River
+        * _(144 miles)_
+    * Fort Bridger Split:
+       * _To Fort Bridger: (125 miles)_
+       * Fort Bridger
+       * _(162 miles)_
+* Soda Springs
+* _(57 miles)_
+* Fort Hall
+* _(182 miles)_
+* Snake River Crossing
+* _(114 miles)_
+* Fort Boise
+* _(160 miles)_
+* Blue Mountains
+    * Fort Walla Walla Split:
+        * _To Fort Walla Walla: (55 miles)_
+        * Fort Walla Walla
+        * _(120 miles)_
+    * Bypass:
+        * _(125 miles)_
+* The Dalles
+    * Barlow Toll Road Split:
+        * _(100 miles)_
+    * Columbia River Split:
+        * _(0 miles, action sequence)_
+* Willamette Valley (end)
+
+# Trail Map (Mac/Deluxe)
 
 ## Independence, Missouri (starting point)
 * 0 mi traveled
