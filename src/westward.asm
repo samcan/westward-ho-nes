@@ -153,6 +153,12 @@ NotDisplayingTitle:
   BNE NotDisplayingNewGame		;; game is displaying new game screen
   JMP EngineNewGame
 NotDisplayingNewGame:
+
+  LDA gamestate
+  CMP #STATESTORE
+  BNE NotDisplayingStore        ;; game is displaying store screen
+  JMP EngineStore
+NotDisplayingStore:
     
   ;LDA gamestate
   ;CMP #STATEGAMEOVER
@@ -175,24 +181,27 @@ LoadNewScreen:
   JSR clr_sprite_mem
 
   LDA newgmstate
+  STA gamestate
+
+  LDA gamestate
   CMP #STATETITLE
   BEQ DisplayTitleScreen
   
-  LDA newgmstate
+  LDA gamestate
   CMP #STATENEWGAME
   BEQ DisplayNewGameScreen
   
-  LDA newgmstate
-  STA gamestate
+  LDA gamestate
+  CMP #STATESTORE
+  BEQ DisplayStoreScreen
+  
+
 
 FinishLoadNewScreen:
   JSR EnableNMI
   RTI
   
 DisplayTitleScreen:
-  LDA newgmstate
-  STA gamestate
-
   LDX #$04				; start text display using sprite 1 rather than
 						; sprite 0
   STX spritemem
@@ -211,15 +220,15 @@ DisplayTitleScreen:
   JMP FinishLoadNewScreen
   
 DisplayNewGameScreen:
-  LDA newgmstate
-  STA gamestate
-  
   LDA #LOW(palette_newgame)
   STA paletteLo
   LDA #HIGH(palette_newgame)
   STA paletteHi
   JSR LoadPalettes
   
+  JMP FinishLoadNewScreen
+  
+DisplayStoreScreen:
   JMP FinishLoadNewScreen
   
 DisableNMI:
@@ -270,6 +279,21 @@ EngineNewGame:
 EndNewGameState:
   ; user is exiting new game state, switch to general store state
   LDA #STATESTORE
+  STA newgmstate
+  JMP GameEngineDone
+
+
+;;;;;;;;; 
+
+EngineStore:
+  JSR ReadController1
+  LDA buttons1
+  AND #BTN_START
+  BNE EndStoreGameState
+  JMP GameEngineDone
+EndStoreGameState:
+  ; user is exiting new game state, switch to general store state
+  LDA #STATETRAVELING
   STA newgmstate
   JMP GameEngineDone
 
