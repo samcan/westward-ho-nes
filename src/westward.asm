@@ -11,7 +11,8 @@
   
 ; initialize variables here
 gamestate	.rs 1		; current game state
-buttons1    .rs 1
+newgmstate	.rs 1		; new game state
+buttons1    .rs 1		; player 1 controller buttons pressed
 spritemem   .rs 1
 textxpos    .rs 1
 textypos	.rs 1
@@ -19,9 +20,8 @@ textvarLo	.rs 1
 textvarHi	.rs 1
 textattrLo	.rs 1
 textattrHi	.rs 1
-paletteLo	.rs 1
-paletteHi	.rs 1
-newgmstate	.rs 1
+paletteLo	.rs 1		; palette address, low-byte
+paletteHi	.rs 1		; palette address, high-byte
 
 
 ;; DECLARE CONSTANTS HERE
