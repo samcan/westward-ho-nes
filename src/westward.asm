@@ -12,7 +12,6 @@
 ; initialize variables here
 gamestate	.rs 1		; current game state
 buttons1    .rs 1
-;buttons2    .rs 1
 spritemem   .rs 1
 textxpos    .rs 1
 textypos	.rs 1
@@ -144,7 +143,6 @@ UpdateCurrentScreen:
 
 
   JSR ReadController1  ;;get the current button data for player 1
-  ;JSR ReadController2  ;;get the current button data for player 2
   
 GameEngine:  
   LDA gamestate
@@ -427,22 +425,6 @@ ReadController1Loop:
   DEX
   BNE ReadController1Loop
   RTS
-
-; As far as I'm aware of, not planning to utilize controller 2, so we can just
-; comment this out. 
-;ReadController2:
-;  LDA #$01
-;  STA $4016
-;  LDA #$00
-;  STA $4016
-;  LDX #$08
-;ReadController2Loop:
-;  LDA $4017
-;  LSR A            ; bit0 -> Carry
-;  ROL buttons2     ; bit0 <- Carry
-;  DEX
-;  BNE ReadController2Loop
-;  RTS  
   
 clr_sprite_mem:
   LDA #$FE
