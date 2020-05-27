@@ -128,8 +128,6 @@ UpdateCurrentScreen:
   LDA #$02
   STA $4014       ; set the high byte (02) of the RAM address, start the transfer
 
-  ;JSR DrawScore
-
   ;;This is the PPU clean up section, so rendering the next frame starts properly.
   LDA #%10010000   ; enable NMI, sprites from Pattern Table 0, background from Pattern Table 1
   STA $2000
@@ -403,12 +401,7 @@ LoadPalettesLoop:
 UpdateSprites:
   ;;update sprites here
   RTS
- 
- 
-DrawScore:
-  ;;draw score on screen using background tiles
-  ;;or using many sprites
-  RTS
+
  
  
  
