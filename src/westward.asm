@@ -6,10 +6,9 @@
 
 ;;;;;;;;;;;;;;;
 
-;; DECLARE SOME VARIABLES HERE
+;; DECLARE VARIABLES HERE
   .rsset $0000  ;;start variables at ram location 0
   
-; initialize variables here
 gamestate	.rs 1		; current game state
 newgmstate	.rs 1		; new game state
 buttons1    .rs 1		; player 1 controller buttons pressed
