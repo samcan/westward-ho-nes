@@ -6,7 +6,7 @@
     * ![](img/ot_kansas_river_crossing.png?raw=true)
 * _(83 miles)_
 * Big Blue River Crossing
-    * ![](img/ot_big_blue_river_crossing.gif?raw=true)
+    * ![](img/ot_big_blue_river_crossing.png?raw=true)
 * _(119 miles)_
 * Fort Kearney
     * ![](img/ot_fort_kearney.png?raw=true)
@@ -51,7 +51,7 @@
     * Columbia River Split:
         * _(0 miles, action sequence)_
 * Willamette Valley (end)
-    * ![](img/ot_willamette_valley.jpg?raw=true)
+    * ![](img/ot_willamette_valley.png?raw=true)
 
 # Landmarks visible while traveling
 ## Fort
