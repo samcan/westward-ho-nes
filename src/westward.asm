@@ -21,6 +21,8 @@ textattrLo	.rs 1
 textattrHi	.rs 1
 paletteLo	.rs 1		; palette address, low-byte
 paletteHi	.rs 1		; palette address, high-byte
+currframe	.rs 1
+currwagfrm	.rs 1
 
 
 ;; DECLARE CONSTANTS HERE
@@ -32,6 +34,8 @@ STATELANDMARK	= $03
 STATESTORE		= $04
 STATEPAUSED		= $05
 STATEENDGAME	= $06
+
+FRAMECOUNT		= $30
 
 ; controller buttons
 BTN_A			= %10000000
@@ -162,6 +166,12 @@ NotDisplayingNewGame:
   BNE NotDisplayingStore        ;; game is displaying store screen
   JMP EngineStore
 NotDisplayingStore:
+
+  LDA gamestate
+  CMP #STATETRAVELING
+  BNE NotDisplayingTraveling
+  JMP EngineTraveling
+NotDisplayingTraveling:
     
 GameEngineDone:  
   
@@ -190,6 +200,10 @@ LoadNewScreen:
   LDA gamestate
   CMP #STATESTORE
   BEQ DisplayStoreScreen
+  
+  LDA gamestate
+  CMP #STATETRAVELING
+  BEQ DisplayTravelingScreen
   
 
 
@@ -225,6 +239,167 @@ DisplayNewGameScreen:
   JMP FinishLoadNewScreen
   
 DisplayStoreScreen:
+  JMP FinishLoadNewScreen
+  
+DisplayTravelingScreen:
+
+  
+  LDA #LOW(palette)
+  STA paletteLo
+  LDA #HIGH(palette)
+  STA paletteHi
+  JSR LoadPalettes
+  
+  ; ; do sprite DMA
+  ; LDA #$00
+  ; STA $2003       ; set the low byte (00) of the RAM address
+  ; LDA #$02
+  ; STA $4014       ; set the high byte (02) of the RAM address, start the transfer
+
+  
+  
+  ; first part of metatile
+  LDX #$04				; start display using sprite 1 rather than
+						; sprite 0
+  
+  LDA #$60
+  STA $0200, x
+  
+  INX
+  LDA #$17
+  STA $0200, x
+  
+  INX
+  LDA #%00000011
+  STA $0200, x
+  
+  INX
+  LDA #$E0
+  STA $0200, x
+  
+  ; 2nd part of metatile
+  INX
+  LDA #$60
+  STA $0200, x
+  
+  INX
+  LDA #$18
+  STA $0200, x
+  
+  INX
+  LDA #%00000011
+  STA $0200, x
+  
+  INX
+  LDA #$E8
+  STA $0200, x
+  
+  ; 3rd part of metatile
+  INX
+  LDA #$58
+  STA $0200, x
+  
+  INX
+  LDA #$07
+  STA $0200, x
+  
+  INX
+  LDA #%00000011
+  STA $0200, x
+  
+  INX
+  LDA #$E0
+  STA $0200, x
+  
+  ; 4th part of metatile
+  INX
+  LDA #$58
+  STA $0200, x
+  
+  INX
+  LDA #$08
+  STA $0200, x
+  
+  INX
+  LDA #%00000011
+  STA $0200, x
+  
+  INX
+  LDA #$E8
+  STA $0200, x
+  
+  ;; load oxen metatile
+  ; first part of metatile
+  INX
+  LDA #$60
+  STA $0200, x
+  
+  INX
+  LDA #$15
+  STA $0200, x
+  
+  INX
+  LDA #%00000011
+  STA $0200, x
+  
+  INX
+  LDA #$D0
+  STA $0200, x
+  
+  ; 2nd part of metatile
+  INX
+  LDA #$60
+  STA $0200, x
+  
+  INX
+  LDA #$16
+  STA $0200, x
+  
+  INX
+  LDA #%00000011
+  STA $0200, x
+  
+  INX
+  LDA #$D8
+  STA $0200, x
+  
+  ; 3rd part of metatile
+  INX
+  LDA #$58
+  STA $0200, x
+  
+  INX
+  LDA #$05
+  STA $0200, x
+  
+  INX
+  LDA #%00000011
+  STA $0200, x
+  
+  INX
+  LDA #$D0
+  STA $0200, x
+  
+  ; 4th part of metatile
+  INX
+  LDA #$58
+  STA $0200, x
+  
+  INX
+  LDA #$06
+  STA $0200, x
+  
+  INX
+  LDA #%00000011
+  STA $0200, x
+  
+  INX
+  LDA #$D8
+  STA $0200, x
+  
+  LDA #$00
+  STA currwagfrm
+  
   JMP FinishLoadNewScreen
   
 DisableNMI:
@@ -293,7 +468,105 @@ EndStoreGameState:
   STA newgmstate
   JMP GameEngineDone
 
+;;;;;;;;;;
+EngineTraveling:
+  INC currframe
+  LDA currframe
+  CMP #FRAMECOUNT
+  BEQ FlipWagonAnimation
+  JMP GameEngineDone
+  
+FlipWagonAnimation:
+  LDA #$00
+  STA currframe
+  
+  LDA currwagfrm
+  CMP #$00
+  BEQ LoadFrameOne
+  
+LoadFrameZero:
+  LDA #$00
+  STA currwagfrm
 
+  ; first part of metatile
+  LDX #$04				; start display using sprite 1 rather than
+						; sprite 0
+  
+  LDA #$60
+  STA $0200, x
+  
+  INX
+  LDA #$17
+  STA $0200, x
+  
+  INX
+  LDA #%00000011
+  STA $0200, x
+  
+  INX
+  LDA #$E0
+  STA $0200, x
+  
+  ; 2nd part of metatile
+  INX
+  LDA #$60
+  STA $0200, x
+  
+  INX
+  LDA #$18
+  STA $0200, x
+  
+  INX
+  LDA #%00000011
+  STA $0200, x
+  
+  INX
+  LDA #$E8
+  STA $0200, x
+
+  JMP GameEngineDone
+  
+LoadFrameOne:
+  INC currwagfrm
+  
+  ; first part of metatile
+  LDX #$04				; start display using sprite 1 rather than
+						; sprite 0
+  
+  LDA #$60
+  STA $0200, x
+  
+  INX
+  LDA #$1B
+  STA $0200, x
+  
+  INX
+  LDA #%00000011
+  STA $0200, x
+  
+  INX
+  LDA #$E0
+  STA $0200, x
+  
+  ; 2nd part of metatile
+  INX
+  LDA #$60
+  STA $0200, x
+  
+  INX
+  LDA #$1C
+  STA $0200, x
+  
+  INX
+  LDA #%00000011
+  STA $0200, x
+  
+  INX
+  LDA #$E8
+  STA $0200, x
+  
+  JMP GameEngineDone
+;;;;;;;;;;
 
 EngineGameOver:
   JMP GameEngineDone
@@ -457,11 +730,11 @@ clr_sprite_mem_loop:
   .org $E000
   ; set palettes
 palette:
-  .db $22,$29,$1A,$0F,  $22,$36,$17,$0F,  $22,$30,$21,$0F,  $22,$27,$17,$0F   ;;background palette
-  .db $30,$17,$28,$1F,  $30,$1C,$2B,$39,  $30,$06,$15,$36,  $30,$07,$17,$10   ;;sprite palette
+  .db $0F,$3D,$19,$09,  $0F,$06,$15,$36,  $0F,$05,$26,$1F,  $0F,$16,$27,$18   ;;background palette
+  .db $1F,$17,$28,$30,  $1F,$1C,$2B,$39,  $1F,$06,$15,$36,  $1F,$07,$17,$10   ;;sprite palette
 
 palette_newgame:
-  .db $22,$29,$1A,$0F,  $22,$36,$17,$0F,  $22,$30,$21,$0F,  $22,$27,$17,$0F   ;;background palette
+  .db $22,$29,$1A,$0F,  $22,$36,$17,$0F,  $22,$1F,$21,$0F,  $22,$27,$17,$0F   ;;background palette
   .db $35,$17,$28,$1F,  $35,$1C,$2B,$39,  $35,$06,$15,$36,  $35,$07,$17,$10   ;;sprite palette
 
 ; new line = $00, space char needs to be something else, $FF = done
