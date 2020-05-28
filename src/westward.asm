@@ -163,13 +163,6 @@ NotDisplayingNewGame:
   JMP EngineStore
 NotDisplayingStore:
     
-  ;LDA gamestate
-  ;CMP #STATEGAMEOVER
-  ;BEQ EngineGameOver  ;;game is displaying ending screen
-  
-  ;LDA gamestate
-  ;CMP #STATEPLAYING
-  ;BEQ EnginePlaying   ;;game is playing
 GameEngineDone:  
   
   JSR UpdateSprites  ;;set ball/paddle sprites from positions
