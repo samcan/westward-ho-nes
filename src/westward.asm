@@ -23,6 +23,7 @@ paletteLo	.rs 1		; palette address, low-byte
 paletteHi	.rs 1		; palette address, high-byte
 currframe	.rs 1
 currwagfrm	.rs 1
+ptr			.rs 2
 
 
 ;; DECLARE CONSTANTS HERE
@@ -48,9 +49,6 @@ BTN_LEFTARROW	= %00000010
 BTN_RIGHTARROW	= %00000001
 
 ;;;;;;;;;;;;;;;;;;
-
-
-
 
   .bank 0
   .org $C000 
@@ -107,27 +105,23 @@ clrmem:
 Forever:
   JMP Forever     ;jump back to Forever, infinite loop, waiting for NMI
   
-SetInitialState:
-  LDA #$FF
-  STA gamestate
-  LDA #STATETITLE
-  STA newgmstate
-  
-  RTS
 
-VBlankWait:
-  BIT $2002
-  BPL VBlankWait
-  RTS
 
 
 ;;;;;;
 NMI:
+  ;; NMI (vblank) has been triggered; check if we need to load a new
+  ;; screen or just update our current screen.
   LDA newgmstate
   CMP gamestate
   BNE LoadNewScreen
   
 UpdateCurrentScreen:
+  ;; We're in the NMI and have determined that we just need to update
+  ;; the current screen rather than draw a new screen. Hence we'll leave
+  ;; the NMI enabled, quickly read the controller and do our game logic,
+  ;; and get out of here.
+  
   ; do sprite DMA
   LDA #$00
   STA $2003       ; set the low byte (00) of the RAM address
@@ -145,43 +139,23 @@ UpdateCurrentScreen:
     
   ;;;all graphics updates done by here, run game engine
 
-
   JSR ReadController1  ;;get the current button data for player 1
-  
-GameEngine:  
-  LDA gamestate
-  CMP #STATETITLE
-  BNE NotDisplayingTitle
-  JMP EngineTitle  ;; game is displaying title screen
-  
-NotDisplayingTitle:
-  LDA gamestate
-  CMP #STATENEWGAME
-  BNE NotDisplayingNewGame		;; game is displaying new game screen
-  JMP EngineNewGame
-NotDisplayingNewGame:
-
-  LDA gamestate
-  CMP #STATESTORE
-  BNE NotDisplayingStore        ;; game is displaying store screen
-  JMP EngineStore
-NotDisplayingStore:
-
-  LDA gamestate
-  CMP #STATETRAVELING
-  BNE NotDisplayingTraveling
-  JMP EngineTraveling
-NotDisplayingTraveling:
+  JMP GameEngineLogic  ;;process game engine logic
     
-GameEngineDone:  
-  
-  JSR UpdateSprites  ;;set ball/paddle sprites from positions
+GameEngineLogicDone:  
+  JSR UpdateSprites    ;;update sprites as necessary. Note that I think I need
+                       ;;to move this just above the comment above about having
+					   ;;all graphical updates "done by here."
 
-  RTI             ; return from interrupt
+  RTI             		; return from interrupt
 
 
-;;;;
+;;
 LoadNewScreen:
+  ;; Still in NMI, we've been told that we need to load a new screen.
+  ;; Hence, we'll disable the NMI, clear sprite memory, and load the
+  ;; new screen. Then we'll re-enable the NMI before returning from the
+  ;; interrupt.
   JSR DisableNMI
   
   JSR clr_sprite_mem
@@ -190,7 +164,6 @@ LoadNewScreen:
   STA gamestate
 
   LDA gamestate
-  CMP #STATETITLE
   BEQ DisplayTitleScreen
   
   LDA gamestate
@@ -204,13 +177,35 @@ LoadNewScreen:
   LDA gamestate
   CMP #STATETRAVELING
   BEQ DisplayTravelingScreen
-  
-
 
 FinishLoadNewScreen:
+  ;; now that we've finished loading the new screen, re-enable the NMI and
+  ;; return from interrupt
   JSR EnableNMI
   RTI
-  
+
+;;
+DisableNMI:
+  ; disable rendering and NMIs
+  LDA #$00
+  STA $2000
+  STA $2001
+
+  ; set output address
+  LDA $2002
+  LDA #$20
+  STA $2006
+  LDA #$00
+  STA $2006
+  RTS
+
+EnableNMI:
+  ; enable NMI
+  LDA $2002
+  LDA #%10010000
+  STA $2000
+  RTS
+;;
 DisplayTitleScreen:
   LDX #$04				; start text display using sprite 1 rather than
 						; sprite 0
@@ -242,239 +237,207 @@ DisplayStoreScreen:
   JMP FinishLoadNewScreen
   
 DisplayTravelingScreen:
-
-  
   LDA #LOW(palette)
   STA paletteLo
   LDA #HIGH(palette)
   STA paletteHi
   JSR LoadPalettes
-  
-  ; ; do sprite DMA
-  ; LDA #$00
-  ; STA $2003       ; set the low byte (00) of the RAM address
-  ; LDA #$02
-  ; STA $4014       ; set the high byte (02) of the RAM address, start the transfer
 
-  
-  
   ; first part of metatile
   LDX #$04				; start display using sprite 1 rather than
 						; sprite 0
-  
+
   LDA #$60
   STA $0200, x
-  
+
   INX
   LDA #$17
   STA $0200, x
-  
+
   INX
   LDA #%00000011
   STA $0200, x
-  
+
   INX
   LDA #$E0
   STA $0200, x
-  
+
   ; 2nd part of metatile
   INX
   LDA #$60
   STA $0200, x
-  
+
   INX
   LDA #$18
   STA $0200, x
-  
+
   INX
   LDA #%00000011
   STA $0200, x
-  
+
   INX
   LDA #$E8
   STA $0200, x
-  
+
   ; 3rd part of metatile
   INX
   LDA #$58
   STA $0200, x
-  
+
   INX
   LDA #$07
   STA $0200, x
-  
+
   INX
   LDA #%00000011
   STA $0200, x
-  
+
   INX
   LDA #$E0
   STA $0200, x
-  
+
   ; 4th part of metatile
   INX
   LDA #$58
   STA $0200, x
-  
+
   INX
   LDA #$08
   STA $0200, x
-  
+
   INX
   LDA #%00000011
   STA $0200, x
-  
+
   INX
   LDA #$E8
   STA $0200, x
-  
+
   ;; load oxen metatile
   ; first part of metatile
   INX
   LDA #$60
   STA $0200, x
-  
+
   INX
   LDA #$15
   STA $0200, x
-  
+
   INX
   LDA #%00000011
   STA $0200, x
-  
+
   INX
   LDA #$D0
   STA $0200, x
-  
+
   ; 2nd part of metatile
   INX
   LDA #$60
   STA $0200, x
-  
+
   INX
   LDA #$16
   STA $0200, x
-  
+
   INX
   LDA #%00000011
   STA $0200, x
-  
+
   INX
   LDA #$D8
   STA $0200, x
-  
+
   ; 3rd part of metatile
   INX
   LDA #$58
   STA $0200, x
-  
+
   INX
   LDA #$05
   STA $0200, x
-  
+
   INX
   LDA #%00000011
   STA $0200, x
-  
+
   INX
   LDA #$D0
   STA $0200, x
-  
+
   ; 4th part of metatile
   INX
   LDA #$58
   STA $0200, x
-  
+
   INX
   LDA #$06
   STA $0200, x
-  
+
   INX
   LDA #%00000011
   STA $0200, x
-  
+
   INX
   LDA #$D8
   STA $0200, x
-  
+
   LDA #$00
   STA currwagfrm
-  
+
   JMP FinishLoadNewScreen
-  
-DisableNMI:
-  ; disable rendering and NMIs
-  LDA #$00
-  STA $2000
-  STA $2001
-
-  ; set output address
-  LDA $2002
-  LDA #$20
-  STA $2006
-  LDA #$00
-  STA $2006
-  RTS
-
-EnableNMI:
-  LDA $2002
-  LDA #%10010000
-  STA $2000
-  
-  RTS
 ;;;;;;;; NMI should be complete here
  
-
+ ;;;;;;;
+;;;;;;;; ENGINE LOGIC SUBROUTINES
 ;;;;;;;;
 ; deal with title screen input; check for Start button to be pressed to exit
 ; title screen state
-EngineTitle:
+EngineLogicTitle:
   LDA buttons1
   AND #BTN_START
   BNE EndTitleState
-  JMP GameEngineDone
+  JMP GameEngineLogicDone
 EndTitleState:
   ; user is exiting title state, switch to new game state
   LDA #STATENEWGAME
   STA newgmstate
-  JMP GameEngineDone
+  JMP GameEngineLogicDone
 
-;;;;;;;;; 
-
-EngineNewGame:
+;;;;;;;;;
+EngineLogicNewGame:
   JSR ReadController1
   LDA buttons1
   AND #BTN_SELECT		; todo change to start once more function implemented
   BNE EndNewGameState
-  JMP GameEngineDone
+  JMP GameEngineLogicDone
 EndNewGameState:
   ; user is exiting new game state, switch to general store state
   LDA #STATESTORE
   STA newgmstate
-  JMP GameEngineDone
-
+  JMP GameEngineLogicDone
 
 ;;;;;;;;; 
-
-EngineStore:
+EngineLogicStore:
+  ;; logic associated with general store
   JSR ReadController1
   LDA buttons1
   AND #BTN_START
   BNE EndStoreGameState
-  JMP GameEngineDone
+  JMP GameEngineLogicDone
 EndStoreGameState:
   ; user is exiting new game state, switch to general store state
   LDA #STATETRAVELING
   STA newgmstate
-  JMP GameEngineDone
+  JMP GameEngineLogicDone
 
 ;;;;;;;;;;
-EngineTraveling:
+EngineLogicTraveling:
   INC currframe
   LDA currframe
   CMP #FRAMECOUNT
   BEQ FlipWagonAnimation
-  JMP GameEngineDone
+  JMP GameEngineLogicDone
   
 FlipWagonAnimation:
   LDA #$00
@@ -524,7 +487,7 @@ LoadFrameZero:
   LDA #$E8
   STA $0200, x
 
-  JMP GameEngineDone
+  JMP GameEngineLogicDone
   
 LoadFrameOne:
   INC currwagfrm
@@ -565,18 +528,12 @@ LoadFrameOne:
   LDA #$E8
   STA $0200, x
   
-  JMP GameEngineDone
+  JMP GameEngineLogicDone
 ;;;;;;;;;;
 
-EngineGameOver:
-  JMP GameEngineDone
- 
-;;;;;;;;;;;
- 
-EnginePlaying:
-  ;;update calculations here
-  JMP GameEngineDone
-
+;;;;;;;;;;
+;;;;;;;;;; HELPER FUNCTIONS HERE
+;;;;;;;;;;
 ;; DisplayText function will draw text sprites using the text
 ;; strings given using the attributes given. 16-bit pointer to
 ;; text string should be in textvarLo and textvarHi. 16-bit
@@ -685,18 +642,53 @@ LoadPalettesLoop:
   BNE LoadPalettesLoop  ; Branch to LoadPalettesLoop if compare was Not Equal to zero
                         ; if compare was equal to 32, keep going down
   RTS
+
 ;;;;;;;;;;;;;;;;;;;
+GameEngineLogic:  
+  LDA gamestate
+  CMP #STATETITLE
+  BNE NotDisplayingTitle
+  JMP EngineLogicTitle  ;; game is displaying title screen
+NotDisplayingTitle:
+  LDA gamestate
+  CMP #STATENEWGAME
+  BNE NotDisplayingNewGame		;; game is displaying new game screen
+  JMP EngineLogicNewGame
+NotDisplayingNewGame:
+  LDA gamestate
+  CMP #STATESTORE
+  BNE NotDisplayingStore        ;; game is displaying store screen
+  JMP EngineLogicStore
+NotDisplayingStore:
+  LDA gamestate
+  CMP #STATETRAVELING
+  BNE NotDisplayingTraveling
+  JMP EngineLogicTraveling
+NotDisplayingTraveling:
 
+  JMP GameEngineLogicDone
 
-
-
+;;;;;;;;;;;;;;
 UpdateSprites:
   ;;update sprites here
   RTS
 
- 
- 
- 
+;;;;;;;;;;;;;;
+SetInitialState:
+  LDA #$FF
+  STA gamestate
+  LDA #STATETITLE
+  STA newgmstate
+
+  RTS
+
+;;;;;;;;;;;;;;
+VBlankWait:
+  BIT $2002
+  BPL VBlankWait
+  RTS
+
+;;;;;;;;;;;;;;;
 ReadController1:
   LDA #$01
   STA $4016
@@ -710,7 +702,8 @@ ReadController1Loop:
   DEX
   BNE ReadController1Loop
   RTS
-  
+
+;;;;;;;;;;;;;;;
 clr_sprite_mem:
   LDX #$00
 clr_sprite_mem_loop:
@@ -719,13 +712,11 @@ clr_sprite_mem_loop:
   INX
   CPX #$00
   BNE clr_sprite_mem_loop
-  RTS
-    
-        
-;;;;;;;;;;;;;;  
-  
-  
-  
+  RTS    
+;;;;;;;;;;;;;;;
+
+
+
   .bank 1
   .org $E000
   ; set palettes
@@ -736,6 +727,7 @@ palette:
 palette_newgame:
   .db $22,$29,$1A,$0F,  $22,$36,$17,$0F,  $22,$1F,$21,$0F,  $22,$27,$17,$0F   ;;background palette
   .db $35,$17,$28,$1F,  $35,$1C,$2B,$39,  $35,$06,$15,$36,  $35,$07,$17,$10   ;;sprite palette
+
 
 ; new line = $00, space char needs to be something else, $FF = done
 ; first byte is starting y pos
@@ -756,10 +748,9 @@ titletextattr:
                    ;to the label RESET:
   .dw 0          ;external interrupt IRQ is not used in this tutorial
   
-  
+
 ;;;;;;;;;;;;;;  
-  
-  
+
   .bank 2
   .org $0000
   .incbin "src\chrblock.chr"   ;includes 8KB graphics file
