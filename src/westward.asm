@@ -64,10 +64,12 @@ RESET:
 
   JSR VBlankWait		; First wait for vblank to make sure PPU is ready
 
+  LDX #$00
 clrmem:
   LDA #$00
   STA $0000, x
   STA $0100, x
+  ;STA $01F0, x
   STA $0300, x
   STA $0400, x
   STA $0500, x
@@ -76,6 +78,7 @@ clrmem:
   LDA #$FE
   STA $0200, x
   INX
+  CPX #$00
   BNE clrmem
    
   JSR VBlankWait		; Second wait for vblank, PPU is ready after this
@@ -443,10 +446,13 @@ ReadController1Loop:
   RTS
   
 clr_sprite_mem:
+  LDX #$00
+clr_sprite_mem_loop:
   LDA #$FE
   STA $0200, x
   INX
-  BNE clr_sprite_mem
+  CPX #$00
+  BNE clr_sprite_mem_loop
   RTS
     
         
