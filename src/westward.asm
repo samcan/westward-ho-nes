@@ -650,27 +650,17 @@ LoadPalettesLoop:
 ;;;;;;;;;;;;;;;;;;;
 GameEngineLogic:  
   LDA gamestate
-  CMP #STATETITLE
-  BNE NotDisplayingTitle
-  JMP EngineLogicTitle  ;; game is displaying title screen
-NotDisplayingTitle:
-  LDA gamestate
-  CMP #STATENEWGAME
-  BNE NotDisplayingNewGame		;; game is displaying new game screen
-  JMP EngineLogicNewGame
-NotDisplayingNewGame:
-  LDA gamestate
-  CMP #STATESTORE
-  BNE NotDisplayingStore        ;; game is displaying store screen
-  JMP EngineLogicStore
-NotDisplayingStore:
-  LDA gamestate
-  CMP #STATETRAVELING
-  BNE NotDisplayingTraveling
-  JMP EngineLogicTraveling
-NotDisplayingTraveling:
+  ASL A
+  TAX
 
-  JMP GameEngineLogicDone
+  LDA enginelogic, x
+  STA vector
+
+  INX
+  LDA enginelogic, x
+  STA vector+1
+
+  JMP [vector]
 
 ;;;;;;;;;;;;;;
 UpdateSprites:
@@ -738,6 +728,12 @@ palette_newgame:
 screen:
   .dw DisplayTitleScreen, DisplayNewGameScreen, DisplayTravelingScreen
   .dw $0000, DisplayStoreScreen
+
+; points to appropriate engine logic functions so they can get called by
+; the engine
+enginelogic:
+  .dw EngineLogicTitle, EngineLogicNewGame, EngineLogicTraveling
+  .dw $0000, EngineLogicStore
 
 ; new line = $00, space char needs to be something else, $FF = done
 ; first byte is starting y pos
