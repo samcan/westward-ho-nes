@@ -1,3 +1,5 @@
+[![Board Status](https://dev.azure.com/samuelcantrell/74847b42-095f-489b-ab88-88355b740707/78d5b544-a5a5-4e64-a3e1-5781ec0b780c/_apis/work/boardbadge/7b0494f3-d086-439a-876a-e3687fa2cbee?columnOptions=1)](https://dev.azure.com/samuelcantrell/74847b42-095f-489b-ab88-88355b740707/_boards/board/t/78d5b544-a5a5-4e64-a3e1-5781ec0b780c/Microsoft.RequirementCategory/)
+
 # *Westward Ho!* for NES
 *Westward Ho!* is a clone of the *Oregon Trail* game for NES. We
 aim to implement a mixture of features/design from the Apple II
