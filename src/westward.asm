@@ -23,7 +23,7 @@ paletteLo	.rs 1		; palette address, low-byte
 paletteHi	.rs 1		; palette address, high-byte
 currframe	.rs 1
 currwagfrm	.rs 1
-ptr			.rs 2
+vector		.rs 2
 
 
 ;; DECLARE CONSTANTS HERE
@@ -163,20 +163,24 @@ LoadNewScreen:
   LDA newgmstate
   STA gamestate
 
-  LDA gamestate
-  BEQ DisplayTitleScreen
+  ; we've got to ASL the newgmstate to figure out our index to check for
+  ; our screen function to load. we'll then rewrite our gamestate over
+  ; newgmstate before jumping. 
+  ASL newgmstate
+  LDX newgmstate
+  LDA screen, x
+  STA vector
+  INX
+  LDA screen, x
+  STA vector+1
   
+  ; reset newgmstate to gamestate, otherwise we'll be trying to load the
+  ; new screen again, which we don't want.
   LDA gamestate
-  CMP #STATENEWGAME
-  BEQ DisplayNewGameScreen
+  STA newgmstate
   
-  LDA gamestate
-  CMP #STATESTORE
-  BEQ DisplayStoreScreen
-  
-  LDA gamestate
-  CMP #STATETRAVELING
-  BEQ DisplayTravelingScreen
+  ; finally execute the jump
+  JMP [vector]
 
 FinishLoadNewScreen:
   ;; now that we've finished loading the new screen, re-enable the NMI and
@@ -728,6 +732,12 @@ palette_newgame:
   .db $22,$29,$1A,$0F,  $22,$36,$17,$0F,  $22,$1F,$21,$0F,  $22,$27,$17,$0F   ;;background palette
   .db $35,$17,$28,$1F,  $35,$1C,$2B,$39,  $35,$06,$15,$36,  $35,$07,$17,$10   ;;sprite palette
 
+
+; points to appropriate 'load-new-screen' functions so they can get called
+; by NMI when it's time to load a new screen
+screen:
+  .dw DisplayTitleScreen, DisplayNewGameScreen, DisplayTravelingScreen
+  .dw $0000, DisplayStoreScreen
 
 ; new line = $00, space char needs to be something else, $FF = done
 ; first byte is starting y pos
