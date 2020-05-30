@@ -7,8 +7,8 @@ and Macintosh (Deluxe) versions. The intention is to have the game
 ready for distribution and demonstration at VCF PNW 2021 in early 2021.
 
 *Westward Ho!* is programmed in NES 6502 assembly. It is compiled
-using [asm6f][asm6f]. Though we are testing the game with the fceux and Mesen
-emulators, we plan to produce a physical cartridge.
+using [asm6f][asm6f]. Though we are testing the game with the [fceux][fceux]
+and [Mesen][mesen] emulators, we plan to produce a physical cartridge.
 
 ## How to compile
 Make sure `asm6f_64.exe` from the latest `asm6f` package is located somewhere in
@@ -17,3 +17,5 @@ your path. Once you've cloned the repository, switch into the folder, and run
 be run in fceux or Mesen.
 
 [asm6f]: https://github.com/freem/asm6f
+[fceux]: http://www.fceux.com/web/home.html
+[mesen]: https://mesen.ca/
