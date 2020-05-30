@@ -574,7 +574,7 @@ LoadTextParams:
   STA textxpos
 
   INY
-TextLoop:
+@loop:
   LDX spritemem
 
   LDA textypos
@@ -608,7 +608,7 @@ TextLoop:
   BEQ TextInsertLineBreak
   CMP #$FF
   BEQ TextDone
-  JMP TextLoop
+  JMP @loop
 TextInsertLineBreak:
   INY
   JMP LoadTextParams
@@ -633,7 +633,7 @@ LoadPalettes:
   LDA #$00
   STA $2006             ; write the low byte of $3F00 address
   LDY #$00              ; start out at 0
-LoadPalettesLoop:
+@loop:
   LDA (paletteLo), y        ; load data from address (palette + the value in x)
                           ; 1st time through loop it will load palette+0
                           ; 2nd time through loop it will load palette+1
@@ -642,7 +642,7 @@ LoadPalettesLoop:
   STA $2007             ; write to PPU
   INY                   ; X = X + 1
   CPY #$20              ; Compare X to hex $20, decimal 32 - copying 32 bytes = 8 sprites
-  BNE LoadPalettesLoop  ; Branch to LoadPalettesLoop if compare was Not Equal to zero
+  BNE @loop             ; Branch to @loop if compare was Not Equal to zero
                         ; if compare was equal to 32, keep going down
   RTS
 
@@ -686,23 +686,23 @@ ReadController1:
   LDA #$00
   STA $4016
   LDX #$08
-ReadController1Loop:
+@loop:
   LDA $4016
   LSR A            ; bit0 -> Carry
   ROL buttons1     ; bit0 <- Carry
   DEX
-  BNE ReadController1Loop
+  BNE @loop
   RTS
 
 ;;;;;;;;;;;;;;;
 clr_sprite_mem:
   LDX #$00
-clr_sprite_mem_loop:
+@loop:
   LDA #$FE
   STA $0200, x
   INX
   CPX #$00
-  BNE clr_sprite_mem_loop
+  BNE @loop
   RTS    
 ;;;;;;;;;;;;;;;
 
