@@ -7,24 +7,24 @@
 ;;;;;;;;;;;;;;;
 
 ;; DECLARE VARIABLES HERE
-  .rsset $0000  ;;start variables at ram location 0
-  
-gamestate	.rs 1		; current game state
-newgmstate	.rs 1		; new game state
-buttons1    .rs 1		; player 1 controller buttons pressed
-spritemem   .rs 1
-textxpos    .rs 1
-textypos	.rs 1
-textvarLo	.rs 1
-textvarHi	.rs 1
-textattrLo	.rs 1
-textattrHi	.rs 1
-paletteLo	.rs 1		; palette address, low-byte
-paletteHi	.rs 1		; palette address, high-byte
-currframe	.rs 1
-currwagfrm	.rs 1
-vector		.rs 2
+  .enum $0000  ;;start variables at ram location 0
 
+gamestate	.dsb 1		; current game state
+newgmstate	.dsb 1		; new game state
+buttons1    .dsb 1		; player 1 controller buttons pressed
+spritemem   .dsb 1
+textxpos    .dsb 1
+textypos	.dsb 1
+textvarLo	.dsb 1
+textvarHi	.dsb 1
+textattrLo	.dsb 1
+textattrHi	.dsb 1
+paletteLo	.dsb 1		; palette address, low-byte
+paletteHi	.dsb 1		; palette address, high-byte
+currframe	.dsb 1
+currwagfrm	.dsb 1
+vector		.dsb 2
+  .ende
 
 ;; DECLARE CONSTANTS HERE
 ; game state constants
@@ -50,7 +50,6 @@ BTN_RIGHTARROW	= %00000001
 
 ;;;;;;;;;;;;;;;;;;
 
-  .bank 0
   .org $C000 
 RESET:
   SEI          ; disable IRQs
@@ -82,12 +81,12 @@ clrmem:
   INX
   CPX #$00
   BNE clrmem
-   
+
   JSR VBlankWait		; Second wait for vblank, PPU is ready after this
 
-  LDA #LOW(palette)
+  LDA #<palette
   STA paletteLo
-  LDA #HIGH(palette)
+  LDA #>palette
   STA paletteHi
   JSR LoadPalettes
 
@@ -104,7 +103,7 @@ clrmem:
 
 Forever:
   JMP Forever     ;jump back to Forever, infinite loop, waiting for NMI
-  
+
 
 
 
@@ -115,13 +114,13 @@ NMI:
   LDA newgmstate
   CMP gamestate
   BNE LoadNewScreen
-  
+
 UpdateCurrentScreen:
   ;; We're in the NMI and have determined that we just need to update
   ;; the current screen rather than draw a new screen. Hence we'll leave
   ;; the NMI enabled, quickly read the controller and do our game logic,
   ;; and get out of here.
-  
+
   ; do sprite DMA
   LDA #$00
   STA $2003       ; set the low byte (00) of the RAM address
@@ -136,16 +135,16 @@ UpdateCurrentScreen:
   LDA #$00        ;;tell the ppu there is no background scrolling
   STA $2005
   STA $2005
-    
+
   ;;;all graphics updates done by here, run game engine
 
   JSR ReadController1  ;;get the current button data for player 1
   JMP GameEngineLogic  ;;process game engine logic
-    
+
 GameEngineLogicDone:  
   JSR UpdateSprites    ;;update sprites as necessary. Note that I think I need
                        ;;to move this just above the comment above about having
-					   ;;all graphical updates "done by here."
+                       ;;all graphical updates "done by here."
 
   RTI             		; return from interrupt
 
@@ -157,7 +156,7 @@ LoadNewScreen:
   ;; new screen. Then we'll re-enable the NMI before returning from the
   ;; interrupt.
   JSR DisableNMI
-  
+
   JSR clr_sprite_mem
 
   LDA newgmstate
@@ -173,14 +172,14 @@ LoadNewScreen:
   INX
   LDA screen, x
   STA vector+1
-  
+
   ; reset newgmstate to gamestate, otherwise we'll be trying to load the
   ; new screen again, which we don't want.
   LDA gamestate
   STA newgmstate
-  
+
   ; finally execute the jump
-  JMP [vector]
+  JMP (vector)
 
 FinishLoadNewScreen:
   ;; now that we've finished loading the new screen, re-enable the NMI and
@@ -214,36 +213,36 @@ DisplayTitleScreen:
   LDX #$04				; start text display using sprite 1 rather than
 						; sprite 0
   STX spritemem
-  
-  LDA #LOW(titlewestwardtext)
+
+  LDA #<titlewestwardtext
   STA textvarLo
-  LDA #HIGH(titlewestwardtext)
+  LDA #>titlewestwardtext
   STA textvarHi
-  
-  LDA #LOW(titletextattr)
+
+  LDA #<titletextattr
   STA textattrLo
-  LDA #HIGH(titletextattr)
+  LDA #>titletextattr
   STA textattrHi
   JSR DisplayText
-  
+
   JMP FinishLoadNewScreen
-  
+
 DisplayNewGameScreen:
-  LDA #LOW(palette_newgame)
+  LDA #<palette_newgame
   STA paletteLo
-  LDA #HIGH(palette_newgame)
+  LDA #>palette_newgame
   STA paletteHi
   JSR LoadPalettes
-  
+
   JMP FinishLoadNewScreen
-  
+
 DisplayStoreScreen:
   JMP FinishLoadNewScreen
-  
+
 DisplayTravelingScreen:
-  LDA #LOW(palette)
+  LDA #<palette
   STA paletteLo
-  LDA #HIGH(palette)
+  LDA #>palette
   STA paletteHi
   JSR LoadPalettes
 
@@ -391,8 +390,8 @@ DisplayTravelingScreen:
 
   JMP FinishLoadNewScreen
 ;;;;;;;; NMI should be complete here
- 
- ;;;;;;;
+
+;;;;;;;;
 ;;;;;;;; ENGINE LOGIC SUBROUTINES
 ;;;;;;;;
 ; deal with title screen input; check for Start button to be pressed to exit
@@ -442,15 +441,15 @@ EngineLogicTraveling:
   CMP #FRAMECOUNT
   BEQ FlipWagonAnimation
   JMP GameEngineLogicDone
-  
+
 FlipWagonAnimation:
   LDA #$00
   STA currframe
-  
+
   LDA currwagfrm
   CMP #$00
   BEQ LoadFrameOne
-  
+
 LoadFrameZero:
   LDA #$00
   STA currwagfrm
@@ -461,77 +460,77 @@ LoadFrameZero:
   
   LDA #$60
   STA $0200, x
-  
+
   INX
   LDA #$17
   STA $0200, x
-  
+
   INX
   LDA #%00000011
   STA $0200, x
-  
+
   INX
   LDA #$E0
   STA $0200, x
-  
+
   ; 2nd part of metatile
   INX
   LDA #$60
   STA $0200, x
-  
+
   INX
   LDA #$18
   STA $0200, x
-  
+
   INX
   LDA #%00000011
   STA $0200, x
-  
+
   INX
   LDA #$E8
   STA $0200, x
 
   JMP GameEngineLogicDone
-  
+
 LoadFrameOne:
   INC currwagfrm
-  
+
   ; first part of metatile
   LDX #$04				; start display using sprite 1 rather than
 						; sprite 0
-  
+
   LDA #$60
   STA $0200, x
-  
+
   INX
   LDA #$1B
   STA $0200, x
-  
+
   INX
   LDA #%00000011
   STA $0200, x
-  
+
   INX
   LDA #$E0
   STA $0200, x
-  
+
   ; 2nd part of metatile
   INX
   LDA #$60
   STA $0200, x
-  
+
   INX
   LDA #$1C
   STA $0200, x
-  
+
   INX
   LDA #%00000011
   STA $0200, x
-  
+
   INX
   LDA #$E8
   STA $0200, x
-  
+
   JMP GameEngineLogicDone
 ;;;;;;;;;;
 
@@ -554,58 +553,58 @@ LoadFrameOne:
 ;;
 ;;
 ;; Sample usage:
-;;   LDA #LOW(titlewestwardtext)
+;;   LDA #<titlewestwardtext
 ;;   STA textvarLo
-;;   LDA #HIGH(titlewestwardtext)
+;;   LDA #>titlewestwardtext
 ;;   STA textvarHi
 ;;
-;;   LDA #LOW(titletextattr)
+;;   LDA #<titletextattr
 ;;   STA textattrLo
-;;   LDA #HIGH(titletextattr)
+;;   LDA #>titletextattr
 ;;   STA textattrHi
 ;;   JSR DisplayText
 DisplayText:
   LDY #$00
 LoadTextParams:
-  LDA [textvarLo], y
+  LDA (textvarLo), y
   STA textypos
-  
+
   INY
-  LDA [textvarLo], y
+  LDA (textvarLo), y
   STA textxpos
-  
+
   INY
 TextLoop:
   LDX spritemem
-  
+
   LDA textypos
   STA $0200, x
-  
+
   INX
-  LDA [textvarLo], y
+  LDA (textvarLo), y
   STA $0200, x
-  
+
   INX
   TYA
   PHA
   LDY #$00
-  LDA [textattrLo], y
+  LDA (textattrLo), y
   STA $0200, x
   PLA
   TAY
-  
+
   INX
   LDA textxpos
   STA $0200, x
   CLC
   ADC #$08
   STA textxpos
-  
+
   INX
   STX spritemem
-  
+
   INY
-  LDA [textvarLo], y
+  LDA (textvarLo), y
   BEQ TextInsertLineBreak
   CMP #$FF
   BEQ TextDone
@@ -622,9 +621,9 @@ TextDone:
 ;; LoadPalettes will load your bg and character palettes into memory.
 ;;
 ;; Sample usage:
-;;   LDA #LOW(palette)
+;;   LDA #<palette
 ;;   STA paletteLo
-;;   LDA #HIGH(palette)
+;;   LDA #>palette
 ;;   STA palettehi
 ;;   JSR LoadPalettes
 LoadPalettes:
@@ -635,7 +634,7 @@ LoadPalettes:
   STA $2006             ; write the low byte of $3F00 address
   LDY #$00              ; start out at 0
 LoadPalettesLoop:
-  LDA [paletteLo], y        ; load data from address (palette + the value in x)
+  LDA (paletteLo), y        ; load data from address (palette + the value in x)
                           ; 1st time through loop it will load palette+0
                           ; 2nd time through loop it will load palette+1
                           ; 3rd time through loop it will load palette+2
@@ -660,7 +659,7 @@ GameEngineLogic:
   LDA enginelogic, x
   STA vector+1
 
-  JMP [vector]
+  JMP (vector)
 
 ;;;;;;;;;;;;;;
 UpdateSprites:
@@ -676,11 +675,9 @@ SetInitialState:
 
   RTS
 
-;;;;;;;;;;;;;;
 VBlankWait:
   BIT $2002
   BPL VBlankWait
-  RTS
 
 ;;;;;;;;;;;;;;;
 ReadController1:
@@ -711,7 +708,6 @@ clr_sprite_mem_loop:
 
 
 
-  .bank 1
   .org $E000
   ; set palettes
 palette:
@@ -753,10 +749,8 @@ titletextattr:
   .dw RESET      ;when the processor first turns on or is reset, it will jump
                    ;to the label RESET:
   .dw 0          ;external interrupt IRQ is not used in this tutorial
-  
+
 
 ;;;;;;;;;;;;;;  
 
-  .bank 2
-  .org $0000
   .incbin "src\chrblock.chr"   ;includes 8KB graphics file

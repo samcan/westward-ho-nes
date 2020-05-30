@@ -2,3 +2,5 @@
 *.nes
 *.fns
 *.nes.deb
+*.mlb
+*.lst

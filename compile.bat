@@ -1,1 +1,1 @@
-NESASM3 -l 3 -s src\westward.asm
+asm6f_64.exe -l -m src\westward.asm src\westward.nes
