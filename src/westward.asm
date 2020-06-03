@@ -24,6 +24,7 @@ paletteHi	.dsb 1		; palette address, high-byte
 currframe	.dsb 1
 currwagfrm	.dsb 1
 vector		.dsb 2
+pointer		.dsb 2
   .ende
 
 ;; DECLARE CONSTANTS HERE
@@ -84,9 +85,10 @@ clrmem:
 
   JSR VBlankWait		; Second wait for vblank, PPU is ready after this
 
-  LDA #<palette
+  ; set up palette for title screen
+  LDA #<palette_title
   STA paletteLo
-  LDA #>palette
+  LDA #>palette_title
   STA paletteHi
   JSR LoadPalettes
 
@@ -158,6 +160,7 @@ LoadNewScreen:
   JSR DisableNMI
 
   JSR clr_sprite_mem
+  JSR ClearBgMemory
 
   LDA newgmstate
   STA gamestate
@@ -210,20 +213,46 @@ EnableNMI:
   RTS
 ;;
 DisplayTitleScreen:
-  LDX #$04				; start text display using sprite 1 rather than
+  ;LDX #$04				; start text display using sprite 1 rather than
 						; sprite 0
-  STX spritemem
+  ;STX spritemem
 
-  LDA #<titlewestwardtext
-  STA textvarLo
-  LDA #>titlewestwardtext
-  STA textvarHi
+  ;LDA #<titlewestwardtext
+  ;STA textvarLo
+  ;LDA #>titlewestwardtext
+  ;STA textvarHi
 
-  LDA #<titletextattr
-  STA textattrLo
-  LDA #>titletextattr
-  STA textattrHi
-  JSR DisplayText
+  ;LDA #<titletextattr
+  ;STA textattrLo
+  ;LDA #>titletextattr
+  ;STA textattrHi
+  ;JSR DisplayText
+
+  LDA #<bg_title_screen
+  STA pointer+0
+  LDA #>bg_title_screen
+  STA pointer+1
+
+  ; set output address
+  LDA #$2002
+  LDA #$20
+  STA $2006
+  LDA #$00
+  STA $2006
+
+  ; copy screen to VRAM
+@Copy1024Bytes:
+  LDX #$04
+@Copy256Bytes:
+  LDY #$00
+@Copy1Byte:
+  LDA (pointer), y
+  STA $2007
+  INY
+  BNE @Copy1Byte
+  INC pointer+1
+  DEX
+  BNE @Copy256Bytes
 
   JMP FinishLoadNewScreen
 
@@ -645,6 +674,29 @@ LoadPalettes:
   BNE @loop             ; Branch to @loop if compare was Not Equal to zero
                         ; if compare was equal to 32, keep going down
   RTS
+;;;;;;;;;;;;;;;
+;; ClearBackground will clear the background tiles loaded into memory
+ClearBgMemory:
+  ; set output address
+  LDA #$2002
+  LDA #$20
+  STA $2006
+  LDA #$00
+  STA $2006
+
+  ; clear VRAM
+@Copy1024Bytes:
+  LDX #$04
+@Copy256Bytes:
+  LDY #$00
+@Copy1Byte:
+  LDA $00
+  STA $2007
+  INY
+  BNE @Copy1Byte
+  DEX
+  BNE @Copy256Bytes
+  RTS
 
 ;;;;;;;;;;;;;;;;;;;
 GameEngineLogic:  
@@ -714,9 +766,79 @@ palette:
   .db $0F,$3D,$19,$09,  $0F,$06,$15,$36,  $0F,$05,$26,$1F,  $0F,$16,$27,$18   ;;background palette
   .db $1F,$17,$28,$30,  $1F,$1C,$2B,$39,  $1F,$06,$15,$36,  $1F,$07,$17,$10   ;;sprite palette
 
+palette_title:
+  .db $10,$30,$3F,$28,  $10,$10,$10,$10,  $10,$10,$10,$10,  $10,$10,$10,$10
+  .db $10,$17,$28,$30,  $10,$1C,$2B,$39,  $10,$06,$15,$36,  $10,$07,$17,$10
+
 palette_newgame:
   .db $22,$29,$1A,$0F,  $22,$36,$17,$0F,  $22,$1F,$21,$0F,  $22,$27,$17,$0F   ;;background palette
   .db $35,$17,$28,$1F,  $35,$1C,$2B,$39,  $35,$06,$15,$36,  $35,$07,$17,$10   ;;sprite palette
+
+bg_title_screen:
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0D,$0E,$11,$12
+  .db $15,$16,$19,$1A,  $1D,$1E,$21,$22,  $25,$26,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0F,$10,$13,$14
+  .db $17,$18,$1B,$1C,  $1F,$20,$23,$24,  $14,$27,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $2C,$2D,$30,$14
+  .db $14,$33,$35,$36,  $39,$3A,$14,$3D,  $14,$40,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $28,$29,$2A,$2B,  $2E,$2F,$31,$32
+  .db $34,$14,$37,$38,  $3B,$3C,$3E,$3F,  $41,$42,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$43,$44,  $47,$48,$4B,$4C,  $4F,$50,$53,$54
+  .db $57,$58,$5B,$5C,  $5F,$60,$63,$64,  $67,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$45,$46,  $49,$4A,$4D,$4E,  $51,$52,$55,$56
+  .db $59,$5A,$5D,$5E,  $61,$62,$65,$66,  $68,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$69,$6A,  $6C,$6D,$70,$71,  $74,$75,$78,$79
+  .db $7C,$7D,$80,$81,  $84,$85,$88,$89,  $8C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$6B,  $6E,$6F,$72,$73,  $76,$77,$7A,$7B
+  .db $7E,$7F,$82,$83,  $86,$87,$8A,$8B,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$8D,  $8E,$8F,$90,$91,  $92,$93,$94,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$95,$97,$98,  $9B,$9C,$9F,$A0,  $A3,$A4,$A7,$A8
+  .db $AB,$AC,$AF,$B0,  $B3,$B4,$B7,$B8,  $BB,$BC,$BF,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$96,$99,$9A,  $9D,$9E,$A1,$A2,  $A5,$A6,$A9,$AA
+  .db $AD,$AE,$B1,$B2,  $B5,$B6,$B9,$BA,  $BD,$BE,$C0,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$C1,$C3,$C4,  $C7,$C8,$CB,$CC,  $CF,$D0,$D3,$D4
+  .db $D7,$D8,$DA,$DB,  $DD,$DE,$E0,$E1,  $E4,$E5,$E7,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$C2,$C5,$C6,  $C9,$CA,$CD,$CE,  $D1,$D2,$D5,$D6
+  .db $D9,$C5,$C5,$DC,  $DF,$0C,$E2,$E3,  $CA,$E6,$E6,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$E8,$EA,$EB
+  .db $EE,$EF,$F2,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$E9,$EC,$ED
+  .db $F0,$F1,$F3,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$F4,$F6,$F7
+  .db $FA,$FB,$FE,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$F5,$F8,$F9
+  .db $FC,$FD,$FF,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C,  $0C,$0C,$0C,$0C
+  .db $00,$00,$00,$00,  $00,$00,$00,$00,  $00,$00,$00,$00,  $00,$00,$00,$00
+  .db $00,$00,$00,$00,  $00,$00,$00,$00,  $00,$00,$00,$00,  $00,$00,$00,$00
+  .db $00,$00,$00,$00,  $00,$00,$00,$00,  $00,$00,$00,$00,  $00,$00,$00,$00
+  .db $00,$00,$00,$00,  $00,$00,$00,$00,  $00,$00,$00,$00,  $00,$00,$00,$00
 
 
 ; points to appropriate 'load-new-screen' functions so they can get called
