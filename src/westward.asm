@@ -1,6 +1,6 @@
   .inesprg 1   ; 1x 16KB PRG code
-  .ineschr 1   ; 1x  8KB CHR data
-  .inesmap 0   ; mapper 0 = NROM, no bank swapping
+  .ineschr 2   ; 2x  8KB CHR data
+  .inesmap 3   ; mapper 3 = CNROM
   .inesmir 1   ; background mirroring
   
 
@@ -92,6 +92,12 @@ clrmem:
   STA paletteHi
   JSR LoadPalettes
 
+  ; test switching to bank 1 from bank 0 on the CHR-ROM
+  LDA #$01
+  JSR BankSwitch
+
+  LDA #$00
+  JSR BankSwitch
 
 ;;;Set some initial stats in vars
   JSR SetInitialState
@@ -757,6 +763,11 @@ clr_sprite_mem:
   BNE @loop
   RTS    
 ;;;;;;;;;;;;;;;
+BankSwitch:
+  TAX
+  LDA bankvalues, x
+  STA $8000
+  RTS
 
 
 
@@ -839,6 +850,9 @@ bg_title_screen:
   .db $00,$00,$00,$00,  $00,$00,$00,$00,  $00,$00,$00,$00,  $00,$00,$00,$00
   .db $00,$00,$00,$00,  $00,$00,$00,$00,  $00,$00,$00,$00,  $00,$00,$00,$00
   .db $00,$00,$00,$00,  $00,$00,$00,$00,  $00,$00,$00,$00,  $00,$00,$00,$00
+
+bankvalues:
+  .db $00,$01
 
 
 ; points to appropriate 'load-new-screen' functions so they can get called
