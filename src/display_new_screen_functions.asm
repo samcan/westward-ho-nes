@@ -105,145 +105,25 @@ DisplayTravelingScreen:
   DefineTravelingBackground $2400
 
   ; load sprites
-  ; first part of metatile
-  LDX #$04				; start display using sprite 1 rather than
-						; sprite 0
-
-  LDA #$60
-  STA $0200, x
-
+  ; load wagon
+  LDX #$00
+@loop_wagon:
+  LDA traveling_wagon, x
+  STA $0204, x
   INX
-  LDA #$17
-  STA $0200, x
+  CPX #$10
+  BNE @loop_wagon
 
+  ; load oxen
+  LDX #$00
+@loop_oxen:
+  LDA traveling_oxen, x
+  STA $0214, x
   INX
-  LDA #%00000011
-  STA $0200, x
+  CPX #$10
+  BNE @loop_oxen
 
-  INX
-  LDA #$E0
-  STA $0200, x
-
-  ; 2nd part of metatile
-  INX
-  LDA #$60
-  STA $0200, x
-
-  INX
-  LDA #$18
-  STA $0200, x
-
-  INX
-  LDA #%00000011
-  STA $0200, x
-
-  INX
-  LDA #$E8
-  STA $0200, x
-
-  ; 3rd part of metatile
-  INX
-  LDA #$58
-  STA $0200, x
-
-  INX
-  LDA #$07
-  STA $0200, x
-
-  INX
-  LDA #%00000011
-  STA $0200, x
-
-  INX
-  LDA #$E0
-  STA $0200, x
-
-  ; 4th part of metatile
-  INX
-  LDA #$58
-  STA $0200, x
-
-  INX
-  LDA #$08
-  STA $0200, x
-
-  INX
-  LDA #%00000011
-  STA $0200, x
-
-  INX
-  LDA #$E8
-  STA $0200, x
-
-  ;; load oxen metatile
-  ; first part of metatile
-  INX
-  LDA #$60
-  STA $0200, x
-
-  INX
-  LDA #$15
-  STA $0200, x
-
-  INX
-  LDA #%00000011
-  STA $0200, x
-
-  INX
-  LDA #$D0
-  STA $0200, x
-
-  ; 2nd part of metatile
-  INX
-  LDA #$60
-  STA $0200, x
-
-  INX
-  LDA #$16
-  STA $0200, x
-
-  INX
-  LDA #%00000011
-  STA $0200, x
-
-  INX
-  LDA #$D8
-  STA $0200, x
-
-  ; 3rd part of metatile
-  INX
-  LDA #$58
-  STA $0200, x
-
-  INX
-  LDA #$05
-  STA $0200, x
-
-  INX
-  LDA #%00000011
-  STA $0200, x
-
-  INX
-  LDA #$D0
-  STA $0200, x
-
-  ; 4th part of metatile
-  INX
-  LDA #$58
-  STA $0200, x
-
-  INX
-  LDA #$06
-  STA $0200, x
-
-  INX
-  LDA #%00000011
-  STA $0200, x
-
-  INX
-  LDA #$D8
-  STA $0200, x
-
+  ; set current wagon frame displayed (for animation)
   LDA #$00
   STA currwagfrm
 
