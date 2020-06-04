@@ -11,25 +11,36 @@ def main(input_file, output_file):
         prev_byte = ''
         count = 0
         for byte in bytes_read:
-            print('current byte:', byte)
+            #print('current byte:', byte)
             if prev_byte == '':
                 prev_byte = byte
                 count = 1
             elif byte == prev_byte:
                 count += 1
-            else:
+            
+            if count == 255:
+                write_byte(output_file, count, prev_byte)
+                prev_byte = byte
+                count = 0
+                
+            if byte != prev_byte:
                 write_byte(output_file, count, prev_byte)
                 
-                print('setting prev_byte to',byte)
+                #print('setting prev_byte to',byte)
                 prev_byte = byte
                 count = 1
+                
+
         
         # write final byte to file
         write_byte(output_file, count, prev_byte)
+        
+        # tack on terminating #$00 bytes
+        write_byte(output_file, 0, 0)
             
 
 def write_byte(output, count, byte):
-    print('writing',count,'of',bytes([byte]))
+    #print('writing',count,'of',bytes([byte]))
     with open(output, 'ba') as g:
         g.write(bytes([count]))
         g.write(bytes([byte]))
