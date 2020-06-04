@@ -1,3 +1,52 @@
+MACRO DefineTravelingBackground x
+  LDA $2002             ; read PPU status to reset the high/low latch
+  LDA #>x
+  STA $2006             ; write the high byte
+  LDA #<x
+  STA $2006             ; write the low byte
+  ; LDX #$04
+
+  ; 4 rows of blank (32 tiles per row)
+  LDA #$00
+  LDX #$80
+@loop
+  STA $2007
+  DEX
+  BNE @loop
+
+  LDX #$10
+@loop2
+  LDA #$92
+  STA $2007
+  LDA #$93
+  STA $2007
+  DEX
+  BNE @loop2
+
+  LDX #$10
+@loop3
+  LDA #$A2
+  STA $2007
+  LDA #$A3
+  STA $2007
+  DEX
+  BNE @loop3
+
+  ; load background attributes
+  LDA $2002             ; read PPU status to reset the high/low latch
+  LDA #$23
+  STA $2006             ; write the high byte of $23C0 address
+  LDA #$C0
+  STA $2006             ; write the low byte of $23C0 address
+  LDX #$B0
+  LDA #$00
+@attrLoop:
+  STA $2007
+  DEX
+  BNE @attrLoop
+ENDM
+
+
 DisplayTitleScreen:
   ;LDX #$04				; start text display using sprite 1 rather than
 						; sprite 0
@@ -64,52 +113,11 @@ DisplayTravelingScreen:
   STA paletteHi
   JSR LoadPalettes
 
-  ; load background
-  LDA $2002             ; read PPU status to reset the high/low latch
-  LDA #$20
-  STA $2006             ; write the high byte of $2000 address
-  LDA #$00
-  STA $2006             ; write the low byte of $2000 address
-  ; LDX #$04
-
-  ; 4 rows of blank (32 tiles per row)
-  LDA #$00
-  LDX #$80
-@loop:
-  STA $2007
-  DEX
-  BNE @loop
-
-  LDX #$10
-@loop2:
-  LDA #$92
-  STA $2007
-  LDA #$93
-  STA $2007
-  DEX
-  BNE @loop2
-  
-  LDX #$10
-@loop3:
-  LDA #$A2
-  STA $2007
-  LDA #$A3
-  STA $2007
-  DEX
-  BNE @loop3
-
-  ; load background attributes
-  LDA $2002             ; read PPU status to reset the high/low latch
-  LDA #$23
-  STA $2006             ; write the high byte of $23C0 address
-  LDA #$C0
-  STA $2006             ; write the low byte of $23C0 address
-  LDX #$B0
-  LDA #$00
-@attrLoop:
-  STA $2007
-  DEX
-  BNE @attrLoop
+  ; load background into both of our nametables.
+  ; we also need to load the landmark into the nametable as well, but that
+  ; will come later.
+  DefineTravelingBackground $2000
+  DefineTravelingBackground $2400
 
   ; load sprites
   ; first part of metatile
