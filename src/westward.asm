@@ -99,11 +99,11 @@ clrmem:
   JSR LoadPalettes
 
   ; test switching to bank 1 from bank 0 on the CHR-ROM
-  LDA #$01
-  JSR BankSwitch
+  ; LDA #$01
+  ; JSR BankSwitch
 
-  LDA #$00
-  JSR BankSwitch
+  ; LDA #$00
+  ; JSR BankSwitch
 
 ;;;Set some initial stats in vars
   JSR SetInitialState
