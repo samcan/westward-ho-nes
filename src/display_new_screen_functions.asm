@@ -48,21 +48,6 @@ ENDM
 
 
 DisplayTitleScreen:
-  ;LDX #$04				; start text display using sprite 1 rather than
-						; sprite 0
-  ;STX spritemem
-
-  ;LDA #<titlewestwardtext
-  ;STA textvarLo
-  ;LDA #>titlewestwardtext
-  ;STA textvarHi
-
-  ;LDA #<titletextattr
-  ;STA textattrLo
-  ;LDA #>titletextattr
-  ;STA textattrHi
-  ;JSR DisplayText
-
   LDA #<bg_title_screen
   STA pointer+0
   LDA #>bg_title_screen
