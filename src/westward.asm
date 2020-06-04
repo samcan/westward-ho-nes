@@ -1,8 +1,14 @@
-  .inesprg 1   ; 1x 16KB PRG code
-  .ineschr 2   ; 2x  8KB CHR data
-  .inesmap 3   ; mapper 3 = CNROM
-  .inesmir 1   ; background mirroring
-  
+PRG_COUNT		= 2   ; 2x 16KB PRG code
+CHR_COUNT		= 2   ; 2x  8KB CHR data
+MAPPER			= 3   ; mapper 3 = CNROM
+MIRRORING		= 1   ; background mirroring
+
+;;;;;;;;;;;;;;;
+;; iNES header
+  .inesprg PRG_COUNT
+  .ineschr CHR_COUNT
+  .inesmap MAPPER
+  .inesmir MIRRORING
 
 ;;;;;;;;;;;;;;;
 
@@ -51,7 +57,7 @@ BTN_RIGHTARROW	= %00000001
 
 ;;;;;;;;;;;;;;;;;;
 
-  .org $C000 
+  .org $10000-(PRG_COUNT*$4000)
 RESET:
   SEI          ; disable IRQs
   CLD          ; disable decimal mode
