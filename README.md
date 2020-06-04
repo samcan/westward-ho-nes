@@ -10,6 +10,8 @@ ready for distribution and demonstration at VCF PNW 2021 in early 2021.
 using [asm6f][asm6f]. Though we are testing the game with the [fceux][fceux]
 and [Mesen][mesen] emulators, we plan to produce a physical cartridge.
 
+![](docs/img/westward_000.png?raw=true)
+
 ## How to compile
 Make sure `asm6f_64.exe` from the latest `asm6f` package is located somewhere in
 your path. Once you've cloned the repository, switch into the folder, and run
