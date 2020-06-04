@@ -1,1 +1,5 @@
-asm6f_64.exe -l -m src\westward.asm src\westward.nes
+@echo off
+echo Cleaning old files...
+call clean.bat
+echo Compiling NES file...
+asm6f_64.exe -L -c -m src\westward.asm src\westward.nes
