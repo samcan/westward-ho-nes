@@ -102,8 +102,11 @@ clrmem:
   ; LDA #$01
   ; JSR BankSwitch
 
-  ; LDA #$00
-  ; JSR BankSwitch
+  ; Interesting. Apparently, once I've switched to a different bank (like in
+  ; the traveling state), if I reset the console, it won't automatically go
+  ; back to the original bank. So I need to explicitly set the bank to 0.
+  LDA #$00
+  JSR BankSwitch
 
 ;;;Set some initial stats in vars
   JSR SetInitialState
