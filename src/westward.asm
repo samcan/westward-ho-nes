@@ -246,7 +246,7 @@ traveling_oxen:
   .db $60,$15,%00000011,$D0,  $60,$16,%00000011,$D8,  $58,$05,%00000011,$D0,  $58,$06,%00000011,$D8
 
 bg_title_screen:
-  .include "src\bg_title_screen.asm"
+  .incbin "src\bg_title_screen.bin"
 
 bankvalues:
   .db $00,$01
