@@ -60,20 +60,28 @@ DisplayTitleScreen:
   LDA #$00
   STA $2006
 
-  ; copy screen to VRAM
-@Copy1024Bytes:
-  LDX #$04
-@Copy256Bytes:
+  ; ; copy screen to VRAM
+  ; Decode RLE
   LDY #$00
-@Copy1Byte:
-  LDA (pointer), y
-  STA $2007
+@big:
+  ; get count and byte
+  ; get count (has to be LDA rather than LDX)
+  LDA (pointer),y
+  TAX
+  CPX #$00
+  BEQ @done
   INY
-  BNE @Copy1Byte
-  INC pointer+1
+  ; get byte
+  LDA (pointer), y
+@loop:
+  STA $2007
   DEX
-  BNE @Copy256Bytes
-
+  BNE @loop
+  INY
+  BNE @big
+  INC pointer+1
+  JMP @big
+@done:
   JMP FinishLoadNewScreen
 
 DisplayNewGameScreen:
