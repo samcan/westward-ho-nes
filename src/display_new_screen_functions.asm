@@ -53,35 +53,8 @@ DisplayTitleScreen:
   LDA #>bg_title_screen
   STA pointer+1
 
-  ; set output address
-  LDA #$2002
-  LDA #$20
-  STA $2006
-  LDA #$00
-  STA $2006
-
-  ; ; copy screen to VRAM
-  ; Decode RLE
-  LDY #$00
-@big:
-  ; get count and byte
-  ; get count (has to be LDA rather than LDX)
-  LDA (pointer),y
-  TAX
-  CPX #$00
-  BEQ @done
-  INY
-  ; get byte
-  LDA (pointer), y
-@loop:
-  STA $2007
-  DEX
-  BNE @loop
-  INY
-  BNE @big
-  INC pointer+1
-  JMP @big
-@done:
+  JSR DecodeRLEScreen
+  
   JMP FinishLoadNewScreen
 
 DisplayNewGameScreen:
