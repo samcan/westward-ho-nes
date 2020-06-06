@@ -11,11 +11,22 @@ DisplayTitleScreen:
   JMP FinishLoadNewScreen
 
 DisplayNewGameScreen:
-  LDA #<palette_newgame
+  LDA #$01
+  JSR BankSwitch
+
+  LDA #<palette
   STA paletteLo
-  LDA #>palette_newgame
+  LDA #>palette
   STA paletteHi
   JSR LoadPalettes
+
+  ; load nametable 0
+  LDA #<bg_instruction_screen
+  STA pointer+0
+  LDA #>bg_instruction_screen
+  STA pointer+1
+  LDX #$00
+  JSR DecodeRLEScreen
 
   JMP FinishLoadNewScreen
 

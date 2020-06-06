@@ -247,7 +247,7 @@ SetInitialState:
   .org $E000
   ; set palettes
 palette:
-  .db $0F,$3D,$19,$09,  $0F,$06,$15,$36,  $0F,$05,$26,$1F,  $0F,$16,$27,$18   ;;background palette
+  .db $0F,$3D,$09,$19,  $0F,$06,$15,$36,  $0F,$05,$26,$1F,  $0F,$16,$27,$18   ;;background palette
   .db $1F,$17,$28,$30,  $1F,$1C,$2B,$39,  $1F,$06,$15,$36,  $1F,$07,$17,$10   ;;sprite palette
 
 palette_title:
@@ -266,6 +266,8 @@ traveling_oxen:
 bg_title_screen:
   ;.incbin "src\bg_title_screen.bin"
   .incbin "src\bg_title_screen_rle.bin"
+bg_instruction_screen:
+  .incbin "src\bg_instruction_screen_rle.bin"
 bg_blank_traveling_screen:
   .incbin "src\bg_blank_traveling_screen_rle.bin"
 

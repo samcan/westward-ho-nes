@@ -30,7 +30,7 @@ EndTitleState:
 
 ;;;;;;;;;
 EngineLogicNewGame:
-  JSR ReadController1
+  ;JSR ReadController1
   LDA buttons1
   AND #BTN_SELECT		; todo change to start once more function implemented
   BNE EndNewGameState
@@ -44,7 +44,7 @@ EndNewGameState:
 ;;;;;;;;; 
 EngineLogicStore:
   ;; logic associated with general store
-  JSR ReadController1
+  ;JSR ReadController1
   LDA buttons1
   AND #BTN_START
   BNE EndStoreGameState
