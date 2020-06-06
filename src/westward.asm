@@ -31,6 +31,7 @@ currframe	.dsb 1
 currwagfrm	.dsb 1
 vector		.dsb 2
 pointer		.dsb 2
+scrollH		.dsb 1		; current scroll position
   .ende
 
 ;; DECLARE CONSTANTS HERE
@@ -149,10 +150,23 @@ UpdateCurrentScreen:
   STA $2000
   LDA #%00011110   ; enable sprites, enable background, no clipping on left side
   STA $2001
-  LDA #$00        ;;tell the ppu there is no background scrolling
+
+  ; do scrolling, but we'll only check for scrolling in traveling state.
+  ; theoretically, I could just set scrollH to #$00 in all other states, and I
+  ; may end up doing that, but for now, I'll do this check.
+  LDA gamestate
+  AND #STATETRAVELING
+  BEQ @NoScroll
+  LDA scrollH
   STA $2005
+  LDA #$00
+  STA $2005
+  JMP @GraphicsDone:
+@NoScroll:
+  LDA #$00
   STA $2005
 
+@GraphicsDone
   ;;;all graphics updates done by here, run game engine
 
   JSR ReadController1  ;;get the current button data for player 1
@@ -223,6 +237,10 @@ SetInitialState:
   STA gamestate
   LDA #STATETITLE
   STA newgmstate
+  
+  LDA #$00
+  STA scrollH
+  
   RTS
 
 

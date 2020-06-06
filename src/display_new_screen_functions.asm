@@ -84,6 +84,9 @@ DisplayTravelingScreen:
   ; will come later.
   DefineTravelingBackground $2000
   DefineTravelingBackground $2400
+  
+  LDA #FRAMECOUNT
+  STA currframe
 
   ; load sprites
   ; load wagon

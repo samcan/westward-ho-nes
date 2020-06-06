@@ -57,18 +57,28 @@ EndStoreGameState:
 
 ;;;;;;;;;;
 EngineLogicTraveling:
-  INC currframe
+  ; right now we're displaying the background, scrolling it, and updating our
+  ; wagon wheel animation. We have a little frame counter that keeps track of
+  ; the current frame, and once it gets to 0, will then trigger the background
+  ; update and the wagon wheel animation update.
+  DEC currframe
+
   LDA currframe
-  CMP #FRAMECOUNT
-  BEQ FlipWagonAnimation
+
+  BEQ IncreaseScrollAndFlipWagonAnim
   JMP GameEngineLogicDone
 
+IncreaseScrollAndFlipWagonAnim:
+  LDA scrollH
+  SEC
+  SBC #$01
+  STA scrollH
+
 FlipWagonAnimation:
-  LDA #$00
+  LDA #FRAMECOUNT
   STA currframe
 
   LDA currwagfrm
-  CMP #$00
   BEQ LoadFrameOne
 
 LoadFrameZero:
