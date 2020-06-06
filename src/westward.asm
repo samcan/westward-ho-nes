@@ -266,6 +266,8 @@ traveling_oxen:
 bg_title_screen:
   ;.incbin "src\bg_title_screen.bin"
   .incbin "src\bg_title_screen_rle.bin"
+bg_blank_traveling_screen:
+  .incbin "src\bg_blank_traveling_screen_rle.bin"
 
 bankvalues:
   .db $00,$01

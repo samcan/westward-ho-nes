@@ -83,8 +83,7 @@ TextDone:
 ;;;;;;;;;;;;;;;;
 ;; DecodeRLEScreen
 ;;
-;; Decodes an RLE-compressed screen and loads it into the background. Need to
-;; generalize to specify which nametable should be loaded.
+;; Decodes an RLE-compressed screen and loads it into the background.
 ;;
 ;;
 ;; Sample usage:
@@ -94,12 +93,21 @@ TextDone:
 ;;   LDA #>bg_title_screen
 ;;   STA pointer+1
 ;;
+;;   ; set which nametable to load (0 = nametable 0, 1 = nametable 1)
+;;   LDX #$00
+;;
 ;;   JSR DecodeRLEScreen
 ;;
 DecodeRLEScreen:
   ; set output address
   LDA #$2002
+  CPX #$01
+  BEQ @loadOne
   LDA #$20
+  JMP @cont
+@loadOne:
+  LDA #$24
+@cont:
   STA $2006
   LDA #$00
   STA $2006
