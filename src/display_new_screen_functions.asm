@@ -54,7 +54,7 @@ DisplayTitleScreen:
   STA pointer+1
 
   JSR DecodeRLEScreen
-  
+
   JMP FinishLoadNewScreen
 
 DisplayNewGameScreen:
