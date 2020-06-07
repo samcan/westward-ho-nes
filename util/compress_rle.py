@@ -30,14 +30,21 @@ def main(input_file, output_file):
                 prev_byte = byte
                 count = 1
                 
-
         
         # write final byte to file
         write_byte(output_file, count, prev_byte)
         
         # tack on terminating #$00 bytes
         write_byte(output_file, 0, 0)
-            
+    
+    # print file compression info
+    input_file_num_bytes = os.stat(input_file).st_size
+    output_file_num_bytes = os.stat(output_file).st_size
+    
+    print('Input file size (bytes):', input_file_num_bytes)
+    print('Output file size (bytes):', output_file_num_bytes)
+    compression_pct = 1 - (output_file_num_bytes / input_file_num_bytes)
+    print(f"Compression (%): {compression_pct * 100:.1f}")
 
 def write_byte(output, count, byte):
     #print('writing',count,'of',bytes([byte]))
