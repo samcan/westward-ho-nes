@@ -32,6 +32,8 @@ currwagfrm	.dsb 1
 vector		.dsb 2
 pointer		.dsb 2
 scrollH		.dsb 1		; current scroll position
+prevbtns	.dsb 1
+newbtns		.dsb 1
   .ende
 
 ;; DECLARE CONSTANTS HERE
@@ -237,10 +239,16 @@ SetInitialState:
   STA gamestate
   LDA #STATETITLE
   STA newgmstate
-  
+
   LDA #$00
   STA scrollH
-  
+
+  LDA #$00
+  STA prevbtns
+
+  LDA #$00
+  STA newbtns
+
   RTS
 
 

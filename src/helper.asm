@@ -196,6 +196,9 @@ VBlankWait:
 
 ;;;;;;;;;;;;;;;
 ReadController1:
+  LDA newbtns
+  STA prevbtns
+
   LDA #$01
   STA $4016
   LDA #$00
@@ -204,9 +207,17 @@ ReadController1:
 @loop:
   LDA $4016
   LSR A            ; bit0 -> Carry
-  ROL buttons1     ; bit0 <- Carry
+  ROL newbtns     ; bit0 <- Carry
   DEX
   BNE @loop
+
+  ; http://forums.nesdev.com/viewtopic.php?f=10&t=20150#p250630
+  ; to eliminate input being read multiple times, we need to subtract
+  ; previously-pressed buttons
+  LDA prevbtns
+  EOR #$FF
+  AND newbtns
+  STA buttons1
   RTS
 
 ;;;;;;;;;;;;;;;

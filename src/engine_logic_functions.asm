@@ -32,7 +32,7 @@ EndTitleState:
 EngineLogicNewGame:
   ;JSR ReadController1
   LDA buttons1
-  AND #BTN_SELECT		; todo change to start once more function implemented
+  AND #BTN_START
   BNE EndNewGameState
   JMP GameEngineLogicDone
 EndNewGameState:
