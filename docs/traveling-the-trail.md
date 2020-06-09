@@ -17,4 +17,10 @@ can travel a maximum of twenty-four miles per day. To this maximum, apply the fo
 For example, if you're not yet to Fort Laramie, you have two yoke of oxen, and you're doing a strenuous
 pace, you will travel the following distance per day:
 
-40 * 75% * 75% = 22.5 (round to 23)
+40 * 75% * 75% = 22.5
+
+My thought is that I can implement this using bit shifting:
+
+* Multiply by 50%? Just bitshift to the right one time (LSR). Note that this will discard the remainder,
+but that's alright.
+* Multiply by 75%? Bitshift to the right two times (LSR & LSR) and call that X. Then, add X shifted left (ROL, or 2X) + X. Again, this will disregard the remainder, but that's OK with me.
