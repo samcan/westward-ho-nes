@@ -155,6 +155,32 @@ LoadFrameZero:
   LDA #$00
   STA currwagfrm
 
+  JSR UpdateTravelingSpritesFrameZero
+
+  JMP GameEngineLogicDone
+
+LoadFrameOne:
+  INC currwagfrm
+
+  JSR UpdateTravelingSpritesFrameOne
+
+  JMP GameEngineLogicDone
+;;;;;;;;;;
+UpdateCalendar:
+  ; adds one day to the game's calendar
+  INC day
+  LDX month
+  LDA daysinmonth, X
+  CMP day
+  BCC @UpdateMonth
+  RTS
+@UpdateMonth:
+  INC month
+  LDA #$01
+  STA day
+  RTS
+;;;;;;;;;;
+UpdateTravelingSpritesFrameZero:
   ; first part of wagon metatile
   LDX #$04				; start display using sprite 1 rather than
 						; sprite 0
@@ -225,13 +251,10 @@ LoadFrameZero:
   INX
   LDA #$D8
   STA $0200, x
+  RTS
 
-  JMP GameEngineLogicDone
-
-LoadFrameOne:
-  INC currwagfrm
-
-  ; first part of wagon metatile
+UpdateTravelingSpritesFrameOne:
+; first part of wagon metatile
   LDX #$04				; start display using sprite 1 rather than
 						; sprite 0
 
@@ -301,19 +324,4 @@ LoadFrameOne:
   INX
   LDA #$D8
   STA $0200, x
-
-  JMP GameEngineLogicDone
-;;;;;;;;;;
-UpdateCalendar:
-  ; adds one day to the game's calendar
-  INC day
-  LDX month
-  LDA daysinmonth, X
-  CMP day
-  BCC @UpdateMonth
-  RTS
-@UpdateMonth:
-  INC month
-  LDA #$01
-  STA day
   RTS
