@@ -18,6 +18,10 @@ MIRRORING		= 1   ; background mirroring
 gamestate	.dsb 1		; current game state
 newgmstate	.dsb 1		; new game state
 buttons1    .dsb 1		; player 1 controller buttons pressed
+miremaining	.dsb 1		; number of miles remaining (in curr. segment of map)
+mitraveled  .dsb 1		; number of miles traveled (curr. day)
+yokeoxen	.dsb 1		; number of yoke of oxen
+pace		.dsb 1		; travel pace (steady, strenuous, grueling)
 spritemem   .dsb 1
 textxpos    .dsb 1
 textypos	.dsb 1
@@ -34,6 +38,8 @@ pointer		.dsb 2
 scrollH		.dsb 1		; current scroll position
 prevbtns	.dsb 1
 newbtns		.dsb 1
+tempcalca	.dsb 1
+tempcalcb	.dsb 1
   .ende
 
 ;; DECLARE CONSTANTS HERE
@@ -47,6 +53,15 @@ STATEPAUSED		= $05
 STATEENDGAME	= $06
 
 FRAMECOUNT		= $30
+
+; traveling constants
+MAX_MI_PER_DAY_A	= $28			; max miles per day to Fort Laramie
+MAX_MI_PER_DAY_B	= $18			; max miles per day after Fort Laramie
+
+PACE_STEADY			= $01
+PACE_STRENUOUS		= $02
+PACE_GRUELING		= $03
+
 
 ; controller buttons
 BTN_A			= %10000000
@@ -239,6 +254,18 @@ SetInitialState:
   STA gamestate
   LDA #STATETITLE
   STA newgmstate
+  
+  ; set the number of miles traveled in the current segment to 0 mi.
+  LDA #$00
+  STA mitraveled
+  
+  ; set 3 yoke of oxen
+  LDA #$03
+  STA yokeoxen
+  
+  ; set strenuous pace
+  LDA #PACE_STRENUOUS
+  STA pace
 
   LDA #$00
   STA scrollH

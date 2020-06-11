@@ -1,3 +1,32 @@
+MACRO MultiplyPercentageDistance x,y,output
+  LDA y
+  CMP #$03			; 100%
+  BCS @OneHundredPercent
+  CMP #$02			; 75%
+  BEQ @SeventyFivePercent
+  ; should be 50% if it's made it to here
+@FiftyPercent:
+  LDA x
+  LSR A
+  STA output
+  JMP @Done
+
+@SeventyFivePercent:
+  LDA x
+  LSR A
+  LSR A
+  STA output
+  ROL A
+  CLC
+  ADC output
+  STA output
+  JMP @Done
+
+@OneHundredPercent:
+  LDA x
+  STA output
+@Done:
+ENDM
 ;;;;;;;;;;;;;;;;;;;
 GameEngineLogic:  
   LDA gamestate
@@ -73,6 +102,16 @@ IncreaseScrollAndFlipWagonAnim:
   SEC
   SBC #$01
   STA scrollH
+  
+  ;; increase mi traveled
+  ; calc mi traveled
+  ; assume we're not yet at Fort Laramie yet
+  MultiplyPercentageDistance #MAX_MI_PER_DAY_A, yokeoxen, tempcalcb
+  LDA tempcalcb
+  STA tempcalca
+  MultiplyPercentageDistance tempcalca, pace, tempcalcb
+  LDA tempcalcb
+  STA mitraveled
 
 FlipWagonAnimation:
   LDA #FRAMECOUNT
