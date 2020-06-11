@@ -155,7 +155,7 @@ LoadFrameZero:
   LDA #$00
   STA currwagfrm
 
-  ; first part of metatile
+  ; first part of wagon metatile
   LDX #$04				; start display using sprite 1 rather than
 						; sprite 0
   
@@ -174,7 +174,7 @@ LoadFrameZero:
   LDA #$E0
   STA $0200, x
 
-  ; 2nd part of metatile
+  ; 2nd part of wagon metatile
   INX
   LDA #$60
   STA $0200, x
@@ -191,12 +191,47 @@ LoadFrameZero:
   LDA #$E8
   STA $0200, x
 
+; first part of oxen metatile
+  LDX #$14
+  
+  LDA #$60
+  STA $0200, x
+
+  INX
+  LDA #$15
+  STA $0200, x
+
+  INX
+  LDA #%00000010
+  STA $0200, x
+
+  INX
+  LDA #$D0
+  STA $0200, x
+
+  ; 2nd part of oxen metatile
+  INX
+  LDA #$60
+  STA $0200, x
+
+  INX
+  LDA #$16
+  STA $0200, x
+
+  INX
+  LDA #%00000010
+  STA $0200, x
+
+  INX
+  LDA #$D8
+  STA $0200, x
+
   JMP GameEngineLogicDone
 
 LoadFrameOne:
   INC currwagfrm
 
-  ; first part of metatile
+  ; first part of wagon metatile
   LDX #$04				; start display using sprite 1 rather than
 						; sprite 0
 
@@ -215,7 +250,7 @@ LoadFrameOne:
   LDA #$E0
   STA $0200, x
 
-  ; 2nd part of metatile
+  ; 2nd part of wagon metatile
   INX
   LDA #$60
   STA $0200, x
@@ -230,6 +265,41 @@ LoadFrameOne:
 
   INX
   LDA #$E8
+  STA $0200, x
+
+; first part of oxen metatile
+  LDX #$14
+  
+  LDA #$60
+  STA $0200, x
+
+  INX
+  LDA #$19
+  STA $0200, x
+
+  INX
+  LDA #%00000010
+  STA $0200, x
+
+  INX
+  LDA #$D0
+  STA $0200, x
+
+  ; 2nd part of oxen metatile
+  INX
+  LDA #$60
+  STA $0200, x
+
+  INX
+  LDA #$1A
+  STA $0200, x
+
+  INX
+  LDA #%00000010
+  STA $0200, x
+
+  INX
+  LDA #$D8
   STA $0200, x
 
   JMP GameEngineLogicDone
