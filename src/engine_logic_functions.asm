@@ -96,9 +96,12 @@ EngineLogicTraveling:
   LDA currframedy
   BNE @DoneUpdatingMileage
 
-@UpdateMileage:
+@UpdateDay:
   LDA #FRAMECOUNT_DAY
   STA currframedy
+  JSR UpdateCalendar
+
+@UpdateMileageEachDay:
   ;; increase mi traveled
   ; calc mi traveled
   ; assume we're not yet at Fort Laramie yet
@@ -231,3 +234,16 @@ LoadFrameOne:
 
   JMP GameEngineLogicDone
 ;;;;;;;;;;
+UpdateCalendar:
+  ; adds one day to the game's calendar
+  INC day
+  LDX month
+  LDA daysinmonth, X
+  CMP day
+  BCC @UpdateMonth
+  RTS
+@UpdateMonth:
+  INC month
+  LDA #$01
+  STA day
+  RTS

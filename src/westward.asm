@@ -23,6 +23,9 @@ mitraveled  .dsb 1		; number of miles traveled (curr. day)
 yokeoxen	.dsb 1		; number of yoke of oxen
 pace		.dsb 1		; travel pace (steady, strenuous, grueling)
 curlandmark	.dsb 1		; current landmark we're traveling toward (index value)
+month		.dsb 1		; current month (we're assuming a year of 1848)
+						; March-July are valid options for starting point
+day			.dsb 1		; current day -- start on 1st day of month
 spritemem   .dsb 1
 textxpos    .dsb 1
 textypos	.dsb 1
@@ -275,6 +278,12 @@ SetInitialState:
   LDA #PACE_STRENUOUS
   STA pace
 
+  ; set starting date of March 1, 1848
+  LDA #$03
+  STA month
+  LDA #$01
+  STA day
+
   LDA #$00
   STA scrollH
 
@@ -345,6 +354,11 @@ titletextattr:
 
 landmarkdist:
   .db 102
+
+daysinmonth:
+  ; we fill [0] with fake value and that way we can use the month [3] to get the
+  ; number of days in March
+  .db 0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
 
   .org $FFFA     ;first of the three vectors starts here
   .dw NMI        ;when an NMI happens (once per frame if enabled) the 
