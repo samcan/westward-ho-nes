@@ -92,17 +92,13 @@ EngineLogicTraveling:
   ; update and the wagon wheel animation update.
   DEC currframe
 
-  LDA currframe
 
-  BEQ IncreaseScrollAndFlipWagonAnim
-  JMP GameEngineLogicDone
+  LDA currframedy
+  BNE @DoneUpdatingMileage
 
-IncreaseScrollAndFlipWagonAnim:
-  LDA scrollH
-  SEC
-  SBC #$01
-  STA scrollH
-  
+@UpdateMileage:
+  LDA #FRAMECOUNT_DAY
+  STA currframedy
   ;; increase mi traveled
   ; calc mi traveled
   ; assume we're not yet at Fort Laramie yet
@@ -112,6 +108,38 @@ IncreaseScrollAndFlipWagonAnim:
   MultiplyPercentageDistance tempcalca, pace, tempcalcb
   LDA tempcalcb
   STA mitraveled
+
+  ; time to trigger landmark?
+  ; is miremaining <= mitraveled?
+  ;    if so, trigger landmark
+  LDA miremaining
+  CMP mitraveled
+  BCC @TriggerLandmark
+  BEQ @TriggerLandmark
+  SEC
+  SBC mitraveled
+  STA miremaining
+  JMP @DoneUpdatingMileage
+
+@TriggerLandmark:
+  LDA #$00
+  STA miremaining
+
+
+@DoneUpdatingMileage:
+  LDA currframe
+  BEQ IncreaseScrollAndFlipWagonAnim
+  JMP GameEngineLogicDone
+
+IncreaseScrollAndFlipWagonAnim:
+  LDA scrollH
+  SEC
+  SBC #$01
+  STA scrollH
+
+  ; update currframedy; once this has been called enough times, we'll trigger
+  ; the day update routine, which updates the mileage traveled
+  DEC currframedy
 
 FlipWagonAnimation:
   LDA #FRAMECOUNT

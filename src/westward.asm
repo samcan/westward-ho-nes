@@ -22,6 +22,7 @@ miremaining	.dsb 1		; number of miles remaining (in curr. segment of map)
 mitraveled  .dsb 1		; number of miles traveled (curr. day)
 yokeoxen	.dsb 1		; number of yoke of oxen
 pace		.dsb 1		; travel pace (steady, strenuous, grueling)
+curlandmark	.dsb 1		; current landmark we're traveling toward (index value)
 spritemem   .dsb 1
 textxpos    .dsb 1
 textypos	.dsb 1
@@ -32,6 +33,7 @@ textattrHi	.dsb 1
 paletteLo	.dsb 1		; palette address, low-byte
 paletteHi	.dsb 1		; palette address, high-byte
 currframe	.dsb 1
+currframedy	.dsb 1		; number of times frame has been updated in curr. day
 currwagfrm	.dsb 1
 vector		.dsb 2
 pointer		.dsb 2
@@ -53,6 +55,8 @@ STATEPAUSED		= $05
 STATEENDGAME	= $06
 
 FRAMECOUNT		= $30
+
+FRAMECOUNT_DAY	= $05
 
 ; traveling constants
 MAX_MI_PER_DAY_A	= $28			; max miles per day to Fort Laramie
@@ -258,7 +262,11 @@ SetInitialState:
   ; set the number of miles traveled in the current segment to 0 mi.
   LDA #$00
   STA mitraveled
-  
+
+  ; set index 0 as the initial landmark traveling towards
+  LDA #$00
+  STA curlandmark
+
   ; set 3 yoke of oxen
   LDA #$03
   STA yokeoxen
@@ -333,6 +341,10 @@ titlewestwardtext:
   .db $A0,$6B,$62,$63,$50,$61,$63,$FF
 titletextattr:
   .db $00
+
+
+landmarkdist:
+  .db 102
 
   .org $FFFA     ;first of the three vectors starts here
   .dw NMI        ;when an NMI happens (once per frame if enabled) the 

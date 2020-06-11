@@ -65,6 +65,9 @@ DisplayTravelingScreen:
 
   LDA #FRAMECOUNT
   STA currframe
+  
+  LDA #FRAMECOUNT_DAY
+  STA currframedy
 
   ; load sprites
   ; load wagon
@@ -88,5 +91,9 @@ DisplayTravelingScreen:
   ; set current wagon frame displayed (for animation)
   LDA #$00
   STA currwagfrm
+
+  LDX curlandmark
+  LDA landmarkdist, X
+  STA miremaining
 
   JMP FinishLoadNewScreen
