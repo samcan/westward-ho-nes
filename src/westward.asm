@@ -82,6 +82,18 @@ BTN_RIGHTARROW	= %00000001
 
 ;;;;;;;;;;;;;;;;;;
 
+MACRO WAIT_FOR_PPU_STATUS x
+@WaitNotSprite0:
+  LDA $2002
+  AND #x
+  BNE @WaitNotSprite0   ; wait until sprite 0 not hit
+
+@WaitSprite0:
+  LDA $2002
+  AND #x
+  BEQ @WaitSprite0      ; wait until sprite 0 is hit
+ENDM
+
   .org $10000-(PRG_COUNT*$4000)
 RESET:
   SEI          ; disable IRQs
@@ -181,6 +193,28 @@ UpdateCurrentScreen:
   LDA gamestate
   AND #STATETRAVELING
   BEQ @NoScroll
+
+  ; see code at https://web.archive.org/web/20190326192637/http://nintendoage.com/forum/messageview.cfm?catid=22&threadid=36969
+  ; for getting horizontal status bar working. Now I need to flip it so the horizontal status bar is on the
+  ; BOTTOM!
+  LDA #$00
+  STA $2006
+  STA $2006
+
+  ; set no scroll for status bar
+  LDA #$00
+  STA $2005
+  STA $2005
+  LDA #%10010000
+  STA $2000
+  
+  WAIT_FOR_PPU_STATUS %01000000
+
+  LDX #$10
+@WaitScanline:
+  DEX
+  BNE @WaitScanline
+
   LDA scrollH
   STA $2005
   LDA #$00
@@ -188,6 +222,7 @@ UpdateCurrentScreen:
   JMP @GraphicsDone:
 @NoScroll:
   LDA #$00
+  STA $2005
   STA $2005
 
 @GraphicsDone
@@ -322,6 +357,8 @@ bg_instruction_screen:
   .incbin "src\bg_instruction_screen_rle.bin"
 bg_blank_traveling_screen:
   .incbin "src\bg_blank_traveling_screen_rle.bin"
+bg_sprite0_traveling_screen:
+  .incbin "src\bg_sprite0_traveling_screen_rle.bin"
 
 bankvalues:
   .db $00,$01

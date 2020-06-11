@@ -48,9 +48,9 @@ DisplayTravelingScreen:
   ; will come later.
 
   ; load nametable 0
-  LDA #<bg_blank_traveling_screen
+  LDA #<bg_sprite0_traveling_screen
   STA pointer+0
-  LDA #>bg_blank_traveling_screen
+  LDA #>bg_sprite0_traveling_screen
   STA pointer+1
   LDX #$00
   JSR DecodeRLEScreen
@@ -62,6 +62,24 @@ DisplayTravelingScreen:
   STA pointer+1
   LDX #$01
   JSR DecodeRLEScreen
+
+  ; load sprite 0 for status bar
+  LDX #$00
+  LDA #$00
+  STA $0200, x
+
+  INX
+  LDA #$03
+  STA $0200, x
+
+  INX
+  LDA #%00100011
+  STA $0200, x
+
+  INX
+  LDA #$00
+  STA $0200, x
+  ; end loading sprite 0 for status bar
 
   LDA #FRAMECOUNT
   STA currframe
