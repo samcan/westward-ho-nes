@@ -65,7 +65,7 @@ DisplayTravelingScreen:
 
   ; load sprite 0 for status bar
   LDX #$00
-  LDA #$5D
+  LDA #$36
   STA $0200, x
 
   INX
@@ -77,7 +77,7 @@ DisplayTravelingScreen:
   STA $0200, x
 
   INX
-  LDA #$00
+  LDA #$31
   STA $0200, x
   ; end loading sprite 0 for status bar
 
