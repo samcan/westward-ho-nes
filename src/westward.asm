@@ -26,6 +26,7 @@ curlandmark	.dsb 1		; current landmark we're traveling toward (index value)
 month		.dsb 1		; current month (we're assuming a year of 1848)
 						; March-July are valid options for starting point
 day			.dsb 1		; current day -- start on 1st day of month
+health		.dsb 1		; current health status
 spritemem   .dsb 1
 textxpos    .dsb 1
 textypos	.dsb 1
@@ -62,6 +63,10 @@ FRAMECOUNT		= $30
 FRAMECOUNT_DAY	= $05
 
 STATUS_ICON_Y	= $17
+HEALTH_GOOD		= $21
+HEALTH_FAIR		= $22
+HEALTH_POOR		= $23
+;HEALTH_VERYPOOR	=
 
 ; traveling constants
 MAX_MI_PER_DAY_A	= $28			; max miles per day to Fort Laramie
@@ -314,6 +319,10 @@ SetInitialState:
   ; set strenuous pace
   LDA #PACE_STRENUOUS
   STA pace
+  
+  ; set health of good
+  LDA #HEALTH_FAIR
+  STA health
 
   ; set starting date of March 1, 1848
   LDA #$03

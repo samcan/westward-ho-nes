@@ -364,7 +364,7 @@ UpdateStatusIcons:
   LDA #STATUS_ICON_Y
   STA $0200, x
   INX
-  LDA #$21
+  LDA health
   STA $0200, x
   INX
   LDA #%00000010
