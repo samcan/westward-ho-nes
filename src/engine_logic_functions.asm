@@ -185,7 +185,7 @@ UpdateTravelingSpritesFrameZero:
   LDX #$04				; start display using sprite 1 rather than
 						; sprite 0
   
-  LDA #$60
+  LDA #$B0
   STA $0200, x
 
   INX
@@ -202,7 +202,7 @@ UpdateTravelingSpritesFrameZero:
 
   ; 2nd part of wagon metatile
   INX
-  LDA #$60
+  LDA #$B0
   STA $0200, x
 
   INX
@@ -220,7 +220,7 @@ UpdateTravelingSpritesFrameZero:
 ; first part of oxen metatile
   LDX #$14
   
-  LDA #$60
+  LDA #$B0
   STA $0200, x
 
   INX
@@ -237,7 +237,7 @@ UpdateTravelingSpritesFrameZero:
 
   ; 2nd part of oxen metatile
   INX
-  LDA #$60
+  LDA #$B0
   STA $0200, x
 
   INX
@@ -258,7 +258,7 @@ UpdateTravelingSpritesFrameOne:
   LDX #$04				; start display using sprite 1 rather than
 						; sprite 0
 
-  LDA #$60
+  LDA #$B0
   STA $0200, x
 
   INX
@@ -275,7 +275,7 @@ UpdateTravelingSpritesFrameOne:
 
   ; 2nd part of wagon metatile
   INX
-  LDA #$60
+  LDA #$B0
   STA $0200, x
 
   INX
@@ -293,7 +293,7 @@ UpdateTravelingSpritesFrameOne:
 ; first part of oxen metatile
   LDX #$14
   
-  LDA #$60
+  LDA #$B0
   STA $0200, x
 
   INX
@@ -310,7 +310,7 @@ UpdateTravelingSpritesFrameOne:
 
   ; 2nd part of oxen metatile
   INX
-  LDA #$60
+  LDA #$B0
   STA $0200, x
 
   INX
