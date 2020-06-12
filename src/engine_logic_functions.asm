@@ -334,7 +334,7 @@ UpdateStatusIcons:
   LDA #STATUS_ICON_Y
   STA $0200, x
   INX
-  LDA #$27
+  LDA temperature
   STA $0200, x
   INX
   LDA #%00000001
@@ -349,7 +349,7 @@ UpdateStatusIcons:
   LDA #STATUS_ICON_Y
   STA $0200, x
   INX
-  LDA #$2A
+  LDA weather
   STA $0200, x
   INX
   LDA #%00000000

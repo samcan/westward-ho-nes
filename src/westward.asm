@@ -27,6 +27,8 @@ month		.dsb 1		; current month (we're assuming a year of 1848)
 						; March-July are valid options for starting point
 day			.dsb 1		; current day -- start on 1st day of month
 health		.dsb 1		; current health status
+temperature	.dsb 1		; current temperature status
+weather		.dsb 1		; current weather status
 spritemem   .dsb 1
 textxpos    .dsb 1
 textypos	.dsb 1
@@ -67,6 +69,16 @@ HEALTH_GOOD		= $21
 HEALTH_FAIR		= $22
 HEALTH_POOR		= $23
 ;HEALTH_VERYPOOR	=
+
+TEMP_HOT		= $26
+TEMP_FAIR		= $27
+TEMP_COLD		= $28
+
+WEATHER_SUN		= $29
+WEATHER_PARTLY	= $2A
+WEATHER_RAIN	= $2B
+WEATHER_STORM	= $2C
+
 
 ; traveling constants
 MAX_MI_PER_DAY_A	= $28			; max miles per day to Fort Laramie
@@ -321,8 +333,15 @@ SetInitialState:
   STA pace
   
   ; set health of good
-  LDA #HEALTH_FAIR
+  LDA #HEALTH_GOOD
   STA health
+  
+  ; set temperature to fair
+  LDA #TEMP_FAIR
+  STA temperature
+  
+  LDA #WEATHER_PARTLY
+  STA weather
 
   ; set starting date of March 1, 1848
   LDA #$03
