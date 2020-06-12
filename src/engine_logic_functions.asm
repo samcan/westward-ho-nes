@@ -101,7 +101,7 @@ EngineLogicTraveling:
   STA currframedy
   JSR UpdateCalendar
 
-  LDX spritemem
+  LDX #$24
   JSR UpdateStatusIcons
 
 @UpdateMileageEachDay:
@@ -343,7 +343,7 @@ UpdateStatusIcons:
   LDA #$B0
   STA $0200, x
   INX
-  STA spritemem
+  STX spritemem
 
   ; weather icon
   LDA #STATUS_ICON_Y
@@ -358,7 +358,7 @@ UpdateStatusIcons:
   LDA #$C0
   STA $0200, x
   INX
-  STA spritemem
+  STX spritemem
 
   ; health icon
   LDA #STATUS_ICON_Y
@@ -373,6 +373,87 @@ UpdateStatusIcons:
   LDA #$D0
   STA $0200, x
   INX
-  STA spritemem
+  STX spritemem
 
+  ; calendar month
+  LDA month
+  STA tempcalca
+  ASL A
+  CLC
+  ADC tempcalca
+  TAY
+
+  LDA #STATUS_ICON_Y
+  STA $0200, x
+  INX
+  LDA monthtext, y
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #$28
+  STA $0200, x
+  INX
+  INY
+
+  LDA #STATUS_ICON_Y
+  STA $0200, x
+  INX
+  LDA monthtext, y
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #$30
+  STA $0200, x
+  INX
+  INY
+
+  LDA #STATUS_ICON_Y
+  STA $0200, x
+  INX
+  LDA monthtext, y
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #$38
+  STA $0200, x
+  INX
+  STX spritemem
+
+  ; day text
+  LDA day
+  ASL A
+  TAY
+  LDA #STATUS_ICON_Y
+  STA $0200, x
+  INX
+  LDA daytext, y
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #$48
+  STA $0200, x
+  INX
+  INY
+
+  LDA #STATUS_ICON_Y
+  STA $0200, x
+  INX
+  LDA daytext, y
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #$50
+  STA $0200, x
+  INX
+  INY
   RTS
