@@ -335,7 +335,7 @@ SetInitialState:
   ; set palettes
 palette:
   .db $0F,$3D,$09,$19,  $0F,$06,$15,$36,  $0F,$05,$26,$1F,  $0F,$16,$27,$18   ;;background palette
-  .db $1F,$17,$28,$30,  $1F,$1C,$2B,$39,  $1F,$07,$20,$10,  $1F,$07,$17,$10   ;;sprite palette
+  .db $1F,$00,$27,$10,  $1F,$1C,$06,$10,  $1F,$07,$20,$10,  $1F,$07,$17,$10   ;;sprite palette
 
 palette_title:
   .db $10,$34,$3F,$17,  $10,$3F,$30,$35,  $10,$10,$10,$10,  $10,$10,$10,$10
