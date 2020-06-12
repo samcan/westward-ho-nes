@@ -61,6 +61,8 @@ FRAMECOUNT		= $30
 
 FRAMECOUNT_DAY	= $05
 
+STATUS_ICON_Y	= $16
+
 ; traveling constants
 MAX_MI_PER_DAY_A	= $28			; max miles per day to Fort Laramie
 MAX_MI_PER_DAY_B	= $18			; max miles per day after Fort Laramie

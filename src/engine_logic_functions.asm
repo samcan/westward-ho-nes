@@ -101,6 +101,9 @@ EngineLogicTraveling:
   STA currframedy
   JSR UpdateCalendar
 
+  LDX spritemem
+  JSR UpdateStatusIcons
+
 @UpdateMileageEachDay:
   ;; increase mi traveled
   ; calc mi traveled
@@ -324,4 +327,52 @@ UpdateTravelingSpritesFrameOne:
   INX
   LDA #$D8
   STA $0200, x
+  RTS
+;;;;;;;;;;;;;
+UpdateStatusIcons:
+  ; temp icon
+  LDA #STATUS_ICON_Y
+  STA $0200, x
+  INX
+  LDA #$27
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #$B0
+  STA $0200, x
+  INX
+  STA spritemem
+
+  ; weather icon
+  LDA #STATUS_ICON_Y
+  STA $0200, x
+  INX
+  LDA #$2A
+  STA $0200, x
+  INX
+  LDA #%00000000
+  STA $0200, x
+  INX
+  LDA #$C0
+  STA $0200, x
+  INX
+  STA spritemem
+
+  ; health icon
+  LDA #STATUS_ICON_Y
+  STA $0200, x
+  INX
+  LDA #$21
+  STA $0200, x
+  INX
+  LDA #%00000010
+  STA $0200, x
+  INX
+  LDA #$D0
+  STA $0200, x
+  INX
+  STA spritemem
+
   RTS

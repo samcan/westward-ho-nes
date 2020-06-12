@@ -106,6 +106,12 @@ DisplayTravelingScreen:
   CPX #$10
   BNE @loop_oxen
 
+  TXA
+  STA spritemem
+
+  LDX #$24
+  JSR UpdateStatusIcons
+
   ; set current wagon frame displayed (for animation)
   LDA #$00
   STA currwagfrm
