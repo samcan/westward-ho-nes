@@ -19,7 +19,8 @@ gamestate	.dsb 1		; current game state
 newgmstate	.dsb 1		; new game state
 buttons1    .dsb 1		; player 1 controller buttons pressed
 miremaining	.dsb 1		; number of miles remaining (in curr. segment of map)
-mitraveled  .dsb 1		; number of miles traveled (curr. day)
+mitraveldy  .dsb 1		; number of miles traveled (curr. day)
+mitraveled	.dsb 2		; number of miles traveled (total)
 yokeoxen	.dsb 1		; number of yoke of oxen
 pace		.dsb 1		; travel pace (steady, strenuous, grueling)
 curlandmark	.dsb 1		; current landmark we're traveling toward (index value)
@@ -50,7 +51,10 @@ tempcalca	.dsb 1
 tempcalcb	.dsb 1
 htd_in		.dsb 1
 htd_out		.dsb 2
+thousshown	.dsb 1
 hundsshown	.dsb 1
+bcdNum		.dsb 2
+bcdResult	.dsb 5
   .ende
 
 ;; DECLARE CONSTANTS HERE
@@ -321,7 +325,12 @@ SetInitialState:
   
   ; set the number of miles traveled in the current segment to 0 mi.
   LDA #$00
+  STA mitraveldy
+
+  ; set total miles traveled to 0
+  LDA #$00
   STA mitraveled
+  STA mitraveled+1
 
   ; set index 0 as the initial landmark traveling towards
   LDA #$00
@@ -478,6 +487,9 @@ daytext:
   .db $46, $4D
   .db $47, $44			; 30
   .db $47, $45
+
+Table:
+	.db $00, $01, $02, $03, $04, $80, $81, $82, $83, $84
 
   .org $FFFA     ;first of the three vectors starts here
   .dw NMI        ;when an NMI happens (once per frame if enabled) the 

@@ -94,8 +94,8 @@ EngineLogicTraveling:
 
 
   LDA currframedy
-  BNE @DoneUpdatingMileage
-
+  BEQ @UpdateDay
+  JMP @DoneUpdatingMileage
 @UpdateDay:
   LDA #FRAMECOUNT_DAY
   STA currframedy
@@ -110,24 +110,35 @@ EngineLogicTraveling:
   STA tempcalca
   MultiplyPercentageDistance tempcalca, pace, tempcalcb
   LDA tempcalcb
+  STA mitraveldy
+
+  ; update total mi traveled (this is a 16-bit number hence the rigamarole)
+  LDA mitraveled
+  CLC
+  ADC mitraveldy
   STA mitraveled
+  STA bcdNum
+  LDA mitraveled+1
+  ADC #$00
+  STA mitraveled+1
+  STA bcdNum+1
+  JSR SixteenBitHexToDec
 
   ; time to trigger landmark?
-  ; is miremaining <= mitraveled?
+  ; is miremaining <= mitraveldy?
   ;    if so, trigger landmark
   LDA miremaining
-  CMP mitraveled
+  CMP mitraveldy
   BCC @TriggerLandmark
   BEQ @TriggerLandmark
   SEC
-  SBC mitraveled
+  SBC mitraveldy
   STA miremaining
   JMP @DoneUpdatingMileage
 
 @TriggerLandmark:
   LDA #$00
   STA miremaining
-
 
 @DoneUpdatingMileage:
   LDX #$24
@@ -574,6 +585,118 @@ UpdateStatusIcons:
   LDA #$50+$68
   STA $0200, x
   INX
+
+MileageTraveled:
+  ; total mileage traveled
+  LDA #$00
+  STA thousshown
+  STA hundsshown
+
+  ; display thousands
+  LDA bcdResult+3
+  BEQ @ThousandsNotShown
+  JMP @ThousandsShown
+@ThousandsNotShown:
+  LDA #$00
+  TAY
+  JMP @ContThousands
+@ThousandsShown:
+  CLC
+  ADC #$44
+  TAY
+  LDA #$01
+  STA thousshown
+@ContThousands:
+  LDA #STATUS_ICON_Y + $20
+  STA $0200, x
+  INX
+  TYA
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #$50+$50
+  STA $0200, x
+  INX
+
+@DisplayHundreds:
+  ; display hundreds
+  LDA bcdResult+2
+  BEQ @HundredsZero
+  JMP @HundredsShown
+@HundredsZero:
+  LDA thousshown
+  BEQ @HundredsNotShown
+  JMP @HundredsShown
+@HundredsNotShown:
+  LDA #$00
+  TAY
+  JMP @ContHundreds
+@HundredsShown:
+  LDA #$01
+  STA hundsshown
+  LDA bcdResult+2
+  CLC
+  ADC #$44
+  TAY
+@ContHundreds:
+  LDA #STATUS_ICON_Y + $20
+  STA $0200, x
+  INX
+  TYA
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #$50+$58
+  STA $0200, x
+  INX
+
+  ; display tens
+  LDA #STATUS_ICON_Y + $20
+  STA $0200, x
+  INX
+  LDA bcdResult+1
+  BEQ @TensZero
+@TensNotZero:
+  LDA bcdResult+1
+  CLC
+  ADC #$44
+  JMP @ContTens
+@TensZero:
+  LDA thousshown
+  ORA hundsshown
+  BNE @TensNotZero
+  LDA #$00
+@ContTens:
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #$50+$60
+  STA $0200, x
+  INX
+  ; now we'll display ones, which are easy because we always display the
+  ; ones place
+  LDA bcdResult
+  CLC
+  ADC #$44
+  PHA
+  LDA #STATUS_ICON_Y + $20
+  STA $0200, x
+  INX
+  PLA
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #$50+$68
+  STA $0200, x
+  INX
   RTS
 ;;;;;;;;;;;;;;;;
 EightBitHexToDec:
@@ -619,3 +742,43 @@ EightBitHexToDec:
 
  htd3$: STY htd_in      ; Restore the original input.
         RTS
+;;;;;;;;;;;;;;;
+SixteenBitHexToDec:
+; from http://forums.nesdev.com/viewtopic.php?f=10&t=1222&start=15 by tokumaru
+BinToDec:
+  LDA #$00
+  STA bcdResult+0
+  STA bcdResult+1
+  STA bcdResult+2
+  STA bcdResult+3
+  STA bcdResult+4
+  LDX #$10
+BitLoop:
+  ASL bcdNum+0
+  ROL bcdNum+1
+
+  LDY bcdResult+0
+  LDA Table, y
+  ROL
+  STA bcdResult+0
+
+  LDY bcdResult+1
+  LDA Table, y
+  ROL
+  STA bcdResult+1
+
+  LDY bcdResult+2
+  LDA Table, y
+  ROL
+  STA bcdResult+2
+
+  LDY bcdResult+3
+  LDA Table, y
+  ROL
+  STA bcdResult+3
+
+  ROL bcdResult+4
+
+  DEX
+  BNE BitLoop
+  RTS
