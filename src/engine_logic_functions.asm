@@ -28,6 +28,16 @@ MACRO MultiplyPercentageDistance x,y,output
 @Done:
 ENDM
 ;;;;;;;;;;;;;;;;;;;
+MACRO CheckForStartButton jumpto
+  ; Checks for START button to have been pressed on player 1's
+  ; controller. Once it has, jump to subroutine given as jumpto.
+  LDA buttons1
+  AND #BTN_START
+  BEQ +
+  JMP jumpto
++ JMP GameEngineLogicDone
+ENDM
+;;;;;;;;;;;;;;;;;;;
 GameEngineLogic:  
   LDA gamestate
   ASL A
@@ -47,10 +57,7 @@ GameEngineLogic:
 ; deal with title screen input; check for Start button to be pressed to exit
 ; title screen state
 EngineLogicTitle:
-  LDA buttons1
-  AND #BTN_START
-  BNE EndTitleState
-  JMP GameEngineLogicDone
+  CheckForStartButton EndTitleState
 EndTitleState:
   ; user is exiting title state, switch to new game state
   LDA #STATENEWGAME
@@ -59,11 +66,7 @@ EndTitleState:
 
 ;;;;;;;;;
 EngineLogicNewGame:
-  ;JSR ReadController1
-  LDA buttons1
-  AND #BTN_START
-  BNE EndNewGameState
-  JMP GameEngineLogicDone
+  CheckForStartButton EndNewGameState
 EndNewGameState:
   ; user is exiting new game state, switch to general store state
   LDA #STATESTORE
@@ -73,11 +76,7 @@ EndNewGameState:
 ;;;;;;;;; 
 EngineLogicStore:
   ;; logic associated with general store
-  ;JSR ReadController1
-  LDA buttons1
-  AND #BTN_START
-  BNE EndStoreGameState
-  JMP GameEngineLogicDone
+  CheckForStartButton EndStoreGameState
 EndStoreGameState:
   ; user is exiting new game state, switch to general store state
   LDA #STATETRAVELING
