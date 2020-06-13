@@ -1,13 +1,16 @@
-DisplayTitleScreen:
-  LDA #<bg_title_screen
+MACRO LoadRLEScreen x, nt
+  LDA #<x
   STA pointer+0
-  LDA #>bg_title_screen
+  LDA #>x
   STA pointer+1
 
-  LDX #$00
+  LDX #nt
 
   JSR DecodeRLEScreen
+ENDM
 
+DisplayTitleScreen:
+  LoadRLEScreen bg_title_screen, $00
   JMP FinishLoadNewScreen
 
 DisplayNewGameScreen:
@@ -21,12 +24,7 @@ DisplayNewGameScreen:
   JSR LoadPalettes
 
   ; load nametable 0
-  LDA #<bg_instruction_screen
-  STA pointer+0
-  LDA #>bg_instruction_screen
-  STA pointer+1
-  LDX #$00
-  JSR DecodeRLEScreen
+  LoadRLEScreen bg_instruction_screen, $00
 
   JMP FinishLoadNewScreen
 
@@ -48,20 +46,10 @@ DisplayTravelingScreen:
   ; will come later.
 
   ; load nametable 0
-  LDA #<bg_sprite0_traveling_screen
-  STA pointer+0
-  LDA #>bg_sprite0_traveling_screen
-  STA pointer+1
-  LDX #$00
-  JSR DecodeRLEScreen
+  LoadRLEScreen bg_sprite0_traveling_screen, $00
 
   ; load nametable 1
-  LDA #<bg_blank_traveling_screen
-  STA pointer+0
-  LDA #>bg_blank_traveling_screen
-  STA pointer+1
-  LDX #$01
-  JSR DecodeRLEScreen
+  LoadRLEScreen bg_blank_traveling_screen, $01
 
   ; load sprite 0 for status bar
   LDX #$00
