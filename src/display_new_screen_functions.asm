@@ -8,7 +8,15 @@ MACRO LoadRLEScreen x, nt
 
   JSR DecodeRLEScreen
 ENDM
-
+;;;;;;;;;;;;;;;
+MACRO PaletteLoad pltte
+  LDA #<pltte
+  STA paletteLo
+  LDA #>pltte
+  STA paletteHi
+  JSR LoadPalettes
+ENDM
+;;;;;;;;;;;;;;;
 DisplayTitleScreen:
   LoadRLEScreen bg_title_screen, $00
   JMP FinishLoadNewScreen
@@ -17,11 +25,7 @@ DisplayNewGameScreen:
   LDA #$01
   JSR BankSwitch
 
-  LDA #<palette
-  STA paletteLo
-  LDA #>palette
-  STA paletteHi
-  JSR LoadPalettes
+  PaletteLoad palette
 
   ; load nametable 0
   LoadRLEScreen bg_instruction_screen, $00
@@ -35,11 +39,7 @@ DisplayTravelingScreen:
   LDA #$01
   JSR BankSwitch
 
-  LDA #<palette
-  STA paletteLo
-  LDA #>palette
-  STA paletteHi
-  JSR LoadPalettes
+  PaletteLoad palette
 
   ; load background into both of our nametables.
   ; we also need to load the landmark into the nametable as well, but that
