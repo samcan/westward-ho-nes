@@ -95,6 +95,9 @@ PACE_STEADY			= $01
 PACE_STRENUOUS		= $02
 PACE_GRUELING		= $03
 
+LANDMARK_FT_LARAMIE	= $04			; Fort Laramie has a landmark index of 4.
+									; Once we've passed this landmark, we need
+									; to adjust our miles traveled per day.
 
 ; controller buttons
 BTN_A			= %10000000

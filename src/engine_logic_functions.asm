@@ -116,8 +116,17 @@ EngineLogicTraveling:
 @UpdateMileageEachDay:
   ;; increase mi traveled
   ; calc mi traveled
-  ; assume we're not yet at Fort Laramie yet
+  ; check if we've passed Fort Laramie or not, as this is the dividing line between
+  ; the max number of mi traveled per day
+  LDA #LANDMARK_FT_LARAMIE
+  CMP curlandmark
+  BCC @mileageB
+@mileageA:
   MultiplyPercentageDistance #MAX_MI_PER_DAY_A, yokeoxen, tempcalcb
+  JMP @cont
+@mileageB:
+  MultiplyPercentageDistance #MAX_MI_PER_DAY_B, yokeoxen, tempcalcb
+@cont:
   LDA tempcalcb
   STA tempcalca
   MultiplyPercentageDistance tempcalca, pace, tempcalcb
