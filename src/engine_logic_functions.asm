@@ -101,9 +101,6 @@ EngineLogicTraveling:
   STA currframedy
   JSR UpdateCalendar
 
-  LDX #$24
-  JSR UpdateStatusIcons
-
 @UpdateMileageEachDay:
   ;; increase mi traveled
   ; calc mi traveled
@@ -133,6 +130,9 @@ EngineLogicTraveling:
 
 
 @DoneUpdatingMileage:
+  LDX #$24
+  JSR UpdateStatusIcons
+
   LDA currframe
   BEQ IncreaseScrollAndFlipWagonAnim
   JMP GameEngineLogicDone

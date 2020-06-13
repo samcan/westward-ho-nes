@@ -109,9 +109,6 @@ DisplayTravelingScreen:
   TXA
   STA spritemem
 
-  LDX #$24
-  JSR UpdateStatusIcons
-
   ; set current wagon frame displayed (for animation)
   LDA #$00
   STA currwagfrm
@@ -119,5 +116,9 @@ DisplayTravelingScreen:
   LDX curlandmark
   LDA landmarkdist, X
   STA miremaining
+
+  ; update status bar
+  LDX #$24
+  JSR UpdateStatusIcons
 
   JMP FinishLoadNewScreen
