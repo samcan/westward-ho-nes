@@ -48,6 +48,9 @@ prevbtns	.dsb 1
 newbtns		.dsb 1
 tempcalca	.dsb 1
 tempcalcb	.dsb 1
+htd_in		.dsb 1
+htd_out		.dsb 2
+hundsshown	.dsb 1
   .ende
 
 ;; DECLARE CONSTANTS HERE

@@ -456,4 +456,166 @@ UpdateStatusIcons:
   STA $0200, x
   INX
   INY
+
+  ; mileage remaining to next landmark
+  LDA #$00
+  STA hundsshown
+  TXA
+  PHA
+  LDA miremaining
+  JSR EightBitHexToDec
+  PLA
+  TAX
+
+  LDA htd_out+1
+  BEQ @SkipHundreds
+  CLC
+  ADC #$44
+  TAY
+
+@DisplayHundreds:
+  LDA #STATUS_ICON_Y + $18
+  STA $0200, x
+  INX
+  TYA
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #$50+$58
+  STA $0200, x
+  INX
+  LDA #$01
+  STA hundsshown
+  JMP @Tens
+
+@SkipHundreds:
+  LDA #STATUS_ICON_Y + $18
+  STA $0200, x
+  INX
+  LDA #$00
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #$50+$58
+  STA $0200, x
+  INX
+  LDA #$00
+  STA hundsshown
+
+@Tens:
+  ; we need to display the tens if there's a value greater than 0 or if
+  ; the value in the hundreds place is greater than 0
+  LDA htd_out
+  AND #%11110000
+  LSR A
+  LSR A
+  LSR A
+  LSR A
+  TAY
+  BEQ @TensZero
+@TensNotZero:
+  JMP @HundredsShown
+@TensZero:
+  ; is the hundreds place shown?
+  LDA hundsshown
+  AND #%00000001
+  BNE @HundredsShown
+  JMP @HundredsNotShown
+@HundredsShown:
+  LDA #STATUS_ICON_Y + $18
+  STA $0200, x
+  INX
+  TYA
+  CLC
+  ADC #$44
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #$50+$60
+  STA $0200, x
+  INX
+  JMP @DoneWithTens
+@HundredsNotShown:
+  LDA #STATUS_ICON_Y + $18
+  STA $0200, x
+  INX
+  LDA #$00
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #$50+$60
+  STA $0200, x
+  INX
+@DoneWithTens:
+  ; now we'll display ones, which are easy because we always display the
+  ; ones place
+  LDA htd_out
+  AND #%00001111
+  CLC
+  ADC #$44
+  PHA
+  LDA #STATUS_ICON_Y + $18
+  STA $0200, x
+  INX
+  PLA
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #$50+$68
+  STA $0200, x
+  INX
   RTS
+;;;;;;;;;;;;;;;;
+EightBitHexToDec:
+;  FROM http://6502.org/source/integers/hex2dec.htm
+; A       = Hex input number (gets put into HTD_IN)
+; HTD_OUT   = 1s & 10s output byte
+; HTD_OUT+1 = 100s output byte
+
+		CLD             ; (Make sure it's not in decimal mode for the
+        STA htd_in      ;                ADCs below.)
+        TAY             ; Save the input to restore later if desired.
+		LDA #$00
+        STA htd_out+1   ; Begin by storing 0 in the output bytes.
+        STA htd_out     ; (NMOS 6502 will need LDA #0, STA ...)
+        LDX #$8
+
+ htd1$: ASL htd_in
+        ROL htd_out
+        ROL htd_out+1
+
+        DEX             ; The shifting will happen seven times.  After
+        BEQ htd3$       ; the last shift, you don't check for digits of
+                        ; 5 or more.
+        LDA htd_out
+        AND #$F
+        CMP #$5
+        BMI htd2$
+
+        CLC
+        LDA htd_out
+        ADC #$3
+        STA htd_out
+
+ htd2$: LDA htd_out
+        CMP #$50
+        BMI htd1$
+
+        CLC
+        ADC #$30
+        STA htd_out
+
+        JMP htd1$       ; NMOS 6502 can use JMP.
+
+ htd3$: STY htd_in      ; Restore the original input.
+        RTS
