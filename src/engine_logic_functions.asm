@@ -73,6 +73,14 @@ EndNewGameState:
   STA newgmstate
   JMP GameEngineLogicDone
 
+;;;;;;;;;
+EngineLogicLandmark:
+  CheckForStartButton EndLandmarkState
+EndLandmarkState:
+  LDA #STATETRAVELING
+  STA newgmstate
+  JMP GameEngineLogicDone
+
 ;;;;;;;;; 
 EngineLogicStore:
   ;; logic associated with general store
@@ -90,12 +98,12 @@ EngineLogicTraveling:
   LDX curlandmark
   LDA landmarkdist, X
   STA miremaining
-+
+
   ; right now we're displaying the background, scrolling it, and updating our
   ; wagon wheel animation. We have a little frame counter that keeps track of
   ; the current frame, and once it gets to 0, will then trigger the background
   ; update and the wagon wheel animation update.
-  DEC currframe
++ DEC currframe
 
   LDA currframedy
   BEQ @UpdateDay
@@ -143,7 +151,9 @@ EngineLogicTraveling:
 @TriggerLandmark:
   LDA #$00
   STA miremaining
-  INC curlandmark
+
+  LDA #STATELANDMARK
+  STA newgmstate
 
 @DoneUpdatingMileage:
   LDX #$24
