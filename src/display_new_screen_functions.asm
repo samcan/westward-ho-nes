@@ -1,32 +1,34 @@
-DisplayTitleScreen:
-  LDA #<bg_title_screen
+MACRO LoadRLEScreen x, nt
+  LDA #<x
   STA pointer+0
-  LDA #>bg_title_screen
+  LDA #>x
   STA pointer+1
 
-  LDX #$00
+  LDX #nt
 
   JSR DecodeRLEScreen
-
+ENDM
+;;;;;;;;;;;;;;;
+MACRO PaletteLoad pltte
+  LDA #<pltte
+  STA paletteLo
+  LDA #>pltte
+  STA paletteHi
+  JSR LoadPalettes
+ENDM
+;;;;;;;;;;;;;;;
+DisplayTitleScreen:
+  LoadRLEScreen bg_title_screen, $00
   JMP FinishLoadNewScreen
 
 DisplayNewGameScreen:
   LDA #$01
   JSR BankSwitch
 
-  LDA #<palette
-  STA paletteLo
-  LDA #>palette
-  STA paletteHi
-  JSR LoadPalettes
+  PaletteLoad palette
 
   ; load nametable 0
-  LDA #<bg_instruction_screen
-  STA pointer+0
-  LDA #>bg_instruction_screen
-  STA pointer+1
-  LDX #$00
-  JSR DecodeRLEScreen
+  LoadRLEScreen bg_instruction_screen, $00
 
   JMP FinishLoadNewScreen
 
@@ -63,31 +65,17 @@ DisplayTravelingScreen:
   LDA #$01
   JSR BankSwitch
 
-  LDA #<palette
-  STA paletteLo
-  LDA #>palette
-  STA paletteHi
-  JSR LoadPalettes
+  PaletteLoad palette
 
   ; load background into both of our nametables.
   ; we also need to load the landmark into the nametable as well, but that
   ; will come later.
 
   ; load nametable 0
-  LDA #<bg_sprite0_traveling_screen
-  STA pointer+0
-  LDA #>bg_sprite0_traveling_screen
-  STA pointer+1
-  LDX #$00
-  JSR DecodeRLEScreen
+  LoadRLEScreen bg_sprite0_traveling_screen, $00
 
   ; load nametable 1
-  LDA #<bg_blank_traveling_screen
-  STA pointer+0
-  LDA #>bg_blank_traveling_screen
-  STA pointer+1
-  LDX #$01
-  JSR DecodeRLEScreen
+  LoadRLEScreen bg_blank_traveling_screen, $01
 
   ; load sprite 0 for status bar
   LDX #$00

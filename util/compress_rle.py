@@ -2,6 +2,8 @@ import argparse
 import os
 
 def main(input_file, output_file):
+    print('Input file:', input_file)
+    print('Output file:', output_file)
     if os.path.isfile(output_file):
         os.remove(output_file)
 
@@ -45,6 +47,7 @@ def main(input_file, output_file):
     print('Output file size (bytes):', output_file_num_bytes)
     compression_pct = 1 - (output_file_num_bytes / input_file_num_bytes)
     print(f"Compression (%): {compression_pct * 100:.1f}")
+    print()
 
 def write_byte(output, count, byte):
     #print('writing',count,'of',bytes([byte]))
