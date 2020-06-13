@@ -403,6 +403,14 @@ bg_sprite0_traveling_screen:
   .incbin "src\bg_sprite0_traveling_screen_rle.bin"
 bg_landmark_kansas_river:
   .incbin "src\bg_landmark_kansas_river_rle.bin"
+bg_landmark_big_blue_river:
+  .incbin "src\bg_landmark_big_blue_river_rle.bin"
+bg_landmark_fort_kearney:
+  .incbin "src\bg_landmark_fort_kearney_rle.bin"
+bg_landmark_chimney_rock:
+  .incbin "src\bg_landmark_chimney_rock_rle.bin"
+bg_landmark_fort_laramie:
+  .incbin "src\bg_landmark_fort_laramie_rle.bin"
 
 bankvalues:
   .db $00,$01
@@ -452,7 +460,9 @@ landmarkdist:
   .db 0
 
 landmarkdisplay:
-  .dw bg_landmark_kansas_river
+  .dw bg_landmark_kansas_river, bg_landmark_big_blue_river
+  .dw bg_landmark_fort_kearney, bg_landmark_chimney_rock
+  .dw bg_landmark_fort_laramie
 
 daysinmonth:
   ; we fill [0] with fake value and that way we can use the month [3] to get the
