@@ -59,6 +59,89 @@ DisplayLandmarkScreen:
   LDX #$00
   JSR DecodeRLEScreen
 
+  ; display calendar date on screen
+  ; calendar month
+  LDA month
+  STA tempcalca
+  ASL A
+  CLC
+  ADC tempcalca
+  TAY
+
+  LDA #LANDMARK_CAL_Y
+  STA $0200, x
+  INX
+  LDA monthtext, y
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #$58
+  STA $0200, x
+  INX
+  INY
+
+  LDA #LANDMARK_CAL_Y
+  STA $0200, x
+  INX
+  LDA monthtext, y
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #$60
+  STA $0200, x
+  INX
+  INY
+
+  LDA #LANDMARK_CAL_Y
+  STA $0200, x
+  INX
+  LDA monthtext, y
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #$68
+  STA $0200, x
+  INX
+  STX spritemem
+
+  ; day text
+  LDA day
+  ASL A
+  TAY
+  LDA #LANDMARK_CAL_Y
+  STA $0200, x
+  INX
+  LDA daytext, y
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #$78
+  STA $0200, x
+  INX
+  INY
+
+  LDA #LANDMARK_CAL_Y
+  STA $0200, x
+  INX
+  LDA daytext, y
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #$80
+  STA $0200, x
+  INX
+  INY
+
   INC curlandmark
   JMP FinishLoadNewScreen
 DisplayTravelingScreen:

@@ -86,7 +86,7 @@ WEATHER_PARTLY	= $2A
 WEATHER_RAIN	= $2B
 WEATHER_STORM	= $2C
 
-
+LANDMARK_CAL_Y	= $BF
 ; traveling constants
 MAX_MI_PER_DAY_A	= $28			; max miles per day to Fort Laramie
 MAX_MI_PER_DAY_B	= $18			; max miles per day after Fort Laramie
