@@ -21,3 +21,13 @@ be run in fceux or Mesen.
 [asm6f]: https://github.com/freem/asm6f
 [fceux]: http://www.fceux.com/web/home.html
 [mesen]: https://mesen.ca/
+
+## Mesen emulation settings
+We are using the following emulation settings in Mesen v0.9.9. These are changed in Options > Emulation, on the Advanced tab:
+
+* Enable OAM RAM decay
+* Randomize power-on state for mappers
+* Randomize power-on/reset CPU/PPU alignment
+* Enable PPU $2006 scroll glitch emulation
+* Enable PPU $2000/$2005/$2006 first-write scroll glitch emulation
+* Default power on state for RAM: Random Values
