@@ -86,12 +86,17 @@ EndStoreGameState:
 
 ;;;;;;;;;;
 EngineLogicTraveling:
+  LDA miremaining
+  BNE +
+  LDX curlandmark
+  LDA landmarkdist, X
+  STA miremaining
++
   ; right now we're displaying the background, scrolling it, and updating our
   ; wagon wheel animation. We have a little frame counter that keeps track of
   ; the current frame, and once it gets to 0, will then trigger the background
   ; update and the wagon wheel animation update.
   DEC currframe
-
 
   LDA currframedy
   BEQ @UpdateDay
@@ -139,6 +144,7 @@ EngineLogicTraveling:
 @TriggerLandmark:
   LDA #$00
   STA miremaining
+  INC curlandmark
 
 @DoneUpdatingMileage:
   LDX #$24

@@ -432,7 +432,22 @@ titletextattr:
 
 
 landmarkdist:
-  .db 102
+  ; map up to South Pass
+  .db 102, 83, 119, 250, 86, 190, 102
+  ; (split A) go to Fort Bridger
+  .db 125, 162
+  ; back at Soda Springs, up to Blue Mountains
+  .db 57, 182, 114, 160
+  ; (split B) go to Fort Walla Walla
+  .db 55, 125
+  ; (split C) back at the The Dalles, take Barlow Road
+  .db 100
+  ; (split A-2) go to Green River
+  .db 57, 144
+  ; (split B-2) bypass Fort Walla Walla
+  .db 125
+  ; (split C-2) go down the Columbia River
+  .db 0
 
 daysinmonth:
   ; we fill [0] with fake value and that way we can use the month [3] to get the
