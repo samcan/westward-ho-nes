@@ -220,6 +220,7 @@ UpdateCurrentScreen:
   AND #STATETRAVELING
   BEQ @NoScroll
 
+@Scrollbar:
   ; see code at https://web.archive.org/web/20190326192637/http://nintendoage.com/forum/messageview.cfm?catid=22&threadid=36969
   ; for getting horizontal status bar working. Now I need to flip it so the horizontal status bar is on the
   ; BOTTOM!
