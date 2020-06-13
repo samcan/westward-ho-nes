@@ -33,6 +33,32 @@ DisplayNewGameScreen:
 DisplayStoreScreen:
   JMP FinishLoadNewScreen
 
+DisplayLandmarkScreen:
+  LDA #$01
+  JSR BankSwitch
+
+  LDA #<palette
+  STA paletteLo
+  LDA #>palette
+  STA paletteHi
+  JSR LoadPalettes
+
+  ; load background into nametable 0
+  LDA curlandmark
+  ASL A
+  TAX
+
+  ; load nametable 0
+  LDA landmarkdisplay, x
+  STA pointer+0
+  INX
+  LDA landmarkdisplay, x
+  STA pointer+1
+  LDX #$00
+  JSR DecodeRLEScreen
+
+  INC curlandmark
+  JMP FinishLoadNewScreen
 DisplayTravelingScreen:
   LDA #$01
   JSR BankSwitch

@@ -216,9 +216,9 @@ UpdateCurrentScreen:
   ; do scrolling, but we'll only check for scrolling in traveling state.
   ; theoretically, I could just set scrollH to #$00 in all other states, and I
   ; may end up doing that, but for now, I'll do this check.
-  LDA gamestate
-  AND #STATETRAVELING
-  BEQ @NoScroll
+  LDA newgmstate
+  CMP #STATETRAVELING
+  BNE @NoScroll
 
   ; see code at https://web.archive.org/web/20190326192637/http://nintendoage.com/forum/messageview.cfm?catid=22&threadid=36969
   ; for getting horizontal status bar working. Now I need to flip it so the horizontal status bar is on the
@@ -401,6 +401,8 @@ bg_blank_traveling_screen:
   .incbin "src\bg_blank_traveling_screen_rle.bin"
 bg_sprite0_traveling_screen:
   .incbin "src\bg_sprite0_traveling_screen_rle.bin"
+bg_landmark_kansas_river:
+  .incbin "src\bg_landmark_kansas_river_rle.bin"
 
 bankvalues:
   .db $00,$01
@@ -410,13 +412,13 @@ bankvalues:
 ; by NMI when it's time to load a new screen
 screen:
   .dw DisplayTitleScreen, DisplayNewGameScreen, DisplayTravelingScreen
-  .dw $0000, DisplayStoreScreen
+  .dw DisplayLandmarkScreen, DisplayStoreScreen
 
 ; points to appropriate engine logic functions so they can get called by
 ; the engine
 enginelogic:
   .dw EngineLogicTitle, EngineLogicNewGame, EngineLogicTraveling
-  .dw $0000, EngineLogicStore
+  .dw EngineLogicLandmark, EngineLogicStore
 
 ; new line = $00, space char needs to be something else, $FF = done
 ; first byte is starting y pos
@@ -448,6 +450,9 @@ landmarkdist:
   .db 125
   ; (split C-2) go down the Columbia River
   .db 0
+
+landmarkdisplay:
+  .dw bg_landmark_kansas_river
 
 daysinmonth:
   ; we fill [0] with fake value and that way we can use the month [3] to get the
