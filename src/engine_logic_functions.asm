@@ -28,14 +28,14 @@ MACRO MultiplyPercentageDistance x,y,output
 @Done:
 ENDM
 ;;;;;;;;;;;;;;;;;;;
-MACRO CheckForStartButton jumpto
+MACRO CheckForStartButton jumpto,elsejumpto
   ; Checks for START button to have been pressed on player 1's
   ; controller. Once it has, jump to subroutine given as jumpto.
   LDA buttons1
   AND #BTN_START
   BEQ +
   JMP jumpto
-+ JMP GameEngineLogicDone
++ JMP elsejumpto
 ENDM
 ;;;;;;;;;;;;;;;;;;;
 GameEngineLogic:  
@@ -57,7 +57,7 @@ GameEngineLogic:
 ; deal with title screen input; check for Start button to be pressed to exit
 ; title screen state
 EngineLogicTitle:
-  CheckForStartButton EndTitleState
+  CheckForStartButton EndTitleState, GameEngineLogicDone
 EndTitleState:
   ; user is exiting title state, switch to new game state
   LDA #STATENEWGAME
@@ -66,7 +66,7 @@ EndTitleState:
 
 ;;;;;;;;;
 EngineLogicNewGame:
-  CheckForStartButton EndNewGameState
+  CheckForStartButton EndNewGameState, GameEngineLogicDone
 EndNewGameState:
   ; user is exiting new game state, switch to alphabet screen to enter name
   LDA #STATEALPHABET
@@ -159,7 +159,7 @@ UpdateCursorSprite:
   LDA cursorX
   STA $0200, x
 
-  CheckForStartButton EndAlphabetState
+  CheckForStartButton EndAlphabetState, GameEngineLogicDone
 
 EndAlphabetState:
   ; user is exiting alphabet screen, go to store
@@ -169,7 +169,7 @@ EndAlphabetState:
 
 ;;;;;;;;;
 EngineLogicLandmark:
-  CheckForStartButton EndLandmarkState
+  CheckForStartButton EndLandmarkState, GameEngineLogicDone
 EndLandmarkState:
   LDA curlandmark
   CMP #$0E
@@ -188,7 +188,7 @@ EndLandmarkState:
 ;;;;;;;;; 
 EngineLogicStore:
   ;; logic associated with general store
-  CheckForStartButton EndStoreGameState
+  CheckForStartButton EndStoreGameState, GameEngineLogicDone
 EndStoreGameState:
   ; user is exiting new game state, switch to general store state
   LDA #STATETRAVELING
