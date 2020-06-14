@@ -141,6 +141,35 @@ DisplayLandmarkScreen:
   INY
 
   JMP FinishLoadNewScreen
+
+DisplayAlphabetScreen:
+  LDA #$01
+  JSR BankSwitch
+
+  PaletteLoad palette
+
+  LoadRLEScreen bg_alphabet_screen, $00
+
+  LDX #$04
+  LDA #MIN_Y
+  STA cursorY
+  STA $0200, X
+
+  INX
+  LDA #$20
+  STA $0200, x
+
+  INX
+  LDA #%00100000
+  STA $0200, x
+
+  INX
+  LDA #MIN_X
+  STA cursorX
+  STA $0200, x
+
+  JMP FinishLoadNewScreen
+
 DisplayTravelingScreen:
   LDA #$01
   JSR BankSwitch

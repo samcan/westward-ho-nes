@@ -54,6 +54,9 @@ thousshown	.dsb 1
 hundsshown	.dsb 1
 bcdNum		.dsb 2
 bcdResult	.dsb 5
+cursorX		.dsb 1
+cursorY		.dsb 1
+name1		.dsb 10
   .ende
 
 ;; DECLARE CONSTANTS HERE
@@ -65,6 +68,7 @@ STATELANDMARK	= $03
 STATESTORE		= $04
 STATEPAUSED		= $05
 STATEENDGAME	= $06
+STATEALPHABET	= $07
 
 FRAMECOUNT		= $30
 
@@ -99,14 +103,20 @@ LANDMARK_FT_LARAMIE	= $04			; Fort Laramie has a landmark index of 4.
 									; to adjust our miles traveled per day.
 
 ; controller buttons
-BTN_A			= %10000000
-BTN_B			= %01000000
-BTN_START		= %00010000
-BTN_SELECT		= %00100000
-BTN_UPARROW		= %00001000
-BTN_DOWNARROW	= %00000100
-BTN_LEFTARROW	= %00000010
-BTN_RIGHTARROW	= %00000001
+BTN_A			= 1 << 7
+BTN_B			= 1 << 6
+BTN_START		= 1 << 4
+BTN_SELECT		= 1 << 5
+BTN_UPARROW		= 1 << 3
+BTN_DOWNARROW	= 1 << 2
+BTN_LEFTARROW	= 1 << 1
+BTN_RIGHTARROW	= 1 << 0
+
+; alphabet screen
+MIN_Y			= $8F
+MAX_Y			= $BF
+MIN_X			= $48
+MAX_X			= $A8
 
 ; PPU addresses
 PpuCtrl			= $2000
@@ -415,6 +425,8 @@ bg_blank_traveling_screen:
   .incbin "src\bg_blank_traveling_screen_rle.bin"
 bg_sprite0_traveling_screen:
   .incbin "src\bg_sprite0_traveling_screen_rle.bin"
+bg_alphabet_screen:
+  .incbin "src\bg_alphabet_screen_rle.bin"
 bg_landmark_kansas_river:
   .incbin "src\bg_landmark_kansas_river_rle.bin"
 bg_landmark_big_blue_river:
@@ -454,13 +466,15 @@ bankvalues:
 ; by NMI when it's time to load a new screen
 screen:
   .dw DisplayTitleScreen, DisplayNewGameScreen, DisplayTravelingScreen
-  .dw DisplayLandmarkScreen, DisplayStoreScreen
+  .dw DisplayLandmarkScreen, DisplayStoreScreen, $0000, $0000
+  .dw DisplayAlphabetScreen
 
 ; points to appropriate engine logic functions so they can get called by
 ; the engine
 enginelogic:
   .dw EngineLogicTitle, EngineLogicNewGame, EngineLogicTraveling
-  .dw EngineLogicLandmark, EngineLogicStore
+  .dw EngineLogicLandmark, EngineLogicStore, $0000, $0000
+  .dw EngineLogicAlphabet
 
 ; new line = $00, space char needs to be something else, $FF = done
 ; first byte is starting y pos

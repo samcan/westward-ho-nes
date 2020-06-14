@@ -68,7 +68,101 @@ EndTitleState:
 EngineLogicNewGame:
   CheckForStartButton EndNewGameState
 EndNewGameState:
-  ; user is exiting new game state, switch to general store state
+  ; user is exiting new game state, switch to alphabet screen to enter name
+  LDA #STATEALPHABET
+  STA newgmstate
+  JMP GameEngineLogicDone
+
+;;;;;;;;;
+EngineLogicAlphabet:
+  ; move cursor around
+  LDA buttons1
+  AND #BTN_UPARROW
+  BNE MoveCursorUp
+
+  LDA buttons1
+  AND #BTN_DOWNARROW
+  BNE MoveCursorDown
+
+  LDA buttons1
+  AND #BTN_LEFTARROW
+  BNE MoveCursorLeft
+
+  LDA buttons1
+  AND #BTN_RIGHTARROW
+  BNE MoveCursorRight
+
+  JMP UpdateCursorSprite
+
+MoveCursorUp:
+  LDA cursorY
+  SEC
+  SBC #$10
+  ; minimum Y is $8F
+  CMP #MIN_Y
+  BCS +
+  LDA #MIN_Y
++ STA cursorY
+  JMP UpdateCursorSprite
+
+MoveCursorDown:
+  LDA cursorY
+  CLC
+  ADC #$10
+  ; maximum Y is $BF
+  CMP #MAX_Y
+  BCC +
+  BEQ +
+  LDA #MAX_Y
++ STA cursorY
+  JMP UpdateCursorSprite
+
+MoveCursorLeft:
+  LDA cursorX
+  SEC
+  SBC #$10
+  ; minimum X is $48
+  CMP #MIN_X
+  BCS +
+  LDA #MIN_X
++ STA cursorX
+  JMP UpdateCursorSprite
+
+MoveCursorRight:
+  LDA cursorX
+  CLC
+  ADC #$10
+  ; max X is $A8
+  CMP #MAX_X
+  BCC +
+  BEQ +
+  LDA #MAX_X
++ STA cursorX
+  JMP UpdateCursorSprite
+
+UpdateCursorSprite:
+  LDX #$04				; start display using sprite 1 rather than
+						; sprite 0
+
+  LDA cursorY
+  STA $0200, x
+
+  INX
+  LDA #$20
+  STA $0200, x
+
+  INX
+  LDA #%00000000
+  STA $0200, x
+
+  INX
+  LDA cursorX
+  STA $0200, x
+
+  CheckForStartButton EndAlphabetState
+
+EndAlphabetState:
+  ; user is exiting alphabet screen, go to store
   LDA #STATESTORE
   STA newgmstate
   JMP GameEngineLogicDone
