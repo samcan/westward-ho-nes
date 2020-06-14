@@ -141,9 +141,9 @@ DecodeRLEScreen:
 ;;
 ;; Sample usage:
 ;;   LDA #<palette
-;;   STA paletteLo
+;;   STA paletteptr
 ;;   LDA #>palette
-;;   STA palettehi
+;;   STA paletteptr
 ;;   JSR LoadPalettes
 LoadPalettes:
   LDA $2002             ; read PPU status to reset the high/low latch
@@ -153,14 +153,14 @@ LoadPalettes:
   STA $2006             ; write the low byte of $3F00 address
   LDY #$00              ; start out at 0
 @loop:
-  LDA (paletteLo), y        ; load data from address (palette + the value in x)
-                          ; 1st time through loop it will load palette+0
-                          ; 2nd time through loop it will load palette+1
-                          ; 3rd time through loop it will load palette+2
+  LDA (paletteptr), y     ; load data from address (paletteptr + the value in y)
+                          ; 1st time through loop it will load paletteptr+0
+                          ; 2nd time through loop it will load paletteptr+1
+                          ; 3rd time through loop it will load paletteptr+2
                           ; etc
   STA $2007             ; write to PPU
-  INY                   ; X = X + 1
-  CPY #$20              ; Compare X to hex $20, decimal 32 - copying 32 bytes = 8 sprites
+  INY                   ; Y = Y + 1
+  CPY #$20              ; Compare Y to hex $20, decimal 32 - copying 32 bytes = 8 sprites
   BNE @loop             ; Branch to @loop if compare was Not Equal to zero
                         ; if compare was equal to 32, keep going down
   RTS

@@ -11,9 +11,9 @@ ENDM
 ;;;;;;;;;;;;;;;
 MACRO PaletteLoad pltte
   LDA #<pltte
-  STA paletteLo
+  STA paletteptr
   LDA #>pltte
-  STA paletteHi
+  STA paletteptr+1
   JSR LoadPalettes
 ENDM
 ;;;;;;;;;;;;;;;

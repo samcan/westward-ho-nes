@@ -37,8 +37,7 @@ textvarLo	.dsb 1
 textvarHi	.dsb 1
 textattrLo	.dsb 1
 textattrHi	.dsb 1
-paletteLo	.dsb 1		; palette address, low-byte
-paletteHi	.dsb 1		; palette address, high-byte
+paletteptr	.dsb 2		; palette address
 currframe	.dsb 1
 currframedy	.dsb 1		; number of times frame has been updated in curr. day
 currwagfrm	.dsb 1
@@ -159,9 +158,9 @@ clrmem:
 
   ; set up palette for title screen
   LDA #<palette_title
-  STA paletteLo
+  STA paletteptr
   LDA #>palette_title
-  STA paletteHi
+  STA paletteptr+1
   JSR LoadPalettes
 
   ; test switching to bank 1 from bank 0 on the CHR-ROM
