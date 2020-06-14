@@ -34,6 +34,7 @@ py .\util\compress_rle.py --input .\src\bg_landmark_blue_mountains.bin --output 
 py .\util\compress_rle.py --input .\src\bg_landmark_fort_walla_walla.bin --output .\src\bg_landmark_fort_walla_walla_rle.bin
 py .\util\compress_rle.py --input .\src\bg_landmark_the_dalles.bin --output .\src\bg_landmark_the_dalles_rle.bin
 py .\util\compress_rle.py --input .\src\bg_landmark_willamette_valley.bin --output .\src\bg_landmark_willamette_valley_rle.bin
+py .\util\compress_rle.py --input .\src\bg_landmark_green_river.bin --output .\src\bg_landmark_green_river_rle.bin
 echo #####################
 echo Compiling NES file...
 echo #####################

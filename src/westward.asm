@@ -463,6 +463,8 @@ bg_landmark_the_dalles:
   .incbin "src\bg_landmark_the_dalles_rle.bin"
 bg_landmark_willamette_valley:
   .incbin "src\bg_landmark_willamette_valley_rle.bin"
+bg_landmark_green_river:
+  .incbin "src\bg_landmark_green_river_rle.bin"
 
 bankvalues:
   .db $00,$01
@@ -524,8 +526,9 @@ landmarkdisplay:
   .dw bg_landmark_fort_boise, bg_landmark_blue_mountains
   .dw bg_landmark_fort_walla_walla, bg_landmark_the_dalles
   .dw bg_landmark_willamette_valley
-  .dw $0000, $0000
-  .dw $0000, $0000, $0000, $0000
+  ; handles trail splits
+  .dw bg_landmark_green_river
+  ; need to add separate bg for rafting the Columbia River
 
 daysinmonth:
   ; we fill [0] with fake value and that way we can use the month [3] to get the
