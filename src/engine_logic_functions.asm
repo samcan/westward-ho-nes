@@ -197,6 +197,13 @@ EndStoreGameState:
 
 ;;;;;;;;;;
 EngineLogicTraveling:
+  ; we check the miremaining variable to see if it's equal to 0. If it is, that
+  ; means we must have arrived at a landmark. We will now load in the next
+  ; landmark's distance and store it in miremaining. Note that we assume that
+  ; curlandmark has already been incremented prior to this point, particularly
+  ; by the logic associated with the landmark display function. Once we code in
+  ; the special functionality to handle forks in the trail, that will handle
+  ; setting the curlandmark to the correct value.
   LDA miremaining
   BNE +
   LDX curlandmark
