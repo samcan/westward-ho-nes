@@ -1,4 +1,5 @@
 MACRO LoadRLEScreen x, nt
+  ; Clobbers: A, X
   LDA #<x
   STA pointer+0
   LDA #>x
@@ -10,6 +11,7 @@ MACRO LoadRLEScreen x, nt
 ENDM
 ;;;;;;;;;;;;;;;
 MACRO PaletteLoad pltte
+  ; Clobbers: A
   LDA #<pltte
   STA paletteptr
   LDA #>pltte

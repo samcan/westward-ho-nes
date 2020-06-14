@@ -1,4 +1,5 @@
 MACRO MultiplyPercentageDistance x,y,output
+  ;; Clobbers: A
   LDA y
   CMP #$03			; 100%
   BCS @OneHundredPercent
@@ -31,6 +32,8 @@ ENDM
 MACRO CheckForStartButton jumpto,elsejumpto
   ; Checks for START button to have been pressed on player 1's
   ; controller. Once it has, jump to subroutine given as jumpto.
+  ;
+  ; Clobbers: A
   LDA buttons1
   AND #BTN_START
   BEQ +

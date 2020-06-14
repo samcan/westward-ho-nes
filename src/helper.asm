@@ -27,6 +27,8 @@
 ;;   LDA #>titletextattr
 ;;   STA textattrHi
 ;;   JSR DisplayText
+;;
+;; Clobbers: A, X, Y
 DisplayText:
   LDY #$00
 LoadTextParams:
@@ -98,6 +100,7 @@ TextDone:
 ;;
 ;;   JSR DecodeRLEScreen
 ;;
+;; Clobbers: A, X, Y
 DecodeRLEScreen:
   ; set output address
   LDA #PpuStatus
@@ -145,6 +148,8 @@ DecodeRLEScreen:
 ;;   LDA #>palette
 ;;   STA paletteptr
 ;;   JSR LoadPalettes
+;;
+;; Clobbers: A, Y
 LoadPalettes:
   LDA PpuStatus         ; read PPU status to reset the high/low latch
   LDA #$3F
@@ -167,6 +172,8 @@ LoadPalettes:
 
 ;;;;;;;;;;;;;;;
 ;; ClearBackground will clear the background tiles loaded into memory
+;;
+;; Clobbers: A, X, Y
 ClearBgMemory:
   ; set output address
   LDA #PpuStatus
@@ -190,11 +197,15 @@ ClearBgMemory:
   RTS
 
 ;;;;;;;;;;;;;;;
+;;
+;; Clobbers: none
 VBlankWait:
   BIT PpuStatus
   BPL VBlankWait
 
 ;;;;;;;;;;;;;;;
+;;
+;; Clobbers: A, X
 ReadController1:
   LDA newbtns
   STA prevbtns
@@ -221,6 +232,8 @@ ReadController1:
   RTS
 
 ;;;;;;;;;;;;;;;
+;;
+;; Clobbers: A, X
 clr_sprite_mem:
   LDX #$00
 @loop:
@@ -231,12 +244,16 @@ clr_sprite_mem:
   BNE @loop
   RTS    
 ;;;;;;;;;;;;;;;
+;;
+;; Clobbers: A, X
 BankSwitch:
   TAX
   LDA bankvalues, x
   STA $8000
   RTS
 ;;;;;;;;;;;;;;;
+;;
+;; Clobbers: A
 DisableNMI:
   ; disable rendering and NMIs
   LDA #$00
@@ -251,6 +268,8 @@ DisableNMI:
   STA PpuAddr
   RTS
 ;;;;;;;;;;;;;;;
+;;
+;; Clobbers: A
 EnableNMI:
   ; enable NMI
   LDA PpuStatus
@@ -258,11 +277,17 @@ EnableNMI:
   STA PpuCtrl
   RTS
 ;;;;;;;;;;;;;;;
+;;
+;; Converts 8-bit (1-byte) hex number stored in A to 2-byte decimal number
+;; in htd_out. Bits 0-4 of htd_out is the ones place, bits 5-7 of htd_out is
+;; the tens place, and bits 0-4 of htd_out+1 is the hundreds place.
+;;
+;; Clobbers: A, X, Y, htd_in, htd_out, htd_out+1
 EightBitHexToDec:
 ;  FROM http://6502.org/source/integers/hex2dec.htm
 ; A       = Hex input number (gets put into HTD_IN)
-; HTD_OUT   = 1s & 10s output byte
-; HTD_OUT+1 = 100s output byte
+; htd_out   = 1s & 10s output byte
+; htd_out+1 = 100s output byte
 
 		CLD             ; (Make sure it's not in decimal mode for the
         STA htd_in      ;                ADCs below.)
