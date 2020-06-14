@@ -334,7 +334,7 @@ UpdateTravelingSpritesFrameZero:
   LDX #$04				; start display using sprite 1 rather than
 						; sprite 0
   
-  LDA #$98
+  LDA #OXEN_TOP_Y+$08
   STA $0200, x
 
   INX
@@ -346,12 +346,12 @@ UpdateTravelingSpritesFrameZero:
   STA $0200, x
 
   INX
-  LDA #$E0
+  LDA #OXEN_TOP_X+$10
   STA $0200, x
 
   ; 2nd part of wagon metatile
   INX
-  LDA #$98
+  LDA #OXEN_TOP_Y+$08
   STA $0200, x
 
   INX
@@ -363,13 +363,13 @@ UpdateTravelingSpritesFrameZero:
   STA $0200, x
 
   INX
-  LDA #$E8
+  LDA #OXEN_TOP_X+$18
   STA $0200, x
 
 ; first part of oxen metatile
   LDX #$14
   
-  LDA #$98
+  LDA #OXEN_TOP_Y+$08
   STA $0200, x
 
   INX
@@ -381,12 +381,12 @@ UpdateTravelingSpritesFrameZero:
   STA $0200, x
 
   INX
-  LDA #$D0
+  LDA #OXEN_TOP_X
   STA $0200, x
 
   ; 2nd part of oxen metatile
   INX
-  LDA #$98
+  LDA #OXEN_TOP_Y+$08
   STA $0200, x
 
   INX
@@ -398,7 +398,7 @@ UpdateTravelingSpritesFrameZero:
   STA $0200, x
 
   INX
-  LDA #$D8
+  LDA #OXEN_TOP_X+$08
   STA $0200, x
   RTS
 
@@ -407,7 +407,7 @@ UpdateTravelingSpritesFrameOne:
   LDX #$04				; start display using sprite 1 rather than
 						; sprite 0
 
-  LDA #$98
+  LDA #OXEN_TOP_Y+$08
   STA $0200, x
 
   INX
@@ -419,12 +419,12 @@ UpdateTravelingSpritesFrameOne:
   STA $0200, x
 
   INX
-  LDA #$E0
+  LDA #OXEN_TOP_X+$10
   STA $0200, x
 
   ; 2nd part of wagon metatile
   INX
-  LDA #$98
+  LDA #OXEN_TOP_Y+$08
   STA $0200, x
 
   INX
@@ -436,13 +436,13 @@ UpdateTravelingSpritesFrameOne:
   STA $0200, x
 
   INX
-  LDA #$E8
+  LDA #OXEN_TOP_X+$18
   STA $0200, x
 
 ; first part of oxen metatile
   LDX #$14
   
-  LDA #$98
+  LDA #OXEN_TOP_Y+$08
   STA $0200, x
 
   INX
@@ -454,12 +454,12 @@ UpdateTravelingSpritesFrameOne:
   STA $0200, x
 
   INX
-  LDA #$D0
+  LDA #OXEN_TOP_X
   STA $0200, x
 
   ; 2nd part of oxen metatile
   INX
-  LDA #$98
+  LDA #OXEN_TOP_Y+$08
   STA $0200, x
 
   INX
@@ -471,7 +471,7 @@ UpdateTravelingSpritesFrameOne:
   STA $0200, x
 
   INX
-  LDA #$D8
+  LDA #OXEN_TOP_X+$08
   STA $0200, x
   RTS
 ;;;;;;;;;;;;;

@@ -118,6 +118,10 @@ MAX_Y			= $BF
 MIN_X			= $48
 MAX_X			= $A8
 
+; traveling screen
+OXEN_TOP_Y		= $90
+OXEN_TOP_X		= $C8
+
 ; PPU addresses
 PpuCtrl			= $2000
 PpuMask			= $2001
@@ -412,9 +416,9 @@ palette_newgame:
   .db $35,$17,$28,$1F,  $35,$1C,$2B,$39,  $35,$06,$15,$36,  $35,$07,$17,$10   ;;sprite palette
 
 traveling_wagon:
-  .db $98,$17,%00000011,$E0,  $98,$18,%00000011,$E8,  $90,$07,%00000011,$E0,  $90,$08,%00000011,$E8
+  .db #OXEN_TOP_Y+$08,$17,%00000011,#OXEN_TOP_X+$10,  #OXEN_TOP_Y+$08,$18,%00000011,#OXEN_TOP_X+$18,  #OXEN_TOP_Y,$07,%00000011,#OXEN_TOP_X+$10,  #OXEN_TOP_Y,$08,%00000011,#OXEN_TOP_X+$18
 traveling_oxen:
-  .db $98,$15,%00000010,$D0,  $98,$16,%00000010,$D8,  $90,$05,%00000010,$D0,  $90,$06,%00000010,$D8
+  .db #OXEN_TOP_Y+$08,$15,%00000010,#OXEN_TOP_X,  #OXEN_TOP_Y+$08,$16,%00000010,#OXEN_TOP_X+$08,  #OXEN_TOP_Y,$05,%00000010,#OXEN_TOP_X,  #OXEN_TOP_Y,$06,%00000010,#OXEN_TOP_X+$08
 
 bg_title_screen:
   ;.incbin "src\bg_title_screen.bin"
