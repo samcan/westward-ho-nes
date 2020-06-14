@@ -41,11 +41,7 @@ DisplayLandmarkScreen:
   LDA #$01
   JSR BankSwitch
 
-  LDA #<palette
-  STA paletteLo
-  LDA #>palette
-  STA paletteHi
-  JSR LoadPalettes
+  PaletteLoad palette
 
   ; load background into nametable 0
   LDA curlandmark
