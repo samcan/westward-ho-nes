@@ -18,6 +18,8 @@ MACRO PaletteLoad pltte
 ENDM
 ;;;;;;;;;;;;;;;
 DisplayTitleScreen:
+  LDA #$00
+  JSR BankSwitch
   LoadRLEScreen bg_title_screen, $00
   JMP FinishLoadNewScreen
 
@@ -142,7 +144,6 @@ DisplayLandmarkScreen:
   INX
   INY
 
-  INC curlandmark
   JMP FinishLoadNewScreen
 DisplayTravelingScreen:
   LDA #$01

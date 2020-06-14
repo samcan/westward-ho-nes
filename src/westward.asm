@@ -417,6 +417,24 @@ bg_landmark_fort_laramie:
   .incbin "src\bg_landmark_fort_laramie_rle.bin"
 bg_landmark_south_pass:
   .incbin "src\bg_landmark_south_pass_rle.bin"
+bg_landmark_fort_bridger:
+  .incbin "src\bg_landmark_fort_bridger_rle.bin"
+bg_landmark_soda_springs:
+  .incbin "src\bg_landmark_soda_springs_rle.bin"
+bg_landmark_fort_hall:
+  .incbin "src\bg_landmark_fort_hall_rle.bin"
+bg_landmark_snake_river_crossing:
+  .incbin "src\bg_landmark_snake_river_crossing_rle.bin"
+bg_landmark_fort_boise:
+  .incbin "src\bg_landmark_fort_boise_rle.bin"
+bg_landmark_blue_mountains:
+  .incbin "src\bg_landmark_blue_mountains_rle.bin"
+bg_landmark_fort_walla_walla:
+  .incbin "src\bg_landmark_fort_walla_walla_rle.bin"
+bg_landmark_the_dalles:
+  .incbin "src\bg_landmark_the_dalles_rle.bin"
+bg_landmark_willamette_valley:
+  .incbin "src\bg_landmark_willamette_valley_rle.bin"
 
 bankvalues:
   .db $00,$01
@@ -469,6 +487,11 @@ landmarkdisplay:
   .dw bg_landmark_kansas_river, bg_landmark_big_blue_river
   .dw bg_landmark_fort_kearney, bg_landmark_chimney_rock
   .dw bg_landmark_fort_laramie, bg_landmark_south_pass
+  .dw bg_landmark_fort_bridger, bg_landmark_soda_springs
+  .dw bg_landmark_fort_hall, bg_landmark_snake_river_crossing
+  .dw bg_landmark_fort_boise, bg_landmark_blue_mountains
+  .dw bg_landmark_fort_walla_walla, bg_landmark_the_dalles
+  .dw bg_landmark_willamette_valley
   .dw $0000, $0000
   .dw $0000, $0000, $0000, $0000
 

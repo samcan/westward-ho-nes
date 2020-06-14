@@ -77,6 +77,16 @@ EndNewGameState:
 EngineLogicLandmark:
   CheckForStartButton EndLandmarkState
 EndLandmarkState:
+  LDA curlandmark
+  CMP #$0E
+  BNE @NotAtWillametteValley
+@AtWillametteValley:
+  ; we're at Willamette Valley
+  LDA #STATETITLE
+  STA newgmstate
+  JMP GameEngineLogicDone
+@NotAtWillametteValley:
+  INC curlandmark
   LDA #STATETRAVELING
   STA newgmstate
   JMP GameEngineLogicDone
