@@ -108,16 +108,27 @@ BTN_DOWNARROW	= %00000100
 BTN_LEFTARROW	= %00000010
 BTN_RIGHTARROW	= %00000001
 
+; PPU addresses
+PpuCtrl			= $2000
+PpuMask			= $2001
+PpuStatus		= $2002
+OamAddr			= $2003
+OamData			= $2004
+PpuScroll		= $2005
+PpuAddr			= $2006
+PpuData			= $2007
+OamDma			= $4014
+
 ;;;;;;;;;;;;;;;;;;
 
 MACRO WAIT_FOR_PPU_STATUS x
 @WaitNotSprite0:
-  LDA $2002
+  LDA PpuStatus
   AND #x
   BNE @WaitNotSprite0   ; wait until sprite 0 not hit
 
 @WaitSprite0:
-  LDA $2002
+  LDA PpuStatus
   AND #x
   BEQ @WaitSprite0      ; wait until sprite 0 is hit
 ENDM
@@ -131,8 +142,8 @@ RESET:
   LDX #$FF
   TXS          ; Set up stack
   INX          ; now X = 0
-  STX $2000    ; disable NMI
-  STX $2001    ; disable rendering
+  STX PpuCtrl  ; disable NMI
+  STX PpuMask  ; disable rendering
   STX $4010    ; disable DMC IRQs
 
   JSR VBlankWait		; First wait for vblank to make sure PPU is ready
@@ -178,10 +189,10 @@ clrmem:
 
               
   LDA #%10010000   ; enable NMI, sprites from Pattern Table 0, background from Pattern Table 1
-  STA $2000
+  STA PpuCtrl
 
   LDA #%00011110   ; enable sprites, enable background, no clipping on left side
-  STA $2001
+  STA PpuMask
 
 Forever:
   JMP Forever     ;jump back to Forever, infinite loop, waiting for NMI
@@ -205,15 +216,15 @@ UpdateCurrentScreen:
 
   ; do sprite DMA
   LDA #$00
-  STA $2003       ; set the low byte (00) of the RAM address
+  STA OamAddr     ; set the low byte (00) of the RAM address
   LDA #$02
-  STA $4014       ; set the high byte (02) of the RAM address, start the transfer
+  STA OamDma      ; set the high byte (02) of the RAM address, start the transfer
 
   ;;This is the PPU clean up section, so rendering the next frame starts properly.
   LDA #%10010000   ; enable NMI, sprites from Pattern Table 0, background from Pattern Table 1
-  STA $2000
+  STA PpuCtrl
   LDA #%00011110   ; enable sprites, enable background, no clipping on left side
-  STA $2001
+  STA PpuMask
 
   ; do scrolling, but we'll only check for scrolling in traveling state.
   ; theoretically, I could just set scrollH to #$00 in all other states, and I
@@ -227,15 +238,15 @@ UpdateCurrentScreen:
   ; for getting horizontal status bar working. Now I need to flip it so the horizontal status bar is on the
   ; BOTTOM!
   LDA #$00
-  STA $2006
-  STA $2006
+  STA PpuAddr
+  STA PpuAddr
 
   ; set no scroll for status bar
   LDA #$00
-  STA $2005
-  STA $2005
+  STA PpuScroll
+  STA PpuScroll
   LDA #%10010000
-  STA $2000
+  STA PpuCtrl
   
   WAIT_FOR_PPU_STATUS %01000000
 
@@ -245,14 +256,14 @@ UpdateCurrentScreen:
   BNE @WaitScanline
 
   LDA scrollH
-  STA $2005
+  STA PpuScroll
   LDA #$00
-  STA $2005
+  STA PpuScroll
   JMP @GraphicsDone
 @NoScroll:
   LDA #$00
-  STA $2005
-  STA $2005
+  STA PpuScroll
+  STA PpuScroll
 
 @GraphicsDone
   ;;;all graphics updates done by here, run game engine

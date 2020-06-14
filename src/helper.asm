@@ -100,7 +100,7 @@ TextDone:
 ;;
 DecodeRLEScreen:
   ; set output address
-  LDA #$2002
+  LDA #PpuStatus
   CPX #$01
   BEQ @loadOne
   LDA #$20
@@ -108,9 +108,9 @@ DecodeRLEScreen:
 @loadOne:
   LDA #$24
 @cont:
-  STA $2006
+  STA PpuAddr
   LDA #$00
-  STA $2006
+  STA PpuAddr
 
   ; ; copy screen to VRAM
   ; Decode RLE
@@ -126,7 +126,7 @@ DecodeRLEScreen:
   ; get byte
   LDA (pointer), y
 @loop:
-  STA $2007
+  STA PpuData
   DEX
   BNE @loop
   INY
@@ -146,11 +146,11 @@ DecodeRLEScreen:
 ;;   STA paletteptr
 ;;   JSR LoadPalettes
 LoadPalettes:
-  LDA $2002             ; read PPU status to reset the high/low latch
+  LDA PpuStatus         ; read PPU status to reset the high/low latch
   LDA #$3F
-  STA $2006             ; write the high byte of $3F00 address
+  STA PpuAddr           ; write the high byte of $3F00 address
   LDA #$00
-  STA $2006             ; write the low byte of $3F00 address
+  STA PpuAddr           ; write the low byte of $3F00 address
   LDY #$00              ; start out at 0
 @loop:
   LDA (paletteptr), y     ; load data from address (paletteptr + the value in y)
@@ -158,7 +158,7 @@ LoadPalettes:
                           ; 2nd time through loop it will load paletteptr+1
                           ; 3rd time through loop it will load paletteptr+2
                           ; etc
-  STA $2007             ; write to PPU
+  STA PpuData           ; write to PPU
   INY                   ; Y = Y + 1
   CPY #$20              ; Compare Y to hex $20, decimal 32 - copying 32 bytes = 8 sprites
   BNE @loop             ; Branch to @loop if compare was Not Equal to zero
@@ -169,11 +169,11 @@ LoadPalettes:
 ;; ClearBackground will clear the background tiles loaded into memory
 ClearBgMemory:
   ; set output address
-  LDA #$2002
+  LDA #PpuStatus
   LDA #$20
-  STA $2006
+  STA PpuAddr
   LDA #$00
-  STA $2006
+  STA PpuAddr
 
   ; clear VRAM
 @Copy1024Bytes:
@@ -182,7 +182,7 @@ ClearBgMemory:
   LDY #$00
 @Copy1Byte:
   LDA #$00
-  STA $2007
+  STA PpuData
   INY
   BNE @Copy1Byte
   DEX
@@ -191,7 +191,7 @@ ClearBgMemory:
 
 ;;;;;;;;;;;;;;;
 VBlankWait:
-  BIT $2002
+  BIT PpuStatus
   BPL VBlankWait
 
 ;;;;;;;;;;;;;;;
@@ -240,22 +240,22 @@ BankSwitch:
 DisableNMI:
   ; disable rendering and NMIs
   LDA #$00
-  STA $2000
-  STA $2001
+  STA PpuCtrl
+  STA PpuMask
 
   ; set output address
-  LDA $2002
+  LDA PpuStatus
   LDA #$20
-  STA $2006
+  STA PpuAddr
   LDA #$00
-  STA $2006
+  STA PpuAddr
   RTS
 ;;;;;;;;;;;;;;;
 EnableNMI:
   ; enable NMI
-  LDA $2002
+  LDA PpuStatus
   LDA #%10010000
-  STA $2000
+  STA PpuCtrl
   RTS
 ;;;;;;;;;;;;;;;
 EightBitHexToDec:
