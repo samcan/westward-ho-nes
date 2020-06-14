@@ -247,6 +247,20 @@ EngineLogicTraveling:
   LDA tempcalcb
   STA mitraveldy
 
+  ; we've calculated the max distance we can travel today. However, we may have
+  ; reached a landmark. For example, if we're traveling a max of 30 miles today,
+  ; but the landmark is only 23 miles away, we need to only travel 23 miles
+  ; today, not 30. Check if miremaining < mitraveldy, and if it is, set
+  ; mitraveldy to miremaining. (Later we check if miremaining = mitraveldy,
+  ; which means we've reached the landmark, and if it is, we trigger the
+  ; landmark.)
+  LDA mitraveldy
+  CMP miremaining
+  BCC @UpdateTotalMiTraveled
+  LDA miremaining
+  STA mitraveldy
+
+@UpdateTotalMiTraveled:
   ; update total mi traveled (this is a 16-bit number hence the rigamarole)
   LDA mitraveled
   CLC
@@ -260,11 +274,10 @@ EngineLogicTraveling:
   JSR SixteenBitHexToDec
 
   ; time to trigger landmark?
-  ; is miremaining <= mitraveldy?
+  ; is miremaining = mitraveldy?
   ;    if so, trigger landmark
   LDA miremaining
   CMP mitraveldy
-  BCC @TriggerLandmark
   BEQ @TriggerLandmark
   SEC
   SBC mitraveldy
