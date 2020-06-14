@@ -320,6 +320,8 @@ LoadFrameOne:
 ;;;;;;;;;;
 UpdateCalendar:
   ; adds one day to the game's calendar
+  ;
+  ; Clobbers: A, X
   INC day
   LDX month
   LDA daysinmonth, X
