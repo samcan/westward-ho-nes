@@ -609,53 +609,55 @@ UpdateStatusIcons:
   INY
 
   ; mileage remaining to next landmark
+  ;
+  ; thankfully, given the distances involved, we only ever need to show
+  ; ones, tens, and hundreds
+  ;
+  ; Input: miremaining, X
+  ; Clobbers: A, Y
   LDA #$00
   STA hundsshown
+  ; X is the current offset in sprite memory; we need to store it on the
+  ; stack before we clobber it
   TXA
   PHA
+
   LDA miremaining
   JSR EightBitHexToDec
+
+  ; now that we've converted miremaining to two-byte decimal, we can pull
+  ; X back off of the stack
   PLA
   TAX
 
-  LDA htd_out+1
+  LDA htd_out+1				; get the hundreds value
   BEQ @SkipHundreds
+
+@LoadHundreds:
   CLC
-  ADC #$44
-  TAY
+  ADC #$44					; adds $44 to get the tile number we need
+  TAY						; transfer to Y for safe-keeping
+  STA hundsshown			; store non-zero value in hundsshown
+  JMP @DisplayHundreds
+
+@SkipHundreds:
+  LDA #$00					; load blank tile for hundreds
+  TAY						; transfer to Y for safe-keeping
+  STA hundsshown			; store zero value in hundsshown
 
 @DisplayHundreds:
   LDA #STATUS_ICON_Y + $18
   STA $0200, x
   INX
-  TYA
+  TYA						; transfer tile index back off of Y
   STA $0200, x
   INX
   LDA #%00000001
   STA $0200, x
   INX
-  LDA #$50+$58
+  LDA #$A8
   STA $0200, x
   INX
-  LDA #$01
-  STA hundsshown
-  JMP @Tens
-
-@SkipHundreds:
-  LDA #STATUS_ICON_Y + $18
-  STA $0200, x
-  INX
-  LDA #$00
-  STA $0200, x
-  INX
-  LDA #%00000001
-  STA $0200, x
-  INX
-  LDA #$50+$58
-  STA $0200, x
-  INX
-  LDA #$00
-  STA hundsshown
 
 @Tens:
   ; we need to display the tens if there's a value greater than 0 or if
@@ -673,7 +675,6 @@ UpdateStatusIcons:
 @TensZero:
   ; is the hundreds place shown?
   LDA hundsshown
-  AND #%00000001
   BNE @HundredsShown
   JMP @HundredsNotShown
 @HundredsShown:
