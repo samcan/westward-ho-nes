@@ -675,51 +675,42 @@ UpdateStatusIcons:
 @Tens:
   ; we need to display the tens if there's a value greater than 0 or if
   ; the value in the hundreds place is greater than 0
+
+  ; grab the tens value
   LDA htd_out
   AND #%11110000
   LSR A
   LSR A
   LSR A
   LSR A
-  TAY
+
   BEQ @TensZero
 @TensNotZero:
-  JMP @HundredsShown
+  CLC
+  ADC #$44
+  TAY						; store in Y for safe-keeping
+  JMP @DisplayTens
 @TensZero:
   ; is the hundreds place shown?
   LDA hundsshown
-  BNE @HundredsShown
-  JMP @HundredsNotShown
-@HundredsShown:
+  BNE @DisplayTens
+  LDA #$00					; set tile index of $00 as we want blank space
+  TAY
+@DisplayTens:
   LDA #STATUS_ICON_Y + $18
   STA $0200, x
   INX
-  TYA
-  CLC
-  ADC #$44
+  TYA						; transfer tile index back off of Y
   STA $0200, x
   INX
   LDA #%00000001
   STA $0200, x
   INX
-  LDA #$50+$60
+  LDA #$B0
   STA $0200, x
   INX
-  JMP @DoneWithTens
-@HundredsNotShown:
-  LDA #STATUS_ICON_Y + $18
-  STA $0200, x
-  INX
-  LDA #$00
-  STA $0200, x
-  INX
-  LDA #%00000001
-  STA $0200, x
-  INX
-  LDA #$50+$60
-  STA $0200, x
-  INX
-@DoneWithTens:
+
+@DisplayOnes:
   ; now we'll display ones, which are easy because we always display the
   ; ones place
   LDA htd_out
