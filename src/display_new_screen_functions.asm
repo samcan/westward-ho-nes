@@ -172,6 +172,16 @@ DisplayAlphabetScreen:
 
   JMP FinishLoadNewScreen
 
+DisplayPausedScreen:
+  LDA #$01
+  JSR BankSwitch
+
+  PaletteLoad palette
+
+  LoadRLEScreen bg_paused_screen, $00
+
+  JMP FinishLoadNewScreen
+
 DisplayTravelingScreen:
   LDA #$01
   JSR BankSwitch

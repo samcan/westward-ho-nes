@@ -431,6 +431,8 @@ bg_sprite0_traveling_screen:
   .incbin "src\bg_sprite0_traveling_screen_rle.bin"
 bg_alphabet_screen:
   .incbin "src\bg_alphabet_screen_rle.bin"
+bg_paused_screen:
+  .incbin "src\bg_paused_screen_rle.bin"
 bg_landmark_kansas_river:
   .incbin "src\bg_landmark_kansas_river_rle.bin"
 bg_landmark_big_blue_river:
@@ -470,14 +472,16 @@ bankvalues:
 ; by NMI when it's time to load a new screen
 screen:
   .dw DisplayTitleScreen, DisplayNewGameScreen, DisplayTravelingScreen
-  .dw DisplayLandmarkScreen, DisplayStoreScreen, $0000, $0000
+  .dw DisplayLandmarkScreen, DisplayStoreScreen, DisplayPausedScreen
+  .dw $0000
   .dw DisplayAlphabetScreen
 
 ; points to appropriate engine logic functions so they can get called by
 ; the engine
 enginelogic:
   .dw EngineLogicTitle, EngineLogicNewGame, EngineLogicTraveling
-  .dw EngineLogicLandmark, EngineLogicStore, $0000, $0000
+  .dw EngineLogicLandmark, EngineLogicStore, EngineLogicPaused
+  .dw $0000
   .dw EngineLogicAlphabet
 
 ; new line = $00, space char needs to be something else, $FF = done

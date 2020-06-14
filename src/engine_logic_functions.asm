@@ -193,7 +193,17 @@ EngineLogicStore:
   ;; logic associated with general store
   CheckForStartButton EndStoreGameState, GameEngineLogicDone
 EndStoreGameState:
-  ; user is exiting new game state, switch to general store state
+  ; user is exiting store state, switch to traveling state
+  LDA #STATETRAVELING
+  STA newgmstate
+  JMP GameEngineLogicDone
+
+;;;;;;;;;
+EngineLogicPaused:
+  ;; logic associated with paused screen
+  CheckForStartButton EndPausedGameState, GameEngineLogicDone
+EndPausedGameState:
+  ; user is exiting paused state, switch back to traveling state
   LDA #STATETRAVELING
   STA newgmstate
   JMP GameEngineLogicDone
@@ -295,6 +305,14 @@ EngineLogicTraveling:
   LDX #$24
   JSR UpdateStatusIcons
 
+  CheckForStartButton EnterPausedGameState, NotEnteringPausedGameState
+EnterPausedGameState:
+  ; user is entering pause state
+  LDA #STATEPAUSED
+  STA newgmstate
+  JMP GameEngineLogicDone
+
+NotEnteringPausedGameState:
   LDA currframe
   BEQ IncreaseScrollAndFlipWagonAnim
   JMP GameEngineLogicDone
