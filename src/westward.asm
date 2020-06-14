@@ -421,50 +421,50 @@ traveling_oxen:
   .db #OXEN_TOP_Y+$08,$15,%00000010,#OXEN_TOP_X,  #OXEN_TOP_Y+$08,$16,%00000010,#OXEN_TOP_X+$08,  #OXEN_TOP_Y,$05,%00000010,#OXEN_TOP_X,  #OXEN_TOP_Y,$06,%00000010,#OXEN_TOP_X+$08
 
 bg_title_screen:
-  ;.incbin "src\bg_title_screen.bin"
-  .incbin "src\bg_title_screen_rle.bin"
+  ;.incbin "src\assets\bg_title_screen.bin"
+  .incbin "src\assets\bg_title_screen_rle.bin"
 bg_instruction_screen:
-  .incbin "src\bg_instruction_screen_rle.bin"
+  .incbin "src\assets\bg_instruction_screen_rle.bin"
 bg_blank_traveling_screen:
-  .incbin "src\bg_blank_traveling_screen_rle.bin"
+  .incbin "src\assets\bg_blank_traveling_screen_rle.bin"
 bg_sprite0_traveling_screen:
-  .incbin "src\bg_sprite0_traveling_screen_rle.bin"
+  .incbin "src\assets\bg_sprite0_traveling_screen_rle.bin"
 bg_alphabet_screen:
-  .incbin "src\bg_alphabet_screen_rle.bin"
+  .incbin "src\assets\bg_alphabet_screen_rle.bin"
 bg_paused_screen:
-  .incbin "src\bg_paused_screen_rle.bin"
+  .incbin "src\assets\bg_paused_screen_rle.bin"
 bg_landmark_kansas_river:
-  .incbin "src\bg_landmark_kansas_river_rle.bin"
+  .incbin "src\assets\bg_landmark_kansas_river_rle.bin"
 bg_landmark_big_blue_river:
-  .incbin "src\bg_landmark_big_blue_river_rle.bin"
+  .incbin "src\assets\bg_landmark_big_blue_river_rle.bin"
 bg_landmark_fort_kearney:
-  .incbin "src\bg_landmark_fort_kearney_rle.bin"
+  .incbin "src\assets\bg_landmark_fort_kearney_rle.bin"
 bg_landmark_chimney_rock:
-  .incbin "src\bg_landmark_chimney_rock_rle.bin"
+  .incbin "src\assets\bg_landmark_chimney_rock_rle.bin"
 bg_landmark_fort_laramie:
-  .incbin "src\bg_landmark_fort_laramie_rle.bin"
+  .incbin "src\assets\bg_landmark_fort_laramie_rle.bin"
 bg_landmark_south_pass:
-  .incbin "src\bg_landmark_south_pass_rle.bin"
+  .incbin "src\assets\bg_landmark_south_pass_rle.bin"
 bg_landmark_fort_bridger:
-  .incbin "src\bg_landmark_fort_bridger_rle.bin"
+  .incbin "src\assets\bg_landmark_fort_bridger_rle.bin"
 bg_landmark_soda_springs:
-  .incbin "src\bg_landmark_soda_springs_rle.bin"
+  .incbin "src\assets\bg_landmark_soda_springs_rle.bin"
 bg_landmark_fort_hall:
-  .incbin "src\bg_landmark_fort_hall_rle.bin"
+  .incbin "src\assets\bg_landmark_fort_hall_rle.bin"
 bg_landmark_snake_river_crossing:
-  .incbin "src\bg_landmark_snake_river_crossing_rle.bin"
+  .incbin "src\assets\bg_landmark_snake_river_crossing_rle.bin"
 bg_landmark_fort_boise:
-  .incbin "src\bg_landmark_fort_boise_rle.bin"
+  .incbin "src\assets\bg_landmark_fort_boise_rle.bin"
 bg_landmark_blue_mountains:
-  .incbin "src\bg_landmark_blue_mountains_rle.bin"
+  .incbin "src\assets\bg_landmark_blue_mountains_rle.bin"
 bg_landmark_fort_walla_walla:
-  .incbin "src\bg_landmark_fort_walla_walla_rle.bin"
+  .incbin "src\assets\bg_landmark_fort_walla_walla_rle.bin"
 bg_landmark_the_dalles:
-  .incbin "src\bg_landmark_the_dalles_rle.bin"
+  .incbin "src\assets\bg_landmark_the_dalles_rle.bin"
 bg_landmark_willamette_valley:
-  .incbin "src\bg_landmark_willamette_valley_rle.bin"
+  .incbin "src\assets\bg_landmark_willamette_valley_rle.bin"
 bg_landmark_green_river:
-  .incbin "src\bg_landmark_green_river_rle.bin"
+  .incbin "src\assets\bg_landmark_green_river_rle.bin"
 
 bankvalues:
   .db $00,$01
