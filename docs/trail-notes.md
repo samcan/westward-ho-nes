@@ -48,7 +48,11 @@ Walla Walla to Willamette Falls (Oregon City) occupied about 20 days, and,
 all things considered, was the hardest part of the entire journey—what with
 drifting sands, rocky cliffs, and rapid streams along the Columbia, and the
 gorges, torrents, and thickets of the Cascade Mountains...'" ([source][davidahl])
+* Cholera outbreaks were common along the Platte River. These epidemics stopped at
+Fort Laramie. ([source][wpcholera1], [source][wpcholera2])
 
 
 
 [davidahl]: https://www.atariarchives.org/bca/Chapter02_WestwardHo.php
+[wpcholera1]: https://en.wikipedia.org/wiki/Oregon_Trail#Cholera_on_the_Platte_River
+[wpcholera2]: https://en.wikipedia.org/wiki/Oregon_Trail#Wyoming
