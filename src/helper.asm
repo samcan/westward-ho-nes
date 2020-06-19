@@ -398,3 +398,56 @@ GetRandomNumber:
 	STA seed+0
 	CMP #0     ; reload flags
 	RTS
+;;;;;;;;;;;;;;;
+; Set weather and temperature
+; randomly generates weather for now
+; Clobbers: A, Y
+UpdateWeather:
+  LDA miremaining
+  STA seed+0
+  LDA day
+  STA seed+1
+  JSR GetRandomNumber
+  STA tempernum
+
+  CMP #$85
+  BCS @CheckAA
+  LDA #TEMP_COLD
+  STA temperature
+  JMP @DoneTemp
+
+@CheckAA:
+  CMP #$AA
+  BCS @GreaterThanEqualAA
+  LDA #TEMP_FAIR
+  STA temperature
+  JMP @DoneTemp
+
+@GreaterThanEqualAA:
+  LDA #TEMP_HOT
+  STA temperature
+
+@DoneTemp:
+  LDA tempernum
+  STA weathernum
+
+  CMP #$3A
+  BCS +
+  LDA #WEATHER_STORM
+  STA weather
+  JMP WeatherDone:
++ CMP #$7E
+  BCS +
+  LDA #WEATHER_RAIN
+  STA weather
+  JMP WeatherDone
++ CMP #$B8
+  BCS +
+  LDA #WEATHER_PARTLY
+  STA weather
+  JMP WeatherDone
++ LDA #WEATHER_SUN
+  STA weather
+
+WeatherDone:
+  RTS

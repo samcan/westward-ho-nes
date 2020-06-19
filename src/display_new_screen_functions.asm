@@ -252,6 +252,8 @@ DisplayTravelingScreen:
   LDA landmarkdist, X
   STA miremaining
 
+  JSR UpdateWeather
+
   ; update status bar
   LDX #$24
   JSR UpdateStatusIcons

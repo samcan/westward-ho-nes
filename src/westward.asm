@@ -28,7 +28,9 @@ month		.dsb 1		; current month (we're assuming a year of 1848)
 						; March-July are valid options for starting point
 day			.dsb 1		; current day -- start on 1st day of month
 health		.dsb 1		; current health status
+tempernum	.dsb 1		; current number for temperature (translated into status)
 temperature	.dsb 1		; current temperature status
+weathernum	.dsb 1		; current number for weather (translated into status)
 weather		.dsb 1		; current weather status
 spritemem   .dsb 1
 textxpos    .dsb 1

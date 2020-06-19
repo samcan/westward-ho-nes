@@ -237,6 +237,9 @@ EngineLogicTraveling:
   STA currframedy
   JSR UpdateCalendar
 
+  ; seed the random number generator and get the weather
+  JSR UpdateWeather
+
 @UpdateMileageEachDay:
   ;; increase mi traveled
   ; calc mi traveled
