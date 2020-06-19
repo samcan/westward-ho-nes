@@ -54,6 +54,7 @@ thousshown	.dsb 1
 hundsshown	.dsb 1
 bcdNum		.dsb 2
 bcdResult	.dsb 5
+seed		.dsb 2		; seed for PRNG
 cursorX		.dsb 1
 cursorY		.dsb 1
 name1		.dsb 10
