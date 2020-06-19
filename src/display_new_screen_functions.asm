@@ -22,6 +22,14 @@ ENDM
 DisplayTitleScreen:
   LDA #$00
   JSR BankSwitch
+
+  ; set up palette for title screen
+  LDA #<palette_title
+  STA paletteptr
+  LDA #>palette_title
+  STA paletteptr+1
+  JSR LoadPalettes
+
   LoadRLEScreen bg_title_screen, $00
   JMP FinishLoadNewScreen
 
