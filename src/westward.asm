@@ -1,5 +1,5 @@
 PRG_COUNT		= 2   ; 2x 16KB PRG code
-CHR_COUNT		= 3   ; 2x  8KB CHR data
+CHR_COUNT		= 3   ; 3x  8KB CHR data
 MAPPER			= 3   ; mapper 3 = CNROM
 MIRRORING		= 1   ; background mirroring
 
