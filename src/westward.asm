@@ -294,10 +294,6 @@ UpdateCurrentScreen:
   JMP GameEngineLogic  ;;process game engine logic
 
 GameEngineLogicDone:  
-  JSR UpdateSprites    ;;update sprites as necessary. Note that I think I need
-                       ;;to move this just above the comment above about having
-                       ;;all graphical updates "done by here."
-
   RTI             		; return from interrupt
 
 
@@ -346,11 +342,6 @@ FinishLoadNewScreen:
   .include "src\engine_logic_functions.asm"
 
   .include "src\helper.asm"
-
-;;;;;;;;;;;;;;
-UpdateSprites:
-  ;;update sprites here
-  RTS
 
 ;;;;;;;;;;;;;;
 SetInitialState:
