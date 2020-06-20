@@ -105,7 +105,7 @@ EngineLogicAlphabet:
   AND #BTN_B
   BNE @Erase
 
-  JMP UpdateCursorSprite
+  JMP UpdateCursorLetterSprites
 
 @SelectLetter:
   LDA hilitedltr
@@ -132,7 +132,7 @@ EngineLogicAlphabet:
 @StoreValue:
   STA name1, X
 @Done:
-  JMP UpdateCursorSprite
+  JMP UpdateCursorLetterSprites
 @End:
   JMP EndAlphabetState
 
@@ -155,7 +155,7 @@ MoveCursorUp:
 
   LDA #MIN_Y
 + STA cursorY
-  JMP UpdateCursorSprite
+  JMP UpdateCursorLetterSprites
 
 MoveCursorDown:
   LDA hilitedltr
@@ -177,7 +177,7 @@ MoveCursorDown:
 
   LDA #MAX_Y
 + STA cursorY
-  JMP UpdateCursorSprite
+  JMP UpdateCursorLetterSprites
 
 MoveCursorLeft:
   LDA hilitedltr
@@ -198,7 +198,7 @@ MoveCursorLeft:
 
   LDA #MIN_X
 + STA cursorX
-  JMP UpdateCursorSprite
+  JMP UpdateCursorLetterSprites
 
 MoveCursorRight:
   LDA hilitedltr
@@ -220,9 +220,9 @@ MoveCursorRight:
 
   LDA #MAX_X
 + STA cursorX
-  JMP UpdateCursorSprite
+  JMP UpdateCursorLetterSprites
 
-UpdateCursorSprite:
+UpdateCursorLetterSprites:
   LDX #$04				; start display using sprite 1 rather than
 						; sprite 0
 
