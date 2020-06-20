@@ -432,8 +432,6 @@ traveling_wagon:
   .db #OXEN_TOP_Y+$08,$17,%00000011,#OXEN_TOP_X+$10,  #OXEN_TOP_Y+$08,$18,%00000011,#OXEN_TOP_X+$18,  #OXEN_TOP_Y,$07,%00000011,#OXEN_TOP_X+$10,  #OXEN_TOP_Y,$08,%00000011,#OXEN_TOP_X+$18
 traveling_oxen:
   .db #OXEN_TOP_Y+$08,$15,%00000011,#OXEN_TOP_X,  #OXEN_TOP_Y+$08,$16,%00000011,#OXEN_TOP_X+$08,  #OXEN_TOP_Y,$05,%00000011,#OXEN_TOP_X,  #OXEN_TOP_Y,$06,%00000011,#OXEN_TOP_X+$08
-landmark_kansas:
-  .db #OXEN_TOP_Y+$08,$A4,%00000010,$10,  #OXEN_TOP_Y+$08,$A5,%00000010,$18,  #OXEN_TOP_Y,$94,%00000010,$10,  #OXEN_TOP_Y,$95,%00000010,$18
 
 ; metatile description is the following:
 ; tile num, palette num IN THE FOLLOWING ORDER:
@@ -447,12 +445,16 @@ metatile_wagon_frame1:
   .db $1B,%00000011,  $1C,%00000011
 
 metatile_oxen_frame0:
-  .db $05,%00000010,  $06,%00000010
-  .db $15,%00000010,  $16,%00000010
+  .db $05,%00000011,  $06,%00000011
+  .db $15,%00000011,  $16,%00000011
 
 metatile_oxen_frame1:
-  .db $05,%00000010,  $06,%00000010
-  .db $19,%00000010,  $1A,%00000010
+  .db $05,%00000011,  $06,%00000011
+  .db $19,%00000011,  $1A,%00000011
+
+metatile_landmark_river:
+  .db $94,%00000010,  $95,%00000010
+  .db $A4,%00000010,  $A5,%00000010
 
 
 bg_title_screen:
@@ -536,7 +538,7 @@ titletextattr:
   .db $00
 
 landmarkicons:
-  .dw landmark_kansas
+  .dw metatile_landmark_river
 
 landmarkdist:
   ; map up to South Pass

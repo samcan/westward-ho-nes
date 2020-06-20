@@ -528,6 +528,24 @@ UpdateTravelingSpritesFrameZero:
   STA tileptr+1
 
   JSR DrawMetatile
+
+  ; load landmark
+  ; landmark metatile
+  LDA #$68
+  STA tileoffset
+
+  LDA #OXEN_TOP_Y
+  STA tileY
+  LDA #$20
+  STA tileX
+
+  LDA #<metatile_landmark_river
+  STA tileptr
+  LDA #>metatile_landmark_river
+  STA tileptr+1
+
+  JSR DrawMetatile
+
   RTS
 
 UpdateTravelingSpritesFrameOne:
@@ -561,6 +579,24 @@ UpdateTravelingSpritesFrameOne:
   LDA #<metatile_oxen_frame1
   STA tileptr
   LDA #>metatile_oxen_frame1
+  STA tileptr+1
+
+  JSR DrawMetatile
+
+
+  ; load landmark
+  ; landmark metatile
+  LDA #$68
+  STA tileoffset
+
+  LDA #OXEN_TOP_Y
+  STA tileY
+  LDA #$20
+  STA tileX
+
+  LDA #<metatile_landmark_river
+  STA tileptr
+  LDA #>metatile_landmark_river
   STA tileptr+1
 
   JSR DrawMetatile

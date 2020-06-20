@@ -283,6 +283,23 @@ DisplayTravelingScreen:
 
   JSR DrawMetatile
 
+  ; load landmark
+  ; landmark metatile
+  LDA #$68
+  STA tileoffset
+
+  LDA #OXEN_TOP_Y
+  STA tileY
+  LDA #$20
+  STA tileX
+
+  LDA #<metatile_landmark_river
+  STA tileptr
+  LDA #>metatile_landmark_river
+  STA tileptr+1
+
+  JSR DrawMetatile
+
   ; set current wagon frame displayed (for animation)
   LDA #$00
   STA currwagfrm
