@@ -48,7 +48,8 @@ DisplayStoreScreen:
   JMP FinishLoadNewScreen
 
 DisplayLandmarkScreen:
-  LDA #$02
+  LDX curlandmark
+  LDA landmarkbank, X
   JSR BankSwitch
 
   PaletteLoad palette_landmark

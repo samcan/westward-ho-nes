@@ -537,6 +537,17 @@ landmarkdisplay:
   .dw bg_landmark_green_river
   ; need to add separate bg for rafting the Columbia River
 
+landmarkbank:
+  .db $01, $01
+  .db $01, $01
+  .db $01, $01
+  .db $01, $01
+  .db $01, $01
+  .db $01, $01
+  .db $01, $01
+  .db $01
+  .db $01
+
 daysinmonth:
   ; we fill [0] with fake value and that way we can use the month [3] to get the
   ; number of days in March
