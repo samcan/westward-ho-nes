@@ -455,6 +455,8 @@ bg_landmark_chimney_rock:
   .incbin "src\assets\bg_landmark_chimney_rock_rle.bin"
 bg_landmark_fort_laramie:
   .incbin "src\assets\bg_landmark_fort_laramie_rle.bin"
+bg_landmark_independence_rock:
+  .incbin "src\assets\bg_landmark_independence_rock_rle.bin"
 bg_landmark_south_pass:
   .incbin "src\assets\bg_landmark_south_pass_rle.bin"
 bg_landmark_fort_bridger:
@@ -519,7 +521,7 @@ landmarkdist:
   ; back at Soda Springs, up to Blue Mountains
   .db 57, 182, 114, 160
   ; (split B) go to Fort Walla Walla
-  .db 55, 125
+  .db 55, 120
   ; (split C) back at the The Dalles, take Barlow Road
   .db 100
   ; (split A-2) go to Green River
@@ -532,7 +534,8 @@ landmarkdist:
 landmarkdisplay:
   .dw bg_landmark_kansas_river, bg_landmark_big_blue_river
   .dw bg_landmark_fort_kearney, bg_landmark_chimney_rock
-  .dw bg_landmark_fort_laramie, bg_landmark_south_pass
+  .dw bg_landmark_fort_laramie, bg_landmark_independence_rock
+  .dw bg_landmark_south_pass
   .dw bg_landmark_fort_bridger, bg_landmark_soda_springs
   .dw bg_landmark_fort_hall, bg_landmark_snake_river_crossing
   .dw bg_landmark_fort_boise, bg_landmark_blue_mountains
@@ -546,6 +549,7 @@ landmarkbank:
   .db $01, $01
   .db $01, $01
   .db $01, $01
+  .db $01
   .db $01, $01
   .db $01, $01
   .db $01, $01
