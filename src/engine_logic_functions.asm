@@ -114,6 +114,8 @@ EngineLogicAlphabet:
   CMP #$6A					; user selected backspace
   BEQ @Erase
   LDX numletters
+  CPX #$08
+  BEQ @Done
   STA name1, X
   INC numletters
   JMP @Done
