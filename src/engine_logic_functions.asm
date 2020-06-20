@@ -285,21 +285,34 @@ EndAlphabetState:
 
 ;;;;;;;;;
 EngineLogicLandmark:
-  CheckForStartButton EndLandmarkState, GameEngineLogicDone
-EndLandmarkState:
   LDA curlandmark
-  CMP #$0E
-  BNE @NotAtWillametteValley
-@AtWillametteValley:
-  ; we're at Willamette Valley
-  LDA #STATETITLE
-  STA newgmstate
-  JMP GameEngineLogicDone
-@NotAtWillametteValley:
+  ASL A
+  TAX
+
+  LDA landmarkptr, x
+  STA vector
+
+  INX
+  LDA landmarkptr, x
+  STA vector+1
+
+
+  LDA buttons1
+  AND #BTN_START
+  BEQ +
+  JMP (vector)
++ JMP GameEngineLogicDone
+EndLandmarkState:
   INC curlandmark
   LDA #STATETRAVELING
   STA newgmstate
   JMP GameEngineLogicDone
+
+EndGame:
+  ; we've reached the Willamette Valley. Switch back to the Title
+  ; Screen once the user presses START by triggering RESET. (Eventually,
+  ; we should switch to the Score Screen first.)
+  JMP RESET
 
 ;;;;;;;;; 
 EngineLogicStore:

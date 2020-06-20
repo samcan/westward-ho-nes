@@ -557,6 +557,18 @@ landmarkbank:
   .db $01
   .db $01
 
+landmarkptr:
+  .dw EndLandmarkState, EndLandmarkState
+  .dw EndLandmarkState, EndLandmarkState
+  .dw EndLandmarkState, EndLandmarkState
+  .dw EndLandmarkState
+  .dw EndLandmarkState, EndLandmarkState
+  .dw EndLandmarkState, EndLandmarkState
+  .dw EndLandmarkState, EndLandmarkState
+  .dw EndLandmarkState, EndLandmarkState
+  .dw EndGame
+  .dw EndLandmarkState
+
 daysinmonth:
   ; we fill [0] with fake value and that way we can use the month [3] to get the
   ; number of days in March
