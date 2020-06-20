@@ -48,10 +48,10 @@ DisplayStoreScreen:
   JMP FinishLoadNewScreen
 
 DisplayLandmarkScreen:
-  LDA #$01
+  LDA #$02
   JSR BankSwitch
 
-  PaletteLoad palette
+  PaletteLoad palette_landmark
 
   ; load background into nametable 0
   LDA curlandmark

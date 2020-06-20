@@ -1,5 +1,5 @@
 PRG_COUNT		= 2   ; 2x 16KB PRG code
-CHR_COUNT		= 2   ; 2x  8KB CHR data
+CHR_COUNT		= 3   ; 2x  8KB CHR data
 MAPPER			= 3   ; mapper 3 = CNROM
 MIRRORING		= 1   ; background mirroring
 
@@ -418,6 +418,10 @@ palette_newgame:
   .db $22,$29,$1A,$0F,  $22,$36,$17,$0F,  $22,$1F,$21,$0F,  $22,$27,$17,$0F   ;;background palette
   .db $35,$17,$28,$1F,  $35,$1C,$2B,$39,  $35,$06,$15,$36,  $35,$07,$17,$10   ;;sprite palette
 
+palette_landmark:
+  .db $0F,$22,$09,$19,  $0F,$21,$19,$36,  $0F,$05,$26,$10,  $0F,$16,$27,$18   ;;background palette
+  .db $1F,$00,$27,$10,  $1F,$1C,$06,$10,  $1F,$07,$20,$10,  $1F,$07,$17,$10   ;;sprite palette
+
 traveling_wagon:
   .db #OXEN_TOP_Y+$08,$17,%00000011,#OXEN_TOP_X+$10,  #OXEN_TOP_Y+$08,$18,%00000011,#OXEN_TOP_X+$18,  #OXEN_TOP_Y,$07,%00000011,#OXEN_TOP_X+$10,  #OXEN_TOP_Y,$08,%00000011,#OXEN_TOP_X+$18
 traveling_oxen:
@@ -470,7 +474,7 @@ bg_landmark_green_river:
   .incbin "src\assets\bg_landmark_green_river_rle.bin"
 
 bankvalues:
-  .db $00,$01
+  .db $00,$01,$02
 
 
 ; points to appropriate 'load-new-screen' functions so they can get called
