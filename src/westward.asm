@@ -32,7 +32,7 @@ tempernum	.dsb 1		; current number for temperature (translated into status)
 temperature	.dsb 1		; current temperature status
 weathernum	.dsb 1		; current number for weather (translated into status)
 weather		.dsb 1		; current weather status
-spritemem   .dsb 1
+sproffset	.dsb 1
 textxpos    .dsb 1
 textypos	.dsb 1
 textvarLo	.dsb 1
@@ -65,6 +65,14 @@ letterX		.dsb 1
 numletters	.dsb 1
 temp		.dsb 1
 name1		.dsb 8
+
+; top-left for metatile
+tileptr		.dsb 2
+tileoffset	.dsb 1
+tileX		.dsb 1
+tileY		.dsb 1
+tile		.dsb 1
+tilepal		.dsb 1
   .ende
 
 ;; DECLARE CONSTANTS HERE
@@ -422,6 +430,26 @@ traveling_wagon:
   .db #OXEN_TOP_Y+$08,$17,%00000011,#OXEN_TOP_X+$10,  #OXEN_TOP_Y+$08,$18,%00000011,#OXEN_TOP_X+$18,  #OXEN_TOP_Y,$07,%00000011,#OXEN_TOP_X+$10,  #OXEN_TOP_Y,$08,%00000011,#OXEN_TOP_X+$18
 traveling_oxen:
   .db #OXEN_TOP_Y+$08,$15,%00000010,#OXEN_TOP_X,  #OXEN_TOP_Y+$08,$16,%00000010,#OXEN_TOP_X+$08,  #OXEN_TOP_Y,$05,%00000010,#OXEN_TOP_X,  #OXEN_TOP_Y,$06,%00000010,#OXEN_TOP_X+$08
+
+; metatile description is the following:
+; tile num, palette num IN THE FOLLOWING ORDER:
+; TOP LEFT, TOP RIGHT, BOTTOM LEFT, BOTTOM RIGHT
+metatile_wagon_frame0:
+  .db $07,%00000011,  $08,%00000011
+  .db $17,%00000011,  $18,%00000011
+
+metatile_wagon_frame1:
+  .db $07,%00000011,  $08,%00000011
+  .db $1B,%00000011,  $1C,%00000011
+
+metatile_oxen_frame0:
+  .db $05,%00000010,  $06,%00000010
+  .db $15,%00000010,  $16,%00000010
+
+metatile_oxen_frame1:
+  .db $05,%00000010,  $06,%00000010
+  .db $19,%00000010,  $1A,%00000010
+
 
 bg_title_screen:
   ;.incbin "src\assets\bg_title_screen.bin"
