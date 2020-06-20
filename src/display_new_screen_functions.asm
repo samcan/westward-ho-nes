@@ -269,6 +269,19 @@ DisplayTravelingScreen:
   TXA
   STA spritemem
 
+  LDX #$00
+@loop_landmark:
+  LDA landmark_kansas, X
+  STA $0268, x
+  INX
+  CPX #$10
+  BNE @loop_landmark
+
+  LDX #$03
+  LDA landmark_kansas, X
+  STA landmarkX
+
+
   ; set current wagon frame displayed (for animation)
   LDA #$00
   STA currwagfrm

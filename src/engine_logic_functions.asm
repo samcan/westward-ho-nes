@@ -565,6 +565,19 @@ UpdateTravelingSpritesFrameZero:
   INX
   LDA #OXEN_TOP_X+$08
   STA $0200, x
+
+  LDX #$00
+@loop_landmark:
+  CPX #$03
+  BNE +
+  LDA landmarkX
+  JMP @cont
++ LDA landmark_kansas, X
+@cont:
+  STA $0268, x
+  INX
+  CPX #$10
+  BNE @loop_landmark
   RTS
 
 UpdateTravelingSpritesFrameOne:
@@ -638,6 +651,20 @@ UpdateTravelingSpritesFrameOne:
   INX
   LDA #OXEN_TOP_X+$08
   STA $0200, x
+
+  LDX #$00
+@loop_landmark:
+  CPX #$03
+  BNE +
+  LDA landmarkX
+  JMP @cont
++ LDA landmark_kansas, X
+@cont:
+  STA $0268, x
+  INX
+  CPX #$10
+  BNE @loop_landmark
+
   RTS
 ;;;;;;;;;;;;;
 UpdateStatusIcons:
@@ -678,7 +705,7 @@ UpdateStatusIcons:
   LDA health
   STA $0200, x
   INX
-  LDA #%00000010
+  LDA #%00000011
   STA $0200, x
   INX
   LDA #$D0

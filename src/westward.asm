@@ -58,6 +58,8 @@ bcdNum		.dsb 2
 bcdResult	.dsb 5
 seed		.dsb 2		; seed for PRNG
 
+landmarkX	.dsb 1
+
 cursorX		.dsb 1
 cursorY		.dsb 1
 hilitedltr	.dsb 1
@@ -404,7 +406,7 @@ SetInitialState:
   ; set palettes
 palette:
   .db $0F,$3D,$09,$19,  $0F,$06,$15,$36,  $0F,$05,$26,$10,  $0F,$16,$27,$18   ;;background palette
-  .db $1F,$00,$27,$10,  $1F,$1C,$06,$10,  $1F,$07,$20,$10,  $1F,$07,$17,$10   ;;sprite palette
+  .db $1F,$00,$27,$10,  $1F,$1C,$06,$10,  $1F,$11,$21,$10,  $1F,$07,$17,$10   ;;sprite palette
 
 palette_title:
   .db $3F,$34,$10,$17,  $3F,$10,$30,$35,  $3F,$10,$11,$12,  $3F,$13,$14,$15   ;;background palette
@@ -421,7 +423,9 @@ palette_landmark:
 traveling_wagon:
   .db #OXEN_TOP_Y+$08,$17,%00000011,#OXEN_TOP_X+$10,  #OXEN_TOP_Y+$08,$18,%00000011,#OXEN_TOP_X+$18,  #OXEN_TOP_Y,$07,%00000011,#OXEN_TOP_X+$10,  #OXEN_TOP_Y,$08,%00000011,#OXEN_TOP_X+$18
 traveling_oxen:
-  .db #OXEN_TOP_Y+$08,$15,%00000010,#OXEN_TOP_X,  #OXEN_TOP_Y+$08,$16,%00000010,#OXEN_TOP_X+$08,  #OXEN_TOP_Y,$05,%00000010,#OXEN_TOP_X,  #OXEN_TOP_Y,$06,%00000010,#OXEN_TOP_X+$08
+  .db #OXEN_TOP_Y+$08,$15,%00000011,#OXEN_TOP_X,  #OXEN_TOP_Y+$08,$16,%00000011,#OXEN_TOP_X+$08,  #OXEN_TOP_Y,$05,%00000011,#OXEN_TOP_X,  #OXEN_TOP_Y,$06,%00000011,#OXEN_TOP_X+$08
+landmark_kansas:
+  .db #OXEN_TOP_Y+$08,$A4,%00000010,$10,  #OXEN_TOP_Y+$08,$A5,%00000010,$18,  #OXEN_TOP_Y,$94,%00000010,$10,  #OXEN_TOP_Y,$95,%00000010,$18
 
 bg_title_screen:
   ;.incbin "src\assets\bg_title_screen.bin"
@@ -503,6 +507,8 @@ titlewestwardtext:
 titletextattr:
   .db $00
 
+landmarkicons:
+  .dw landmark_kansas
 
 landmarkdist:
   ; map up to South Pass
