@@ -495,176 +495,75 @@ UpdateCalendar:
   RTS
 ;;;;;;;;;;
 UpdateTravelingSpritesFrameZero:
-  ; first part of wagon metatile
-  LDX #$04				; start display using sprite 1 rather than
-						; sprite 0
-  
-  LDA #OXEN_TOP_Y+$08
-  STA $0200, x
+  ; wagon metatile
+  LDA #$04
+  STA tileoffset
 
-  INX
-  LDA #$17
-  STA $0200, x
-
-  INX
-  LDA #%00000011
-  STA $0200, x
-
-  INX
-  LDA #OXEN_TOP_X+$10
-  STA $0200, x
-
-  ; 2nd part of wagon metatile
-  INX
-  LDA #OXEN_TOP_Y+$08
-  STA $0200, x
-
-  INX
-  LDA #$18
-  STA $0200, x
-
-  INX
-  LDA #%00000011
-  STA $0200, x
-
-  INX
-  LDA #OXEN_TOP_X+$18
-  STA $0200, x
-
-; first part of oxen metatile
-  LDX #$14
-  
-  LDA #OXEN_TOP_Y+$08
-  STA $0200, x
-
-  INX
-  LDA #$15
-  STA $0200, x
-
-  INX
-  LDA #%00000010
-  STA $0200, x
-
-  INX
+  LDA #OXEN_TOP_Y
+  STA tileY
   LDA #OXEN_TOP_X
-  STA $0200, x
+  CLC
+  ADC #$10
+  STA tileX
 
-  ; 2nd part of oxen metatile
-  INX
-  LDA #OXEN_TOP_Y+$08
-  STA $0200, x
+  LDA #<metatile_wagon_frame0
+  STA tileptr
+  LDA #>metatile_wagon_frame0
+  STA tileptr+1
 
-  INX
-  LDA #$16
-  STA $0200, x
+  JSR DrawMetatile
 
-  INX
-  LDA #%00000010
-  STA $0200, x
+  ; oxen metatile
+  LDA #$14
+  STA tileoffset
 
-  INX
-  LDA #OXEN_TOP_X+$08
-  STA $0200, x
+  LDA #OXEN_TOP_Y
+  STA tileY
+  LDA #OXEN_TOP_X
+  STA tileX
 
-  LDX #$00
-@loop_landmark:
-  CPX #$03
-  BNE +
-  LDA landmarkX
-  JMP @cont
-+ LDA landmark_kansas, X
-@cont:
-  STA $0268, x
-  INX
-  CPX #$10
-  BNE @loop_landmark
+  LDA #<metatile_oxen_frame0
+  STA tileptr
+  LDA #>metatile_oxen_frame0
+  STA tileptr+1
+
+  JSR DrawMetatile
   RTS
 
 UpdateTravelingSpritesFrameOne:
-; first part of wagon metatile
-  LDX #$04				; start display using sprite 1 rather than
-						; sprite 0
+  ; wagon metatile
+  LDA #$04
+  STA tileoffset
 
-  LDA #OXEN_TOP_Y+$08
-  STA $0200, x
-
-  INX
-  LDA #$1B
-  STA $0200, x
-
-  INX
-  LDA #%00000011
-  STA $0200, x
-
-  INX
-  LDA #OXEN_TOP_X+$10
-  STA $0200, x
-
-  ; 2nd part of wagon metatile
-  INX
-  LDA #OXEN_TOP_Y+$08
-  STA $0200, x
-
-  INX
-  LDA #$1C
-  STA $0200, x
-
-  INX
-  LDA #%00000011
-  STA $0200, x
-
-  INX
-  LDA #OXEN_TOP_X+$18
-  STA $0200, x
-
-; first part of oxen metatile
-  LDX #$14
-  
-  LDA #OXEN_TOP_Y+$08
-  STA $0200, x
-
-  INX
-  LDA #$19
-  STA $0200, x
-
-  INX
-  LDA #%00000010
-  STA $0200, x
-
-  INX
+  LDA #OXEN_TOP_Y
+  STA tileY
   LDA #OXEN_TOP_X
-  STA $0200, x
+  CLC
+  ADC #$10
+  STA tileX
 
-  ; 2nd part of oxen metatile
-  INX
-  LDA #OXEN_TOP_Y+$08
-  STA $0200, x
+  LDA #<metatile_wagon_frame1
+  STA tileptr
+  LDA #>metatile_wagon_frame1
+  STA tileptr+1
 
-  INX
-  LDA #$1A
-  STA $0200, x
+  JSR DrawMetatile
 
-  INX
-  LDA #%00000010
-  STA $0200, x
+  ; oxen metatile
+  LDA #$14
+  STA tileoffset
 
-  INX
-  LDA #OXEN_TOP_X+$08
-  STA $0200, x
+  LDA #OXEN_TOP_Y
+  STA tileY
+  LDA #OXEN_TOP_X
+  STA tileX
 
-  LDX #$00
-@loop_landmark:
-  CPX #$03
-  BNE +
-  LDA landmarkX
-  JMP @cont
-+ LDA landmark_kansas, X
-@cont:
-  STA $0268, x
-  INX
-  CPX #$10
-  BNE @loop_landmark
+  LDA #<metatile_oxen_frame1
+  STA tileptr
+  LDA #>metatile_oxen_frame1
+  STA tileptr+1
 
+  JSR DrawMetatile
   RTS
 ;;;;;;;;;;;;;
 UpdateStatusIcons:
@@ -681,7 +580,6 @@ UpdateStatusIcons:
   LDA #$B0
   STA $0200, x
   INX
-  STX spritemem
 
   ; weather icon
   LDA #STATUS_ICON_Y
@@ -696,7 +594,6 @@ UpdateStatusIcons:
   LDA #$C0
   STA $0200, x
   INX
-  STX spritemem
 
   ; health icon
   LDA #STATUS_ICON_Y
@@ -711,7 +608,6 @@ UpdateStatusIcons:
   LDA #$D0
   STA $0200, x
   INX
-  STX spritemem
 
   ; calendar month
   LDA month
@@ -761,7 +657,6 @@ UpdateStatusIcons:
   LDA #$38
   STA $0200, x
   INX
-  STX spritemem
 
   ; day text
   LDA day

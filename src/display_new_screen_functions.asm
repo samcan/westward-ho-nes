@@ -117,7 +117,6 @@ DisplayLandmarkScreen:
   LDA #$68
   STA $0200, x
   INX
-  STX spritemem
 
   ; day text
   LDA day
@@ -249,38 +248,40 @@ DisplayTravelingScreen:
 
   ; load sprites
   ; load wagon
-  LDX #$00
-@loop_wagon:
-  LDA traveling_wagon, x
-  STA $0204, x
-  INX
-  CPX #$10
-  BNE @loop_wagon
+  ; wagon metatile
+  LDA #$04
+  STA tileoffset
+
+  LDA #OXEN_TOP_Y
+  STA tileY
+  LDA #OXEN_TOP_X
+  CLC
+  ADC #$10
+  STA tileX
+
+  LDA #<metatile_wagon_frame0
+  STA tileptr
+  LDA #>metatile_wagon_frame0
+  STA tileptr+1
+
+  JSR DrawMetatile
 
   ; load oxen
-  LDX #$00
-@loop_oxen:
-  LDA traveling_oxen, x
-  STA $0214, x
-  INX
-  CPX #$10
-  BNE @loop_oxen
+  ; oxen metatile
+  LDA #$14
+  STA tileoffset
 
-  TXA
-  STA spritemem
+  LDA #OXEN_TOP_Y
+  STA tileY
+  LDA #OXEN_TOP_X
+  STA tileX
 
-  LDX #$00
-@loop_landmark:
-  LDA landmark_kansas, X
-  STA $0268, x
-  INX
-  CPX #$10
-  BNE @loop_landmark
+  LDA #<metatile_oxen_frame0
+  STA tileptr
+  LDA #>metatile_oxen_frame0
+  STA tileptr+1
 
-  LDX #$03
-  LDA landmark_kansas, X
-  STA landmarkX
-
+  JSR DrawMetatile
 
   ; set current wagon frame displayed (for animation)
   LDA #$00

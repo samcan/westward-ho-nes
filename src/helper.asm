@@ -17,6 +17,9 @@
 ;;
 ;;
 ;; Sample usage:
+;;   LDA #$08
+;;   STA sproffset
+;;
 ;;   LDA #<titlewestwardtext
 ;;   STA textvarLo
 ;;   LDA #>titlewestwardtext
@@ -41,7 +44,7 @@ LoadTextParams:
 
   INY
 @loop:
-  LDX spritemem
+  LDX sproffset
 
   LDA textypos
   STA $0200, x
@@ -65,9 +68,6 @@ LoadTextParams:
   CLC
   ADC #$08
   STA textxpos
-
-  INX
-  STX spritemem
 
   INY
   LDA (textvarLo), y
@@ -451,3 +451,157 @@ UpdateWeather:
 
 WeatherDone:
   RTS
+;;;;;;;;;;;;;;;
+DrawMetatile:
+; Draw a four-tile metatile
+; Clobbers: A, X, Y
+; first part of oxen metatile
+  LDX #$00
+  LDY #$00
+
+; metatile_oxen_frame1:
+; .db $05,%00000010,  $06,%00000010
+; .db $1B,%00000010,  $1C,%00000010
+
+  ; load tile info as part of metatile
+@loop:
+  LDA (tileptr), Y
+  STA tile
+  INY
+  LDA (tileptr), Y
+  STA tilepal
+  INY
+
+  ; draw tile to OAM
+  CPX #$00
+  BEQ @DrawTopLeft
+  CPX #$01
+  BEQ @DrawTopRight
+  CPX #$02
+  BEQ @DrawBottomLeft
+  CPX #$03
+  BEQ @DrawBottomRight
+  JMP @cont
+
+@DrawTopLeft:
+  TXA
+  PHA
+
+  LDX tileoffset
+  LDA tileY
+  STA $0200, X
+
+  INX
+  LDA tile
+  STA $0200, X
+
+  INX
+  LDA tilepal
+  STA $0200, X
+
+  INX
+  LDA tileX
+  STA $0200, X
+
+  INX
+  STX tileoffset
+
+  PLA
+  TAX
+  JMP @cont
+
+@DrawTopRight:
+  TXA
+  PHA
+
+  LDX tileoffset
+  LDA tileY
+  STA $0200, X
+
+  INX
+  LDA tile
+  STA $0200, X
+
+  INX
+  LDA tilepal
+  STA $0200, X
+
+  INX
+  LDA tileX
+  CLC
+  ADC #$08
+  STA $0200, X
+
+  INX
+  STX tileoffset
+
+  PLA
+  TAX
+  JMP @cont
+
+@DrawBottomLeft:
+  TXA
+  PHA
+
+  LDX tileoffset
+  LDA tileY
+  CLC
+  ADC #$08
+  STA $0200, X
+
+  INX
+  LDA tile
+  STA $0200, X
+
+  INX
+  LDA tilepal
+  STA $0200, X
+
+  INX
+  LDA tileX
+  STA $0200, X
+
+  INX
+  STX tileoffset
+
+  PLA
+  TAX
+  JMP @cont
+
+@DrawBottomRight:
+  TXA
+  PHA
+
+  LDX tileoffset
+  LDA tileY
+  CLC
+  ADC #$08
+  STA $0200, X
+
+  INX
+  LDA tile
+  STA $0200, X
+
+  INX
+  LDA tilepal
+  STA $0200, X
+
+  INX
+  LDA tileX
+  CLC
+  ADC #$08
+  STA $0200, X
+
+  INX
+  STX tileoffset
+
+  PLA
+  TAX
+  JMP @cont
+
+@cont:
+  INX
+  CPX #$04
+  BEQ +
+  JMP @loop
++ RTS
