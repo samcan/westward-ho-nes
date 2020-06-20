@@ -89,26 +89,78 @@ EngineLogicAlphabet:
 
   LDA buttons1
   AND #BTN_LEFTARROW
-  BNE MoveCursorLeft
-
+  BEQ +
+  JMP MoveCursorLeft
++
   LDA buttons1
   AND #BTN_RIGHTARROW
-  BNE MoveCursorRight
+  BEQ +
+  JMP MoveCursorRight
++
+  LDA buttons1
+  AND #BTN_A
+  BNE @SelectLetter
+
+  LDA buttons1
+  AND #BTN_B
+  BNE @Erase
 
   JMP UpdateCursorSprite
 
+@SelectLetter:
+  LDA hilitedltr
+  CMP #$6B					; user selected OK?
+  BEQ @End
+  CMP #$6A					; user selected backspace
+  BEQ @Erase
+  LDX numletters
+  STA name1, X
+  INC numletters
+  JMP @Done
+@Erase:
+  LDA #$00
+  DEC numletters
+  LDX numletters
+  CPX #$00
+  BMI @Adjust
+  JMP @StoreValue
+@Adjust:
+  LDX #$00
+  STX numletters
+@StoreValue:
+  STA name1, X
+@Done:
+  JMP UpdateCursorSprite
+@End:
+  JMP EndAlphabetState
+
 MoveCursorUp:
+  LDA hilitedltr
+  SEC
+  SBC #$07
+  STA hilitedltr
+
   LDA cursorY
   SEC
   SBC #$10
   ; minimum Y is $8F
   CMP #MIN_Y
   BCS +
+  LDA hilitedltr
+  CLC
+  ADC #$07
+  STA hilitedltr
+
   LDA #MIN_Y
 + STA cursorY
   JMP UpdateCursorSprite
 
 MoveCursorDown:
+  LDA hilitedltr
+  CLC
+  ADC #$07
+  STA hilitedltr
+
   LDA cursorY
   CLC
   ADC #$10
@@ -116,22 +168,42 @@ MoveCursorDown:
   CMP #MAX_Y
   BCC +
   BEQ +
+  LDA hilitedltr
+  SEC
+  SBC #$07
+  STA hilitedltr
+
   LDA #MAX_Y
 + STA cursorY
   JMP UpdateCursorSprite
 
 MoveCursorLeft:
+  LDA hilitedltr
+  SEC
+  SBC #$01
+  STA hilitedltr
+
   LDA cursorX
   SEC
   SBC #$10
   ; minimum X is $48
   CMP #MIN_X
   BCS +
+  LDA hilitedltr
+  CLC
+  ADC #$01
+  STA hilitedltr
+
   LDA #MIN_X
 + STA cursorX
   JMP UpdateCursorSprite
 
 MoveCursorRight:
+  LDA hilitedltr
+  CLC
+  ADC #$01
+  STA hilitedltr
+
   LDA cursorX
   CLC
   ADC #$10
@@ -139,6 +211,11 @@ MoveCursorRight:
   CMP #MAX_X
   BCC +
   BEQ +
+  LDA hilitedltr
+  SEC
+  SBC #$01
+  STA hilitedltr
+
   LDA #MAX_X
 + STA cursorX
   JMP UpdateCursorSprite
@@ -162,8 +239,42 @@ UpdateCursorSprite:
   LDA cursorX
   STA $0200, x
 
-  CheckForStartButton EndAlphabetState, GameEngineLogicDone
+  ; draw selected letters
+  LDA #$30
+  STA letterX
 
+  LDY #$00
+- INX
+  LDA #$20
+  STA $0200, X
+
+  INX
+  STX temp
+  TYA
+  TAX
+  LDA name1, X
+  LDX temp
+  STA $0200, X
+
+  INX
+  LDA #%00000000
+  STA $0200, X
+
+  INX
+  LDA letterX
+  STA $0200, X
+  CLC
+  ADC #$10
+  STA letterX
+
+  INY
+  CPY #$0A
+  BNE -
+
+  ; now that we've implemented an OK button, we don't need to look
+  ; for the START button to end this state
+  ;CheckForStartButton EndAlphabetState, GameEngineLogicDone
+  JMP GameEngineLogicDone
 EndAlphabetState:
   ; user is exiting alphabet screen, go to store
   LDA #STATESTORE

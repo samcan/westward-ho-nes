@@ -161,6 +161,22 @@ DisplayAlphabetScreen:
 
   LoadRLEScreen bg_alphabet_screen, $00
 
+  ; clear temp vars
+  LDA #$00
+  STA letterX
+  STA numletters
+
+  ; clear name1
+  LDX #$08
+- DEX
+  STA name1, X
+  CPX #$00
+  BNE -
+
+  LDA #$50
+  STA hilitedltr
+
+  ; set up cursor
   LDX #$04
   LDA #MIN_Y
   STA cursorY
