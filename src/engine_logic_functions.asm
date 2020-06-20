@@ -704,9 +704,11 @@ UpdateStatusIcons:
   LSR A
   LSR A
   LSR A
+  TAY
 
   BEQ @TensZero
 @TensNotZero:
+  TYA
   CLC
   ADC #$44
   TAY						; store in Y for safe-keeping
@@ -714,7 +716,7 @@ UpdateStatusIcons:
 @TensZero:
   ; is the hundreds place shown?
   LDA hundsshown
-  BNE @DisplayTens
+  BNE @TensNotZero
   LDA #$00					; set tile index of $00 as we want blank space
   TAY
 @DisplayTens:
