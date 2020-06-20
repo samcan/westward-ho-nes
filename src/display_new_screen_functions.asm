@@ -273,10 +273,20 @@ DisplayTravelingScreen:
   LDA #$00
   STA currwagfrm
 
+  ; set the mileage remaining to the next landmark
+  ; however, we should only do this if miremaining = 0
+  ; otherwise, it means we're coming back from pause
+  ;
+  ; I found that the way I was doing it, loading the miremaining
+  ; every time we called this routine, meant that if I paused the
+  ; game, coming back from pause meant this routine was called and
+  ; it reset miremaining to the original amount for the next landmark.
+  LDA miremaining
+  BNE +
   LDX curlandmark
   LDA landmarkdist, X
   STA miremaining
-
++
   JSR UpdateWeather
 
   ; update status bar
