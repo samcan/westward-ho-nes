@@ -3,6 +3,18 @@ echo #####################
 echo Cleaning old files...
 echo #####################
 call clean.bat
+
+echo.
+echo ###################################
+echo Adding commit number...
+echo ###################################
+FOR /F "tokens=* USEBACKQ" %%F IN (`git rev-parse --short HEAD`) DO (
+SET commitrev=%%F
+)
+
+py .\util\add_build_number.py --input .\src\assets\bg_title_screen.bin --commit %commitrev%
+
+echo.
 echo ###################################
 echo RLE-compressing background files...
 echo ###################################
@@ -39,3 +51,4 @@ echo #####################
 echo Compiling NES file...
 echo #####################
 asm6f_64.exe -L -c -m src\westward.asm src\westward.nes
+py .\util\rm_build_number.py --input .\src\assets\bg_title_screen.bin
