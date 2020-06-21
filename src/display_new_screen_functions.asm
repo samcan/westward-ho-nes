@@ -285,7 +285,7 @@ DisplayTravelingScreen:
 
   ; load landmark
   ; landmark metatile
-  LDA #$68
+  LDA #$78
   STA tileoffset
 
   LDA #OXEN_TOP_Y

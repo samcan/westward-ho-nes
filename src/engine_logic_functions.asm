@@ -528,7 +528,7 @@ UpdateTravelingSpritesFrameZero:
 
   ; load landmark
   ; landmark metatile
-  LDA #$68
+  LDA #$78
   STA tileoffset
 
   LDA #OXEN_TOP_Y
@@ -583,7 +583,7 @@ UpdateTravelingSpritesFrameOne:
 
   ; load landmark
   ; landmark metatile
-  LDA #$68
+  LDA #$78
   STA tileoffset
 
   LDA #OXEN_TOP_Y
@@ -956,5 +956,129 @@ MileageTraveled:
   LDA #$50+$68
   STA $0200, x
   INX
+
+FoodRemaining:
+  TXA
+  PHA
+  LDA food
+  STA bcdNum
+  LDA food+1
+  STA bcdNum+1
+  JSR SixteenBitHexToDec
+
+  PLA
+  TAX
+
+
+  LDA #$00
+  STA thousshown
+  STA hundsshown
+
+  ; display thousands
+  LDA bcdResult+3
+  BEQ @ThousandsNotShown
+  JMP @ThousandsShown
+@ThousandsNotShown:
+  LDA #$00
+  TAY
+  JMP @ContThousands
+@ThousandsShown:
+  CLC
+  ADC #$44
+  TAY
+  LDA #$01
+  STA thousshown
+@ContThousands:
+  LDA #STATUS_ICON_Y + $10
+  STA $0200, x
+  INX
+  TYA
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #$50+$50
+  STA $0200, x
+  INX
+
+@DisplayHundreds:
+  ; display hundreds
+  LDA bcdResult+2
+  BEQ @HundredsZero
+  JMP @HundredsShown
+@HundredsZero:
+  LDA thousshown
+  BEQ @HundredsNotShown
+  JMP @HundredsShown
+@HundredsNotShown:
+  LDA #$00
+  TAY
+  JMP @ContHundreds
+@HundredsShown:
+  LDA #$01
+  STA hundsshown
+  LDA bcdResult+2
+  CLC
+  ADC #$44
+  TAY
+@ContHundreds:
+  LDA #STATUS_ICON_Y + $10
+  STA $0200, x
+  INX
+  TYA
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #$50+$58
+  STA $0200, x
+  INX
+
+  ; display tens
+  LDA #STATUS_ICON_Y + $10
+  STA $0200, x
+  INX
+  LDA bcdResult+1
+  BEQ @TensZero
+@TensNotZero:
+  LDA bcdResult+1
+  CLC
+  ADC #$44
+  JMP @ContTens
+@TensZero:
+  LDA thousshown
+  ORA hundsshown
+  BNE @TensNotZero
+  LDA #$00
+@ContTens:
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #$50+$60
+  STA $0200, x
+  INX
+  ; now we'll display ones, which are easy because we always display the
+  ; ones place
+  LDA bcdResult
+  CLC
+  ADC #$44
+  PHA
+  LDA #STATUS_ICON_Y + $10
+  STA $0200, x
+  INX
+  PLA
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #$50+$68
+  STA $0200, x
+  INX
+
   RTS
 ;;;;;;;;;;;;;;;;

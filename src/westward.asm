@@ -32,6 +32,8 @@ tempernum	.dsb 1		; current number for temperature (translated into status)
 temperature	.dsb 1		; current temperature status
 weathernum	.dsb 1		; current number for weather (translated into status)
 weather		.dsb 1		; current weather status
+food		.dsb 2
+
 sproffset	.dsb 1
 textxpos    .dsb 1
 textypos	.dsb 1
@@ -397,6 +399,12 @@ SetInitialState:
   STA month
   LDA #$01
   STA day
+
+  ; set food of $7D0 (2000 lbs)
+  LDA #$D0
+  STA food
+  LDA #$07
+  STA food+1
 
   LDA #$00
   STA scrollH
