@@ -405,12 +405,9 @@ EngineLogicTraveling:
   CLC
   ADC mitraveldy
   STA mitraveled
-  STA bcdNum
   LDA mitraveled+1
   ADC #$00
   STA mitraveled+1
-  STA bcdNum+1
-  JSR SixteenBitHexToDec
 
   ; time to trigger landmark?
   ; is miremaining = mitraveldy?
@@ -839,6 +836,16 @@ UpdateStatusIcons:
   INX
 
 MileageTraveled:
+  TXA
+  PHA
+  LDA mitraveled
+  STA bcdNum
+  LDA mitraveled+1
+  STA bcdNum+1
+  JSR SixteenBitHexToDec
+
+  PLA
+  TAX
   ; total mileage traveled
   LDA #$00
   STA thousshown
