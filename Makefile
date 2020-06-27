@@ -1,44 +1,59 @@
-ASM = asm6f_64.exe
-ASM_FLAGS = -L -c -m
-ASM_FILE = src\westward.asm
-NES_FILE = src\westward.nes
+ASM_WIN = asm6f_64.exe
+ASM_LINUX = asm6f
 
-PYTHON = py
-PY_ADD_BUILD_NUM = .\util\add_build_number.py
-PY_RM_BUILD_NUM = .\util\rm_build_number.py
-PY_COMPRESS_RLE = .\util\compress_rle.py
+ASM_FLAGS = -L -c -m
+ASM_FILE = src/westward.asm
+NES_FILE = src/westward.nes
+
+PYTHON_WIN = py
+PYTHON_LINUX = python3
+
+RM_WIN = del /f /q
+
+ifeq ($(OS), Windows_NT)
+	ASM = $(ASM_WIN)
+	PYTHON = $(PYTHON_WIN)
+else
+	ASM = $(ASM_LINUX)
+	PYTHON = $(PYTHON_LINUX)
+endif
+
+PY_ADD_BUILD_NUM = util/add_build_number.py
+PY_RM_BUILD_NUM = util/rm_build_number.py
+PY_COMPRESS_RLE = util/compress_rle.py
 
 DIR_SRC = src
-DIR_ASSETS = src\assets
+DIR_ASSETS = src/assets
+DIR_ASSETS_WIN = src\assets
 
 COMMIT = $(shell git rev-parse --short HEAD)
 
-RLE_FILES = $(DIR_ASSETS)\bg_alphabet_screen.rle \
-			$(DIR_ASSETS)\bg_blank_traveling_screen.rle \
-			$(DIR_ASSETS)\bg_instruction_screen.rle \
-			$(DIR_ASSETS)\bg_landmark_big_blue_river.rle \
-			$(DIR_ASSETS)\bg_landmark_blue_mountains.rle \
-			$(DIR_ASSETS)\bg_landmark_chimney_rock.rle \
-			$(DIR_ASSETS)\bg_landmark_fort_boise.rle \
-			$(DIR_ASSETS)\bg_landmark_fort_bridger.rle \
-			$(DIR_ASSETS)\bg_landmark_fort_hall.rle \
-			$(DIR_ASSETS)\bg_landmark_fort_kearney.rle \
-			$(DIR_ASSETS)\bg_landmark_fort_laramie.rle \
-			$(DIR_ASSETS)\bg_landmark_fort_walla_walla.rle \
-			$(DIR_ASSETS)\bg_landmark_green_river.rle \
-			$(DIR_ASSETS)\bg_landmark_independence_rock.rle \
-			$(DIR_ASSETS)\bg_landmark_kansas_river.rle \
-			$(DIR_ASSETS)\bg_landmark_snake_river_crossing.rle \
-			$(DIR_ASSETS)\bg_landmark_soda_springs.rle \
-			$(DIR_ASSETS)\bg_landmark_south_pass.rle \
-			$(DIR_ASSETS)\bg_landmark_the_dalles.rle \
-			$(DIR_ASSETS)\bg_landmark_willamette_valley.rle \
-			$(DIR_ASSETS)\bg_pace_screen.rle \
-			$(DIR_ASSETS)\bg_paused_screen.rle \
-			$(DIR_ASSETS)\bg_sprite0_traveling_screen.rle \
-			$(DIR_ASSETS)\bg_start_month_screen.rle \
-			$(DIR_ASSETS)\bg_store_screen.rle \
-			$(DIR_ASSETS)\bg_title_screen.rle
+RLE_FILES = $(DIR_ASSETS)/bg_alphabet_screen.rle \
+			$(DIR_ASSETS)/bg_blank_traveling_screen.rle \
+			$(DIR_ASSETS)/bg_instruction_screen.rle \
+			$(DIR_ASSETS)/bg_landmark_big_blue_river.rle \
+			$(DIR_ASSETS)/bg_landmark_blue_mountains.rle \
+			$(DIR_ASSETS)/bg_landmark_chimney_rock.rle \
+			$(DIR_ASSETS)/bg_landmark_fort_boise.rle \
+			$(DIR_ASSETS)/bg_landmark_fort_bridger.rle \
+			$(DIR_ASSETS)/bg_landmark_fort_hall.rle \
+			$(DIR_ASSETS)/bg_landmark_fort_kearney.rle \
+			$(DIR_ASSETS)/bg_landmark_fort_laramie.rle \
+			$(DIR_ASSETS)/bg_landmark_fort_walla_walla.rle \
+			$(DIR_ASSETS)/bg_landmark_green_river.rle \
+			$(DIR_ASSETS)/bg_landmark_independence_rock.rle \
+			$(DIR_ASSETS)/bg_landmark_kansas_river.rle \
+			$(DIR_ASSETS)/bg_landmark_snake_river_crossing.rle \
+			$(DIR_ASSETS)/bg_landmark_soda_springs.rle \
+			$(DIR_ASSETS)/bg_landmark_south_pass.rle \
+			$(DIR_ASSETS)/bg_landmark_the_dalles.rle \
+			$(DIR_ASSETS)/bg_landmark_willamette_valley.rle \
+			$(DIR_ASSETS)/bg_pace_screen.rle \
+			$(DIR_ASSETS)/bg_paused_screen.rle \
+			$(DIR_ASSETS)/bg_sprite0_traveling_screen.rle \
+			$(DIR_ASSETS)/bg_start_month_screen.rle \
+			$(DIR_ASSETS)/bg_store_screen.rle \
+			$(DIR_ASSETS)/bg_title_screen.rle
 
 default: all
 
@@ -47,18 +62,29 @@ all: westward
 
 .PHONY: clean rm_build_number westward rle_files
 clean:
-	del /f /s /q *.lst
-	del /f /s /q *.mlb
-	del /f /s /q *.nes
-	del /f /s /q *.bak
-	del /f /s /q *.cdl
-	del /f /s /q *.rle
+ifeq ($(OS), Windows_NT)
+	$(RM_WIN) $(DIR_SRC)\*.lst
+	$(RM_WIN) $(DIR_SRC)\*.mlb
+	$(RM_WIN) $(DIR_SRC)\*.nes
+	$(RM_WIN) $(DIR_SRC)\*.bak
+	$(RM_WIN) $(DIR_ASSETS_WIN)\*.bak
+	$(RM_WIN) $(DIR_SRC)\*.cdl
+	$(RM_WIN) $(DIR_ASSETS_WIN)\*.rle
+else
+	$(RM) $(DIR_SRC)/*.lst
+	$(RM) $(DIR_SRC)/*.mlb
+	$(RM) $(DIR_SRC)/*.nes
+	$(RM) $(DIR_SRC)/*.bak
+	$(RM) $(DIR_ASSETS)/*.bak
+	$(RM) $(DIR_SRC)/*.cdl
+	$(RM) $(DIR_ASSETS)/*.rle
+endif
 
 add_build_number:
-	$(PYTHON) $(PY_ADD_BUILD_NUM) --input $(DIR_ASSETS)\bg_title_screen.bin --commit $(COMMIT)
+	$(PYTHON) $(PY_ADD_BUILD_NUM) --input $(DIR_ASSETS)/bg_title_screen.bin --commit $(COMMIT)
 
 rm_build_number:
-	$(PYTHON) $(PY_RM_BUILD_NUM) --input $(DIR_ASSETS)\bg_title_screen.bin
+	$(PYTHON) $(PY_RM_BUILD_NUM) --input $(DIR_ASSETS)/bg_title_screen.bin
 
 $(RLE_FILES): %.rle: %.bin
 	$(PYTHON) $(PY_COMPRESS_RLE) --input $< --output $@
