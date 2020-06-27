@@ -90,6 +90,7 @@ STATEPAUSED		= $05
 STATEENDGAME	= $06
 STATEALPHABET	= $07
 STATEPACE		= $08
+STATEMONTH		= $09
 
 FRAMECOUNT		= $30
 
@@ -144,6 +145,12 @@ PACE_CURSOR_SPR	= $3F
 PACE_X			= $48
 PACE_MIN_Y		= $57
 PACE_MAX_Y		= $77
+
+; start-month screen
+MONTH_CURSOR_SPR	= $3F
+MONTH_X				= $70
+MONTH_MIN_Y			= $77
+MONTH_MAX_Y			= $B7
 
 
 ; traveling screen
@@ -398,9 +405,8 @@ SetInitialState:
   LDA #WEATHER_PARTLY
   STA weather
 
-  ; set starting date of March 1, 1848
-  LDA #$03
-  STA month
+  ; set starting date of 1st day of month in 1848 (month will
+  ; be selected later by player)
   LDA #$01
   STA day
 
@@ -484,6 +490,8 @@ bg_paused_screen:
   .incbin "src\assets\bg_paused_screen_rle.bin"
 bg_pace_screen:
   .incbin "src\assets\bg_pace_screen_rle.bin"
+bg_month_screen:
+  .incbin "src\assets\bg_start_month_screen_rle.bin"
 bg_landmark_kansas_river:
   .incbin "src\assets\bg_landmark_kansas_river_rle.bin"
 bg_landmark_big_blue_river:
@@ -529,7 +537,7 @@ screen:
   .dw DisplayTitleScreen, DisplayNewGameScreen, DisplayTravelingScreen
   .dw DisplayLandmarkScreen, DisplayStoreScreen, DisplayPausedScreen
   .dw $0000
-  .dw DisplayAlphabetScreen, DisplayPaceScreen
+  .dw DisplayAlphabetScreen, DisplayPaceScreen, DisplayMonthScreen
 
 ; points to appropriate engine logic functions so they can get called by
 ; the engine
@@ -537,7 +545,7 @@ enginelogic:
   .dw EngineLogicTitle, EngineLogicNewGame, EngineLogicTraveling
   .dw EngineLogicLandmark, EngineLogicStore, EngineLogicPaused
   .dw $0000
-  .dw EngineLogicAlphabet, EngineLogicPace
+  .dw EngineLogicAlphabet, EngineLogicPace, EngineLogicMonth
 
 ; new line = $00, space char needs to be something else, $FF = done
 ; first byte is starting y pos

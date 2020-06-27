@@ -24,6 +24,7 @@ py .\util\compress_rle.py --input .\src\assets\bg_sprite0_traveling_screen.bin -
 py .\util\compress_rle.py --input .\src\assets\bg_alphabet_screen.bin --output .\src\assets\bg_alphabet_screen_rle.bin
 py .\util\compress_rle.py --input .\src\assets\bg_paused_screen.bin --output .\src\assets\bg_paused_screen_rle.bin
 py .\util\compress_rle.py --input .\src\assets\bg_pace_screen.bin --output .\src\assets\bg_pace_screen_rle.bin
+py .\util\compress_rle.py --input .\src\assets\bg_start_month_screen.bin --output .\src\assets\bg_start_month_screen_rle.bin
 echo.
 echo # Compressing title screen...
 echo.

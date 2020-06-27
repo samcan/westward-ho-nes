@@ -331,8 +331,8 @@ EngineLogicStore:
   ;; logic associated with general store
   CheckForStartButton EndStoreGameState, GameEngineLogicDone
 EndStoreGameState:
-  ; user is exiting store state, switch to "set-pace" state
-  LDA #STATEPACE
+  ; user is exiting store state, switch to "start-pace" state
+  LDA #STATEMONTH
   STA newgmstate
   JMP GameEngineLogicDone
 
@@ -357,7 +357,7 @@ EngineLogicPace:
   AND #BTN_DOWNARROW
   BNE MovePaceCursorDown
 
-  JMP UpdateCursorSprite
+  JMP UpdatePaceCursorSprite
 
 MovePaceCursorUp:
   LDA pace
@@ -378,7 +378,7 @@ MovePaceCursorUp:
 
   LDA #PACE_MIN_Y
 + STA cursorY
-  JMP UpdateCursorSprite
+  JMP UpdatePaceCursorSprite
 
 MovePaceCursorDown:
   LDA pace
@@ -400,9 +400,9 @@ MovePaceCursorDown:
 
   LDA #PACE_MAX_Y
 + STA cursorY
-  JMP UpdateCursorSprite
+  JMP UpdatePaceCursorSprite
 
-UpdateCursorSprite:
+UpdatePaceCursorSprite:
   LDX #$04
   LDA cursorY
   STA $0200, X
@@ -424,6 +424,84 @@ EndPaceGameState:
   ; user is exiting pace state, switch to traveling state
   ; TODO if entering this from PAUSED, we need to switch back to paused
   LDA #STATETRAVELING
+  STA newgmstate
+  JMP GameEngineLogicDone
+
+;;;;;;;;;
+EngineLogicMonth:
+  ;; logic associated with "start-month" screen
+  LDA buttons1
+  AND #BTN_UPARROW
+  BNE MoveMonthCursorUp
+
+  LDA buttons1
+  AND #BTN_DOWNARROW
+  BNE MoveMonthCursorDown
+
+  JMP UpdateMonthCursorSprite
+
+MoveMonthCursorUp:
+  LDA month
+  SEC
+  SBC #$01
+  STA month
+
+  LDA cursorY
+  SEC
+  SBC #$10
+  CMP #MONTH_MIN_Y
+  BCS +
+  LDA month
+  CLC
+  ADC #$01
+  STA month
+
+  LDA #MONTH_MIN_Y
++ STA cursorY
+  JMP UpdateMonthCursorSprite
+
+MoveMonthCursorDown:
+  LDA month
+  CLC
+  ADC #$01
+  STA month
+
+  LDA cursorY
+  CLC
+  ADC #$10
+  CMP #MONTH_MAX_Y
+  BCC +
+  BEQ +
+  LDA month
+  SEC
+  SBC #$01
+  STA month
+
+  LDA #MONTH_MAX_Y
++ STA cursorY
+  JMP UpdateMonthCursorSprite
+
+UpdateMonthCursorSprite:
+  LDX #$04
+  LDA cursorY
+  STA $0200, X
+
+  INX
+  LDA #MONTH_CURSOR_SPR
+  STA $0200, x
+
+  INX
+  LDA #%00100000
+  STA $0200, x
+
+  INX
+  LDA cursorX
+  STA $0200, x
+
+  CheckForAButton EndMonthGameState, GameEngineLogicDone
+EndMonthGameState:
+  ; user is exiting month state, switch to pace state
+  LDA #STATEPACE
   STA newgmstate
   JMP GameEngineLogicDone
 

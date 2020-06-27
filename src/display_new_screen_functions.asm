@@ -238,6 +238,39 @@ DisplayPaceScreen:
 
   JMP FinishLoadNewScreen
 
+DisplayMonthScreen:
+  LDA #$01
+  JSR BankSwitch
+
+  PaletteLoad palette
+
+  LoadRLEScreen bg_month_screen, $00
+
+  ; default starting month is Mar
+  LDA #$03
+  STA month
+
+; set up cursor
+  LDX #$04
+  LDA #MONTH_MIN_Y
+  STA cursorY
+  STA $0200, X
+
+  INX
+  LDA #MONTH_CURSOR_SPR
+  STA $0200, x
+
+  INX
+  LDA #%00100000
+  STA $0200, x
+
+  INX
+  LDA #MONTH_X
+  STA cursorX
+  STA $0200, x
+
+  JMP FinishLoadNewScreen
+
 DisplayTravelingScreen:
   LDA #$01
   JSR BankSwitch
