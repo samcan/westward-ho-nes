@@ -41,6 +41,18 @@ MACRO CheckForStartButton jumpto,elsejumpto
 + JMP elsejumpto
 ENDM
 ;;;;;;;;;;;;;;;;;;;
+MACRO CheckForAButton jumpto,elsejumpto
+  ; Checks for A button to have been pressed on player 1's
+  ; controller. Once it has, jump to subroutine given as jumpto.
+  ;
+  ; Clobbers: A
+  LDA buttons1
+  AND #BTN_A
+  BEQ +
+  JMP jumpto
++ JMP elsejumpto
+ENDM
+;;;;;;;;;;;;;;;;;;;
 GameEngineLogic:  
   LDA gamestate
   ASL A
@@ -319,8 +331,8 @@ EngineLogicStore:
   ;; logic associated with general store
   CheckForStartButton EndStoreGameState, GameEngineLogicDone
 EndStoreGameState:
-  ; user is exiting store state, switch to traveling state
-  LDA #STATETRAVELING
+  ; user is exiting store state, switch to "set-pace" state
+  LDA #STATEPACE
   STA newgmstate
   JMP GameEngineLogicDone
 
@@ -330,6 +342,87 @@ EngineLogicPaused:
   CheckForStartButton EndPausedGameState, GameEngineLogicDone
 EndPausedGameState:
   ; user is exiting paused state, switch back to traveling state
+  LDA #STATETRAVELING
+  STA newgmstate
+  JMP GameEngineLogicDone
+
+;;;;;;;;;
+EngineLogicPace:
+  ;; logic associated with pace screen
+  LDA buttons1
+  AND #BTN_UPARROW
+  BNE MovePaceCursorUp
+
+  LDA buttons1
+  AND #BTN_DOWNARROW
+  BNE MovePaceCursorDown
+
+  JMP UpdateCursorSprite
+
+MovePaceCursorUp:
+  LDA pace
+  SEC
+  SBC #$01
+  STA pace
+
+  LDA cursorY
+  SEC
+  SBC #$10
+  ; compare to PACE_MIN_Y
+  CMP #PACE_MIN_Y
+  BCS +
+  LDA pace
+  CLC
+  ADC #$01
+  STA pace
+
+  LDA #PACE_MIN_Y
++ STA cursorY
+  JMP UpdateCursorSprite
+
+MovePaceCursorDown:
+  LDA pace
+  CLC
+  ADC #$01
+  STA pace
+
+  LDA cursorY
+  CLC
+  ADC #$10
+  ; compare to PACE_MAX_Y
+  CMP #PACE_MAX_Y
+  BCC +
+  BEQ +
+  LDA pace
+  SEC
+  SBC #$01
+  STA pace
+
+  LDA #PACE_MAX_Y
++ STA cursorY
+  JMP UpdateCursorSprite
+
+UpdateCursorSprite:
+  LDX #$04
+  LDA cursorY
+  STA $0200, X
+
+  INX
+  LDA #PACE_CURSOR_SPR
+  STA $0200, x
+
+  INX
+  LDA #%00100000
+  STA $0200, x
+
+  INX
+  LDA cursorX
+  STA $0200, x
+
+  CheckForAButton EndPaceGameState, GameEngineLogicDone
+EndPaceGameState:
+  ; user is exiting pace state, switch to traveling state
+  ; TODO if entering this from PAUSED, we need to switch back to paused
   LDA #STATETRAVELING
   STA newgmstate
   JMP GameEngineLogicDone

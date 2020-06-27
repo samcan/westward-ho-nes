@@ -89,6 +89,7 @@ STATESTORE		= $04
 STATEPAUSED		= $05
 STATEENDGAME	= $06
 STATEALPHABET	= $07
+STATEPACE		= $08
 
 FRAMECOUNT		= $30
 
@@ -137,6 +138,13 @@ MIN_Y			= $8F
 MAX_Y			= $BF
 MIN_X			= $48
 MAX_X			= $A8
+
+; pace screen
+PACE_CURSOR_SPR	= $3F
+PACE_X			= $48
+PACE_MIN_Y		= $57
+PACE_MAX_Y		= $77
+
 
 ; traveling screen
 OXEN_TOP_Y		= $90
@@ -361,7 +369,7 @@ SetInitialState:
   STA gamestate
   LDA #STATETITLE
   STA newgmstate
-  
+
   ; set the number of miles traveled in the current segment to 0 mi.
   LDA #$00
   STA mitraveldy
@@ -378,19 +386,15 @@ SetInitialState:
   ; set 3 yoke of oxen
   LDA #$03
   STA yokeoxen
-  
-  ; set strenuous pace
-  LDA #PACE_STRENUOUS
-  STA pace
-  
+
   ; set health of good
   LDA #HEALTH_GOOD
   STA health
-  
+
   ; set temperature to fair
   LDA #TEMP_FAIR
   STA temperature
-  
+
   LDA #WEATHER_PARTLY
   STA weather
 
@@ -478,6 +482,8 @@ bg_alphabet_screen:
   .incbin "src\assets\bg_alphabet_screen_rle.bin"
 bg_paused_screen:
   .incbin "src\assets\bg_paused_screen_rle.bin"
+bg_pace_screen:
+  .incbin "src\assets\bg_pace_screen_rle.bin"
 bg_landmark_kansas_river:
   .incbin "src\assets\bg_landmark_kansas_river_rle.bin"
 bg_landmark_big_blue_river:
@@ -523,7 +529,7 @@ screen:
   .dw DisplayTitleScreen, DisplayNewGameScreen, DisplayTravelingScreen
   .dw DisplayLandmarkScreen, DisplayStoreScreen, DisplayPausedScreen
   .dw $0000
-  .dw DisplayAlphabetScreen
+  .dw DisplayAlphabetScreen, DisplayPaceScreen
 
 ; points to appropriate engine logic functions so they can get called by
 ; the engine
@@ -531,7 +537,7 @@ enginelogic:
   .dw EngineLogicTitle, EngineLogicNewGame, EngineLogicTraveling
   .dw EngineLogicLandmark, EngineLogicStore, EngineLogicPaused
   .dw $0000
-  .dw EngineLogicAlphabet
+  .dw EngineLogicAlphabet, EngineLogicPace
 
 ; new line = $00, space char needs to be something else, $FF = done
 ; first byte is starting y pos
