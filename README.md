@@ -13,14 +13,30 @@ using [asm6f][asm6f]. Though we are testing the game with the
 ![](docs/img/westward_001.png?raw=true)
 
 ## How to compile
-Make sure `asm6f_64.exe` from the latest `asm6f` package is located somewhere in
-your path. Once you've cloned the repository, switch into the folder, and run
-`compile.bat`. If successful, the script will output `src\westward.nes`. This can
+### Prerequisites
+* Windows 10
+* Python 3.8.x
+* [GNU Make for Windows][make] 3.8.1
+* [asm6f][asm6f] v1.6 (freem modifications v02)
+
+### Instructions
+1. Install [GNU Make for Windows][make] and add the `bin` directory to your path.
+2. Download `asm6f_64.exe` from the latest `asm6f` package and put that in
+your path as well.
+3. Clone the repository:
+  `git clone https://github.com/samcan/westward-ho-nes.git`
+4. Switch into the `westward-ho-nes` directory.
+5. Run `make`.
+6. This will RLE-compress the background files and compile `src\westward.nes`. This can
 be run in Mesen.
+
+### Cleaning
+1. Run `make clean` to clean the directory of all generated files, including `westward.nes`
 
 [asm6f]: https://github.com/freem/asm6f
 [fceux]: http://www.fceux.com/web/home.html
 [mesen]: https://mesen.ca/
+[make]: http://gnuwin32.sourceforge.net/packages/make.htm
 
 ## Mesen emulation settings
 We are using the following emulation settings in Mesen v0.9.9. These are changed in Options > Emulation, on the Advanced tab:
