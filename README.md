@@ -33,7 +33,7 @@ your path as well.
 be run in Mesen.
 
 ### Compiling on Linux
-Tested in a live CD environment of Pop!OS 20.04.
+Tested in a live CD environment of Pop!OS 20.04 and in an install of Ubuntu 20.04.
 
 #### Prerequisites
 * Python 3.8.x (tested using Python 3.8.2)
@@ -42,7 +42,8 @@ Tested in a live CD environment of Pop!OS 20.04.
 
 #### Instructions
 1. Install `python3`, `git`, and `make` on your machine if not already installed. If you
-haven't already compiled `asm6f`, you'll also need `gcc` installed.
+haven't already compiled `asm6f`, you'll also need `gcc` installed. In Ubuntu, you can install
+by running `sudo apt install python3 git make gcc`.
 2. Download the latest `asm6f` package and unzip. A Linux makefile doesn't exist yet, but
 you can simply compile by running: `gcc -Wall asm6f.c -o asm6f`. Put the compiled binary
 `asm6f` somewhere in your path.
@@ -56,7 +57,7 @@ be run in Mesen.
   you can specify the Python command using `PYTHON_LINUX`.
 
 ### Cleaning
-1. Run `make clean` to clean the directory of all generated files, including `westward.nes`
+1. Run `make clean` to clean the directory of all generated files, including `westward.nes`.
 
 [asm6f]: https://github.com/freem/asm6f
 [fceux]: http://www.fceux.com/web/home.html
