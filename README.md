@@ -13,13 +13,15 @@ using [asm6f][asm6f]. Though we are testing the game with the
 ![](docs/img/westward_001.png?raw=true)
 
 ## How to compile
-### Prerequisites
+
+### Compiling on Windows
+#### Prerequisites
 * Windows 10
-* Python 3.8.x
+* Python 3.8.x (tested using Python 3.8.1)
 * [GNU Make for Windows][make] 3.8.1
 * [asm6f][asm6f] v1.6 (freem modifications v02)
 
-### Instructions
+#### Instructions
 1. Install [GNU Make for Windows][make] and add the `bin` directory to your path.
 2. Download `asm6f_64.exe` from the latest `asm6f` package and put that in
 your path as well.
@@ -29,6 +31,29 @@ your path as well.
 5. Run `make`.
 6. This will RLE-compress the background files and compile `src\westward.nes`. This can
 be run in Mesen.
+
+### Compiling on Linux
+Tested in a live CD environment of Pop!OS 20.04.
+
+#### Prerequisites
+* Python 3.8.x (tested using Python 3.8.2)
+* GNU Make 4.2.1
+* [asm6f][asm6f] v1.6 (freem modifications v02)
+
+#### Instructions
+1. Install `python3`, `git`, and `make` on your machine if not already installed. If you
+haven't already compiled `asm6f`, you'll also need `gcc` installed.
+2. Download the latest `asm6f` package and unzip. A Linux makefile doesn't exist yet, but
+you can simply compile by running: `gcc -Wall asm6f.c -o asm6f`. Put the compiled binary
+`asm6f` somewhere in your path.
+3. Clone the repository:
+  `git clone https://github.com/samcan/westward-ho-nes.git`
+4. Switch into the `westward-ho-nes` directory.
+5. Run `make`.
+6. This will RLE-compress the background files and compile `src\westward.nes`. This can
+be run in Mesen.
+  * If `make` can't find `asm6f`, you can specify its location on the command line using the variable `ASM_LINUX`. Similarly,
+  you can specify the Python command using `PYTHON_LINUX`.
 
 ### Cleaning
 1. Run `make clean` to clean the directory of all generated files, including `westward.nes`
