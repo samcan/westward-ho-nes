@@ -290,8 +290,8 @@ UpdateCursorLetterSprites:
   ;CheckForStartButton EndAlphabetState, GameEngineLogicDone
   JMP GameEngineLogicDone
 EndAlphabetState:
-  ; user is exiting alphabet screen, go to store
-  LDA #STATESTORE
+  ; user is exiting alphabet screen, go to occupation screen
+  LDA #STATEOCCUPATION
   STA newgmstate
   JMP GameEngineLogicDone
 
@@ -424,6 +424,86 @@ EndPaceGameState:
   ; user is exiting pace state, switch to traveling state
   ; TODO if entering this from PAUSED, we need to switch back to paused
   LDA #STATETRAVELING
+  STA newgmstate
+  JMP GameEngineLogicDone
+
+;;;;;;;;;
+EngineLogicOccupation:
+  ;; logic associated with occupation screen
+  LDA buttons1
+  AND #BTN_UPARROW
+  BNE MoveOccupationCursorUp
+
+  LDA buttons1
+  AND #BTN_DOWNARROW
+  BNE MoveOccupationCursorDown
+
+  JMP UpdateOccupationCursorSprite
+
+MoveOccupationCursorUp:
+  LDA occupation
+  SEC
+  SBC #$01
+  STA occupation
+
+  LDA cursorY
+  SEC
+  SBC #$10
+  ; compare to OCC_MIN_Y
+  CMP #OCC_MIN_Y
+  BCS +
+  LDA occupation
+  CLC
+  ADC #$01
+  STA occupation
+
+  LDA #OCC_MIN_Y
++ STA cursorY
+  JMP UpdateOccupationCursorSprite
+
+MoveOccupationCursorDown:
+  LDA occupation
+  CLC
+  ADC #$01
+  STA occupation
+
+  LDA cursorY
+  CLC
+  ADC #$10
+  ; compare to OCC_MAX_Y
+  CMP #OCC_MAX_Y
+  BCC +
+  BEQ +
+  LDA occupation
+  SEC
+  SBC #$01
+  STA occupation
+
+  LDA #OCC_MAX_Y
++ STA cursorY
+  JMP UpdateOccupationCursorSprite
+
+UpdateOccupationCursorSprite:
+  LDX #$04
+  LDA cursorY
+  STA $0200, X
+
+  INX
+  LDA #OCC_CURSOR_SPR
+  STA $0200, x
+
+  INX
+  LDA #%00100000
+  STA $0200, x
+
+  INX
+  LDA cursorX
+  STA $0200, x
+
+  CheckForAButton EndOccupationGameState, GameEngineLogicDone
+EndOccupationGameState:
+  ; user is exiting occupation state, switch to store state
+  LDA #STATESTORE
   STA newgmstate
   JMP GameEngineLogicDone
 

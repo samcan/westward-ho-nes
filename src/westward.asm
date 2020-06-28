@@ -23,6 +23,7 @@ mitraveldy  .dsb 1		; number of miles traveled (curr. day)
 mitraveled	.dsb 2		; number of miles traveled (total)
 yokeoxen	.dsb 1		; number of yoke of oxen
 pace		.dsb 1		; travel pace (steady, strenuous, grueling)
+occupation	.dsb 1
 curlandmark	.dsb 1		; current landmark we're traveling toward (index value)
 month		.dsb 1		; current month (we're assuming a year of 1848)
 						; March-July are valid options for starting point
@@ -91,6 +92,7 @@ STATEENDGAME	= $06
 STATEALPHABET	= $07
 STATEPACE		= $08
 STATEMONTH		= $09
+STATEOCCUPATION	= $0A
 
 FRAMECOUNT		= $30
 
@@ -101,6 +103,10 @@ HEALTH_GOOD		= $21
 HEALTH_FAIR		= $22
 HEALTH_POOR		= $23
 ;HEALTH_VERYPOOR	=
+
+OCC_FARMER		= $01
+OCC_CARPENTER	= $02
+OCC_BANKER		= $03
 
 TEMP_HOT		= $26
 TEMP_FAIR		= $27
@@ -145,6 +151,12 @@ PACE_CURSOR_SPR	= $3F
 PACE_X			= $48
 PACE_MIN_Y		= $57
 PACE_MAX_Y		= $77
+
+; occupation screen
+OCC_CURSOR_SPR	= $3F
+OCC_X			= $40
+OCC_MIN_Y		= $57
+OCC_MAX_Y		= $77
 
 ; start-month screen
 MONTH_CURSOR_SPR	= $3F
@@ -492,6 +504,8 @@ bg_pace_screen:
   .incbin "src/assets/bg_pace_screen.rle"
 bg_month_screen:
   .incbin "src/assets/bg_start_month_screen.rle"
+bg_occupation_screen:
+  .incbin "src/assets/bg_occupation_screen.rle"
 bg_landmark_kansas_river:
   .incbin "src/assets/bg_landmark_kansas_river.rle"
 bg_landmark_big_blue_river:
@@ -538,6 +552,7 @@ screen:
   .dw DisplayLandmarkScreen, DisplayStoreScreen, DisplayPausedScreen
   .dw $0000
   .dw DisplayAlphabetScreen, DisplayPaceScreen, DisplayMonthScreen
+  .dw DisplayOccupationScreen
 
 ; points to appropriate engine logic functions so they can get called by
 ; the engine
@@ -546,6 +561,7 @@ enginelogic:
   .dw EngineLogicLandmark, EngineLogicStore, EngineLogicPaused
   .dw $0000
   .dw EngineLogicAlphabet, EngineLogicPace, EngineLogicMonth
+  .dw EngineLogicOccupation
 
 ; new line = $00, space char needs to be something else, $FF = done
 ; first byte is starting y pos

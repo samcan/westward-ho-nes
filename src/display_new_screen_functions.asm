@@ -238,6 +238,38 @@ DisplayPaceScreen:
 
   JMP FinishLoadNewScreen
 
+DisplayOccupationScreen:
+  LDA #$01
+  JSR BankSwitch
+
+  PaletteLoad palette
+
+  LoadRLEScreen bg_occupation_screen, $00
+
+  LDA #OCC_FARMER
+  STA occupation
+
+; set up cursor
+  LDX #$04
+  LDA #OCC_MIN_Y
+  STA cursorY
+  STA $0200, X
+
+  INX
+  LDA #OCC_CURSOR_SPR
+  STA $0200, x
+
+  INX
+  LDA #%00100000
+  STA $0200, x
+
+  INX
+  LDA #OCC_X
+  STA cursorX
+  STA $0200, x
+
+  JMP FinishLoadNewScreen
+
 DisplayMonthScreen:
   LDA #$01
   JSR BankSwitch
