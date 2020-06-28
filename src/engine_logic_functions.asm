@@ -319,6 +319,13 @@ EndLandmarkState:
   LDA #STATETRAVELING
   STA newgmstate
   JMP GameEngineLogicDone
+EndLandmarkStateFort:
+  ; we're at a fort, so we need to switch to the screen where the player
+  ; can make a decision to purchase supplies or continue on their journey
+  INC curlandmark
+  LDA #STATECHOOSEFORT
+  STA newgmstate
+  JMP GameEngineLogicDone
 
 EndGame:
   ; we've reached the Willamette Valley. Switch back to the Title
@@ -331,8 +338,18 @@ EngineLogicStore:
   ;; logic associated with general store
   CheckForStartButton EndStoreGameState, GameEngineLogicDone
 EndStoreGameState:
-  ; user is exiting store state, switch to "start-pace" state
+  ; user is exiting store state, switch to "starting-month" state, unless
+  ; curlandmark is greater than 0, which means that we're already in our journey
+  ; and have been at a fort's store, and so need to resume traveling.
+  LDA #$00
+  CMP curlandmark
+  BCC EndStoreGameStateAlreadyTraveling
+EndStoreGameStateSettingUpNewGame:
   LDA #STATEMONTH
+  STA newgmstate
+  JMP GameEngineLogicDone
+EndStoreGameStateAlreadyTraveling:
+  LDA #STATETRAVELING
   STA newgmstate
   JMP GameEngineLogicDone
 
@@ -426,6 +443,94 @@ EndPaceGameState:
   LDA #STATETRAVELING
   STA newgmstate
   JMP GameEngineLogicDone
+
+;;;;;;;;;
+EngineLogicDecisionFort:
+  ;; logic associated with the decision screen for forts
+  LDA buttons1
+  AND #BTN_UPARROW
+  BNE MoveDecisionFortCursorUp
+
+  LDA buttons1
+  AND #BTN_DOWNARROW
+  BNE MoveDecisionFortCursorDown
+
+  JMP UpdateDecisionFortCursorSprite
+
+MoveDecisionFortCursorUp:
+  LDA choice
+  SEC
+  SBC #$01
+  STA choice
+
+  LDA cursorY
+  SEC
+  SBC #$10
+  ; compare to CHOOSEFORT_MIN_Y
+  CMP #CHOOSEFORT_MIN_Y
+  BCS +
+  LDA choice
+  CLC
+  ADC #$01
+  STA choice
+
+  LDA #CHOOSEFORT_MIN_Y
++ STA cursorY
+  JMP UpdateDecisionFortCursorSprite
+
+MoveDecisionFortCursorDown:
+  LDA choice
+  CLC
+  ADC #$01
+  STA choice
+
+  LDA cursorY
+  CLC
+  ADC #$10
+  ; compare to CHOOSEFORT_MAX_Y
+  CMP #CHOOSEFORT_MAX_Y
+  BCC +
+  BEQ +
+  LDA choice
+  SEC
+  SBC #$01
+  STA choice
+
+  LDA #CHOOSEFORT_MAX_Y
++ STA cursorY
+  JMP UpdateDecisionFortCursorSprite
+
+UpdateDecisionFortCursorSprite:
+  LDX #$04
+  LDA cursorY
+  STA $0200, X
+
+  INX
+  LDA #CHOOSEFORT_CURSOR_SPR
+  STA $0200, x
+
+  INX
+  LDA #%00100000
+  STA $0200, x
+
+  INX
+  LDA cursorX
+  STA $0200, x
+
+  CheckForAButton EndDecisionFortGameState, GameEngineLogicDone
+EndDecisionFortGameState:
+  ; user is exiting fort-decision state
+  LDA choice
+  BEQ EndDecisionFortGameStateGoToStore
+EndDecisionFortGameStateContinueTravel:
+  LDA #STATETRAVELING
+  STA newgmstate
+  JMP GameEngineLogicDone
+EndDecisionFortGameStateGoToStore:
+  LDA #STATESTORE
+  STA newgmstate
+  JMP GameEngineLogicDone
+
 
 ;;;;;;;;;
 EngineLogicOccupation:

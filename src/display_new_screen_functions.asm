@@ -270,6 +270,38 @@ DisplayOccupationScreen:
 
   JMP FinishLoadNewScreen
 
+DisplayDecisionFortScreen:
+  LDA #$01
+  JSR BankSwitch
+
+  PaletteLoad palette
+
+  LoadRLEScreen bg_landmark_fort_decision_screen, $00
+
+  LDA #$00
+  STA choice
+
+; set up cursor
+  LDX #$04
+  LDA #CHOOSEFORT_MIN_Y
+  STA cursorY
+  STA $0200, X
+
+  INX
+  LDA #CHOOSEFORT_CURSOR_SPR
+  STA $0200, x
+
+  INX
+  LDA #%00100000
+  STA $0200, x
+
+  INX
+  LDA #CHOOSEFORT_X
+  STA cursorX
+  STA $0200, x
+
+  JMP FinishLoadNewScreen
+
 DisplayMonthScreen:
   LDA #$01
   JSR BankSwitch

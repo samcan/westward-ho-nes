@@ -63,6 +63,7 @@ seed		.dsb 2		; seed for PRNG
 
 landmarkX	.dsb 1
 
+choice		.dsb 1
 cursorX		.dsb 1
 cursorY		.dsb 1
 hilitedltr	.dsb 1
@@ -93,6 +94,7 @@ STATEALPHABET	= $07
 STATEPACE		= $08
 STATEMONTH		= $09
 STATEOCCUPATION	= $0A
+STATECHOOSEFORT = $0B
 
 FRAMECOUNT		= $30
 
@@ -163,6 +165,12 @@ MONTH_CURSOR_SPR	= $3F
 MONTH_X				= $70
 MONTH_MIN_Y			= $77
 MONTH_MAX_Y			= $B7
+
+; decision-fort screen
+CHOOSEFORT_CURSOR_SPR	= $3F
+CHOOSEFORT_X			= $40
+CHOOSEFORT_MIN_Y		= $57
+CHOOSEFORT_MAX_Y		= $67
 
 
 ; traveling screen
@@ -540,6 +548,9 @@ bg_landmark_willamette_valley:
   .incbin "src/assets/bg_landmark_willamette_valley.rle"
 bg_landmark_green_river:
   .incbin "src/assets/bg_landmark_green_river.rle"
+; landmark decision screens
+bg_landmark_fort_decision_screen:
+  .incbin "src/assets/bg_landmark_fort_decision_screen.rle"
 
 bankvalues:
   .db $00,$01,$02
@@ -552,7 +563,7 @@ screen:
   .dw DisplayLandmarkScreen, DisplayStoreScreen, DisplayPausedScreen
   .dw $0000
   .dw DisplayAlphabetScreen, DisplayPaceScreen, DisplayMonthScreen
-  .dw DisplayOccupationScreen
+  .dw DisplayOccupationScreen, DisplayDecisionFortScreen
 
 ; points to appropriate engine logic functions so they can get called by
 ; the engine
@@ -561,7 +572,7 @@ enginelogic:
   .dw EngineLogicLandmark, EngineLogicStore, EngineLogicPaused
   .dw $0000
   .dw EngineLogicAlphabet, EngineLogicPace, EngineLogicMonth
-  .dw EngineLogicOccupation
+  .dw EngineLogicOccupation, EngineLogicDecisionFort
 
 ; new line = $00, space char needs to be something else, $FF = done
 ; first byte is starting y pos
@@ -624,13 +635,13 @@ landmarkbank:
 
 landmarkptr:
   .dw EndLandmarkState, EndLandmarkState
-  .dw EndLandmarkState, EndLandmarkState
-  .dw EndLandmarkState, EndLandmarkState
+  .dw EndLandmarkStateFort, EndLandmarkState
+  .dw EndLandmarkStateFort, EndLandmarkState
   .dw EndLandmarkState
-  .dw EndLandmarkState, EndLandmarkState
-  .dw EndLandmarkState, EndLandmarkState
-  .dw EndLandmarkState, EndLandmarkState
-  .dw EndLandmarkState, EndLandmarkState
+  .dw EndLandmarkStateFort, EndLandmarkState
+  .dw EndLandmarkStateFort, EndLandmarkState
+  .dw EndLandmarkStateFort, EndLandmarkState
+  .dw EndLandmarkStateFort, EndLandmarkState
   .dw EndGame
   .dw EndLandmarkState
 
