@@ -246,10 +246,16 @@ clr_sprite_mem:
 ;;;;;;;;;;;;;;;
 ;;
 ;; Clobbers: A, X
+;;
+;; I HAVE NO IDEA WHY THIS WORKS
+;; I THOUGHT WE NEEDED TO WRITE TO $8000 TO
+;; SWITCH BANKS, WHICH WORKED IN MESEN, BUT
+;; NOT IN FCEUX. YOU'RE TELLING ME THAT WE CAN
+;; JUST WRITE TO bankvalues AND THAT SWITCHES
+;; BANKS???? WHYY???????!!!!!!!!
 BankSwitch:
   TAX
-  LDA bankvalues, x
-  STA $8000
+  STA bankvalues, x
   RTS
 ;;;;;;;;;;;;;;;
 ;;
