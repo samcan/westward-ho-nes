@@ -23,6 +23,7 @@ mitraveldy  .dsb 1		; number of miles traveled (curr. day)
 mitraveled	.dsb 2		; number of miles traveled (total)
 yokeoxen	.dsb 1		; number of yoke of oxen
 pace		.dsb 1		; travel pace (steady, strenuous, grueling)
+rations		.dsb 1
 occupation	.dsb 1
 curlandmark	.dsb 1		; current landmark we're traveling toward (index value)
 month		.dsb 1		; current month (we're assuming a year of 1848)
@@ -95,6 +96,7 @@ STATEPACE		= $08
 STATEMONTH		= $09
 STATEOCCUPATION	= $0A
 STATECHOOSEFORT = $0B
+STATERATIONS	= $0C
 
 FRAMECOUNT		= $30
 
@@ -113,6 +115,10 @@ OCC_BANKER		= $03
 TEMP_HOT		= $26
 TEMP_FAIR		= $27
 TEMP_COLD		= $28
+
+RATION_BAREBONE	= $01
+RATION_MEAGER	= $02
+RATION_FILLING	= $03
 
 WEATHER_SUN		= $29
 WEATHER_PARTLY	= $2A
@@ -425,6 +431,10 @@ SetInitialState:
   LDA #PACE_STEADY
   STA pace
 
+  ; set initial rations of MEAGER
+  LDA #RATION_MEAGER
+  STA rations
+
   ; set health of good
   LDA #HEALTH_GOOD
   STA health
@@ -525,6 +535,8 @@ bg_month_screen:
   .incbin "src/assets/bg_start_month_screen.rle"
 bg_occupation_screen:
   .incbin "src/assets/bg_occupation_screen.rle"
+bg_rations_screen:
+  .incbin "src/assets/bg_rations_screen.rle"
 bg_landmark_kansas_river:
   .incbin "src/assets/bg_landmark_kansas_river.rle"
 bg_landmark_big_blue_river:
@@ -577,6 +589,7 @@ screen:
   .dw $0000
   .dw DisplayAlphabetScreen, DisplayPaceScreen, DisplayMonthScreen
   .dw DisplayOccupationScreen, DisplayDecisionFortScreen
+  .dw DisplayRationsScreen
 
 ; points to appropriate engine logic functions so they can get called by
 ; the engine
@@ -586,6 +599,7 @@ enginelogic:
   .dw $0000
   .dw EngineLogicAlphabet, EngineLogicPace, EngineLogicMonth
   .dw EngineLogicOccupation, EngineLogicDecisionFort
+  .dw EngineLogicRations
 
 ; new line = $00, space char needs to be something else, $FF = done
 ; first byte is starting y pos

@@ -53,6 +53,7 @@ RLE_FILES = $(DIR_ASSETS)/bg_alphabet_screen.rle \
 			$(DIR_ASSETS)/bg_occupation_screen.rle \
 			$(DIR_ASSETS)/bg_pace_screen.rle \
 			$(DIR_ASSETS)/bg_paused_screen.rle \
+			$(DIR_ASSETS)/bg_rations_screen.rle \
 			$(DIR_ASSETS)/bg_sprite0_traveling_screen.rle \
 			$(DIR_ASSETS)/bg_start_month_screen.rle \
 			$(DIR_ASSETS)/bg_store_screen.rle \

@@ -375,6 +375,40 @@ DisplayOccupationScreen:
 
   JMP FinishLoadNewScreen
 
+
+DisplayRationsScreen:
+  LDA #$01
+  JSR BankSwitch
+
+  PaletteLoad palette
+
+  LoadRLEScreen bg_rations_screen, $00
+
+  LDA #RATION_BAREBONE
+  STA rations
+
+; set up cursor
+  LDX #$04
+  LDA #PACE_MIN_Y
+  STA cursorY
+  STA $0200, X
+
+  INX
+  LDA #PACE_CURSOR_SPR
+  STA $0200, x
+
+  INX
+  LDA #%00100000
+  STA $0200, x
+
+  INX
+  LDA #PACE_X
+  STA cursorX
+  STA $0200, x
+
+  JMP FinishLoadNewScreen
+
+
 DisplayDecisionFortScreen:
   LDA #$01
   JSR BankSwitch

@@ -443,9 +443,15 @@ EndPausedGameStateItemSelected:
   BEQ EndPausedGameState			; user selected to continue traveling
   CMP #$03
   BEQ EndPausedGameStateLoadPace
+  CMP #$04
+  BEQ EndPausedGameStateLoadRations
   JMP GameEngineLogicDone
 EndPausedGameStateLoadPace:
   LDA #STATEPACE
+  STA newgmstate
+  JMP GameEngineLogicDone
+EndPausedGameStateLoadRations:
+  LDA #STATERATIONS
   STA newgmstate
   JMP GameEngineLogicDone
 
@@ -529,6 +535,91 @@ EndPaceGameState:
   LDA #STATEPAUSED
   STA newgmstate
   JMP GameEngineLogicDone
+
+
+
+;;;;;;;;;
+EngineLogicRations:
+  ;; logic associated with rations screen
+  LDA buttons1
+  AND #BTN_UPARROW
+  BNE MoveRationsCursorUp
+
+  LDA buttons1
+  AND #BTN_DOWNARROW
+  BNE MoveRationsCursorDown
+
+  JMP UpdateRationsCursorSprite
+
+MoveRationsCursorUp:
+  LDA rations
+  SEC
+  SBC #$01
+  STA rations
+
+  LDA cursorY
+  SEC
+  SBC #$10
+  ; compare to PACE_MIN_Y
+  CMP #PACE_MIN_Y
+  BCS +
+  LDA rations
+  CLC
+  ADC #$01
+  STA rations
+
+  LDA #PACE_MIN_Y
++ STA cursorY
+  JMP UpdateRationsCursorSprite
+
+MoveRationsCursorDown:
+  LDA rations
+  CLC
+  ADC #$01
+  STA rations
+
+  LDA cursorY
+  CLC
+  ADC #$10
+  ; compare to PACE_MAX_Y
+  CMP #PACE_MAX_Y
+  BCC +
+  BEQ +
+  LDA rations
+  SEC
+  SBC #$01
+  STA rations
+
+  LDA #PACE_MAX_Y
++ STA cursorY
+  JMP UpdateRationsCursorSprite
+
+UpdateRationsCursorSprite:
+  LDX #$04
+  LDA cursorY
+  STA $0200, X
+
+  INX
+  LDA #PACE_CURSOR_SPR
+  STA $0200, x
+
+  INX
+  LDA #%00100000
+  STA $0200, x
+
+  INX
+  LDA cursorX
+  STA $0200, x
+
+  CheckForAButton EndRationsGameState, GameEngineLogicDone
+EndRationsGameState:
+  ; user is exiting pace state, switch back to PAUSED state
+  LDA #STATEPAUSED
+  STA newgmstate
+  JMP GameEngineLogicDone
+
+
+
 
 ;;;;;;;;;
 EngineLogicDecisionFort:
