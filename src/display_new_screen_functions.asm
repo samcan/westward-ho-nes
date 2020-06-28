@@ -204,6 +204,88 @@ DisplayPausedScreen:
 
   LoadRLEScreen bg_paused_screen, $00
 
+  ; display calendar date on screen
+  ; calendar month
+  LDA month
+  STA tempcalca
+  ASL A
+  CLC
+  ADC tempcalca
+  TAY
+
+  LDA #PAUSED_CAL_Y
+  STA $0200, x
+  INX
+  LDA monthtext, y
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #$58
+  STA $0200, x
+  INX
+  INY
+
+  LDA #PAUSED_CAL_Y
+  STA $0200, x
+  INX
+  LDA monthtext, y
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #$60
+  STA $0200, x
+  INX
+  INY
+
+  LDA #PAUSED_CAL_Y
+  STA $0200, x
+  INX
+  LDA monthtext, y
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #$68
+  STA $0200, x
+  INX
+
+  ; day text
+  LDA day
+  ASL A
+  TAY
+  LDA #PAUSED_CAL_Y
+  STA $0200, x
+  INX
+  LDA daytext, y
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #$78
+  STA $0200, x
+  INX
+  INY
+
+  LDA #PAUSED_CAL_Y
+  STA $0200, x
+  INX
+  LDA daytext, y
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #$80
+  STA $0200, x
+  INX
+  INY
+
   JMP FinishLoadNewScreen
 
 DisplayPaceScreen:
