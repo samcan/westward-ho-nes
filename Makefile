@@ -41,6 +41,7 @@ RLE_FILES = $(DIR_ASSETS)/bg_alphabet_screen.rle \
 			$(DIR_ASSETS)/bg_landmark_fort_laramie.rle \
 			$(DIR_ASSETS)/bg_landmark_fort_walla_walla.rle \
 			$(DIR_ASSETS)/bg_landmark_green_river.rle \
+			$(DIR_ASSETS)/bg_landmark_independence.rle \
 			$(DIR_ASSETS)/bg_landmark_independence_rock.rle \
 			$(DIR_ASSETS)/bg_landmark_kansas_river.rle \
 			$(DIR_ASSETS)/bg_landmark_snake_river_crossing.rle \

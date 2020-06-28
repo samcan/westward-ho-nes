@@ -524,6 +524,8 @@ bg_landmark_chimney_rock:
   .incbin "src/assets/bg_landmark_chimney_rock.rle"
 bg_landmark_fort_laramie:
   .incbin "src/assets/bg_landmark_fort_laramie.rle"
+bg_landmark_independence:
+  .incbin "src/assets/bg_landmark_independence.rle"
 bg_landmark_independence_rock:
   .incbin "src/assets/bg_landmark_independence_rock.rle"
 bg_landmark_south_pass:
@@ -591,7 +593,7 @@ landmarkicons:
 
 landmarkdist:
   ; map up to South Pass
-  .db 102, 83, 119, 250, 86, 190, 102
+  .db 0, 102, 83, 119, 250, 86, 190, 102
   ; (split A) go to Fort Bridger
   .db 125, 162
   ; back at Soda Springs, up to Blue Mountains
@@ -608,7 +610,7 @@ landmarkdist:
   .db 0
 
 landmarkdisplay:
-  .dw bg_landmark_kansas_river, bg_landmark_big_blue_river
+  .dw bg_landmark_independence, bg_landmark_kansas_river, bg_landmark_big_blue_river
   .dw bg_landmark_fort_kearney, bg_landmark_chimney_rock
   .dw bg_landmark_fort_laramie, bg_landmark_independence_rock
   .dw bg_landmark_south_pass
@@ -634,7 +636,7 @@ landmarkbank:
   .db $01
 
 landmarkptr:
-  .dw EndLandmarkState, EndLandmarkState
+  .dw EndLandmarkState, EndLandmarkState, EndLandmarkState
   .dw EndLandmarkStateFort, EndLandmarkState
   .dw EndLandmarkStateFort, EndLandmarkState
   .dw EndLandmarkState
