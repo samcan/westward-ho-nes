@@ -204,6 +204,28 @@ DisplayPausedScreen:
 
   LoadRLEScreen bg_paused_screen, $00
 
+  LDA #$00
+  STA choice
+
+  ; set up cursor
+  LDX #$04
+  LDA #PAUSED_MIN_Y
+  STA cursorY
+  STA $0200, X
+
+  INX
+  LDA #PAUSED_CURSOR_SPR
+  STA $0200, x
+
+  INX
+  LDA #%00100000
+  STA $0200, x
+
+  INX
+  LDA #PAUSED_X
+  STA cursorX
+  STA $0200, x
+
   ; display calendar date on screen
   ; calendar month
   LDA month
@@ -213,6 +235,7 @@ DisplayPausedScreen:
   ADC tempcalca
   TAY
 
+  INX
   LDA #PAUSED_CAL_Y
   STA $0200, x
   INX

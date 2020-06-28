@@ -359,12 +359,96 @@ EndStoreGameStateAlreadyTraveling:
 ;;;;;;;;;
 EngineLogicPaused:
   ;; logic associated with paused screen
+  LDA buttons1
+  AND #BTN_UPARROW
+  BNE MovePausedCursorUp
+
+  LDA buttons1
+  AND #BTN_DOWNARROW
+  BNE MovePausedCursorDown
+
+  JMP UpdatePausedCursorSprite
+
+MovePausedCursorUp:
+  LDA choice
+  SEC
+  SBC #$01
+  STA choice
+
+  LDA cursorY
+  SEC
+  SBC #$08
+  ; compare to PAUSED_MIN_Y
+  CMP #PAUSED_MIN_Y
+  BCS +
+  LDA choice
+  CLC
+  ADC #$01
+  STA choice
+
+  LDA #PAUSED_MIN_Y
++ STA cursorY
+  JMP UpdatePausedCursorSprite
+
+MovePausedCursorDown:
+  LDA choice
+  CLC
+  ADC #$01
+  STA choice
+
+  LDA cursorY
+  CLC
+  ADC #$08
+  ; compare to PAUSED_MAX_Y
+  CMP #PAUSED_MAX_Y
+  BCC +
+  BEQ +
+  LDA choice
+  SEC
+  SBC #$01
+  STA choice
+
+  LDA #PAUSED_MAX_Y
++ STA cursorY
+  JMP UpdatePausedCursorSprite
+
+UpdatePausedCursorSprite:
+  LDX #$04
+  LDA cursorY
+  STA $0200, X
+
+  INX
+  LDA #PAUSED_CURSOR_SPR
+  STA $0200, x
+
+  INX
+  LDA #%00100000
+  STA $0200, x
+
+  INX
+  LDA cursorX
+  STA $0200, x
+
+  CheckForAButton EndPausedGameStateItemSelected, GamePauseCheckNextButton
+GamePauseCheckNextButton:
   CheckForStartButton EndPausedGameState, GameEngineLogicDone
 EndPausedGameState:
   ; user is exiting paused state, switch back to traveling state
   LDA #STATETRAVELING
   STA newgmstate
   JMP GameEngineLogicDone
+EndPausedGameStateItemSelected:
+  ; what item did the user select from the PAUSED screen?
+  LDA choice
+  BEQ EndPausedGameState			; user selected to continue traveling
+  CMP #$03
+  BEQ EndPausedGameStateLoadPace
+  JMP GameEngineLogicDone
+EndPausedGameStateLoadPace:
+  LDA #STATEPACE
+  STA newgmstate
+  JMP GameEngineLogicDone
+
 
 ;;;;;;;;;
 EngineLogicPace:

@@ -161,6 +161,12 @@ OCC_X			= $40
 OCC_MIN_Y		= $57
 OCC_MAX_Y		= $77
 
+; paused screen
+PAUSED_CURSOR_SPR	= $3F
+PAUSED_X			= $30
+PAUSED_MIN_Y		= $87
+PAUSED_MAX_Y		= $AF
+
 ; start-month screen
 MONTH_CURSOR_SPR	= $3F
 MONTH_X				= $70
