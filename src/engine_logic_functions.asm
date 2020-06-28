@@ -315,8 +315,10 @@ EngineLogicLandmark:
   JMP (vector)
 + JMP GameEngineLogicDone
 EndLandmarkState:
+  ; go into paused state b/c we're exiting the landmark state so the player
+  ; can decide what to do next
   INC curlandmark
-  LDA #STATETRAVELING
+  LDA #STATEPAUSED
   STA newgmstate
   JMP GameEngineLogicDone
 EndLandmarkStateFort:
@@ -340,7 +342,8 @@ EngineLogicStore:
 EndStoreGameState:
   ; user is exiting store state, switch to "starting-month" state, unless
   ; curlandmark is greater than 0, which means that we're already in our journey
-  ; and have been at a fort's store, and so need to resume traveling.
+  ; and have been at a fort's store, and so need to resume traveling by going to
+  ; the paused screen.
   LDA #$00
   CMP curlandmark
   BCC EndStoreGameStateAlreadyTraveling
@@ -349,7 +352,7 @@ EndStoreGameStateSettingUpNewGame:
   STA newgmstate
   JMP GameEngineLogicDone
 EndStoreGameStateAlreadyTraveling:
-  LDA #STATETRAVELING
+  LDA #STATEPAUSED
   STA newgmstate
   JMP GameEngineLogicDone
 
@@ -438,9 +441,8 @@ UpdatePaceCursorSprite:
 
   CheckForAButton EndPaceGameState, GameEngineLogicDone
 EndPaceGameState:
-  ; user is exiting pace state, switch to traveling state
-  ; TODO if entering this from PAUSED, we need to switch back to paused
-  LDA #STATETRAVELING
+  ; user is exiting pace state, switch back to PAUSED state
+  LDA #STATEPAUSED
   STA newgmstate
   JMP GameEngineLogicDone
 
@@ -523,7 +525,7 @@ EndDecisionFortGameState:
   LDA choice
   BEQ EndDecisionFortGameStateGoToStore
 EndDecisionFortGameStateContinueTravel:
-  LDA #STATETRAVELING
+  LDA #STATEPAUSED
   STA newgmstate
   JMP GameEngineLogicDone
 EndDecisionFortGameStateGoToStore:
@@ -685,8 +687,9 @@ UpdateMonthCursorSprite:
 
   CheckForAButton EndMonthGameState, GameEngineLogicDone
 EndMonthGameState:
-  ; user is exiting month state, switch to pace state
-  LDA #STATEPACE
+  ; user is exiting month state, switch to landmark state so we can load initial
+  ; landmark (Independence, MO)
+  LDA #STATELANDMARK
   STA newgmstate
   JMP GameEngineLogicDone
 

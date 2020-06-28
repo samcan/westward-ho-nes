@@ -414,6 +414,10 @@ SetInitialState:
   LDA #$03
   STA yokeoxen
 
+  ; set initial pace of STEADY
+  LDA #PACE_STEADY
+  STA pace
+
   ; set health of good
   LDA #HEALTH_GOOD
   STA health
