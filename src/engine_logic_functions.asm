@@ -29,25 +29,14 @@ MACRO MultiplyPercentageDistance x,y,output
 @Done:
 ENDM
 ;;;;;;;;;;;;;;;;;;;
-MACRO CheckForStartButton jumpto,elsejumpto
-  ; Checks for START button to have been pressed on player 1's
-  ; controller. Once it has, jump to subroutine given as jumpto.
+MACRO CheckForButton btn,jumpto,elsejumpto
+  ; Checks for button btn to have been pressed on player 1's
+  ; controller. Once it has, jump to label given as jumpto.
+  ; Otherwise, jump to label given as elsejumpto.
   ;
   ; Clobbers: A
   LDA buttons1
-  AND #BTN_START
-  BEQ +
-  JMP jumpto
-+ JMP elsejumpto
-ENDM
-;;;;;;;;;;;;;;;;;;;
-MACRO CheckForAButton jumpto,elsejumpto
-  ; Checks for A button to have been pressed on player 1's
-  ; controller. Once it has, jump to subroutine given as jumpto.
-  ;
-  ; Clobbers: A
-  LDA buttons1
-  AND #BTN_A
+  AND btn
   BEQ +
   JMP jumpto
 + JMP elsejumpto
@@ -72,7 +61,7 @@ GameEngineLogic:
 ; deal with title screen input; check for Start button to be pressed to exit
 ; title screen state
 EngineLogicTitle:
-  CheckForStartButton EndTitleState, GameEngineLogicDone
+  CheckForButton #BTN_START, EndTitleState, GameEngineLogicDone
 EndTitleState:
   ; user is exiting title state, switch to new game state
   LDA #STATENEWGAME
@@ -81,7 +70,9 @@ EndTitleState:
 
 ;;;;;;;;;
 EngineLogicNewGame:
-  CheckForStartButton EndNewGameState, GameEngineLogicDone
+  CheckForButton #BTN_START, EndNewGameState, +
+
++ JMP GameEngineLogicDone
 EndNewGameState:
   ; user is exiting new game state, switch to alphabet screen to enter name
   LDA #STATEALPHABET
@@ -91,47 +82,28 @@ EndNewGameState:
 ;;;;;;;;;
 EngineLogicAlphabet:
   ; move cursor around
-  LDA buttons1
-  AND #BTN_UPARROW
-  BNE MoveCursorUp
+  CheckForButton #BTN_UPARROW, MoveCursorUp, +
++ CheckForButton #BTN_DOWNARROW, MoveCursorDown, +
++ CheckForButton #BTN_LEFTARROW, MoveCursorLeft, +
++ CheckForButton #BTN_RIGHTARROW, MoveCursorRight, +
++ CheckForButton #BTN_A, EngineLogicAlphabetSelectLetter, +
++ CheckForButton #BTN_B, EngineLogicAlphabetEraseLetter, +
 
-  LDA buttons1
-  AND #BTN_DOWNARROW
-  BNE MoveCursorDown
++ JMP GameEngineLogicDone
 
-  LDA buttons1
-  AND #BTN_LEFTARROW
-  BEQ +
-  JMP MoveCursorLeft
-+
-  LDA buttons1
-  AND #BTN_RIGHTARROW
-  BEQ +
-  JMP MoveCursorRight
-+
-  LDA buttons1
-  AND #BTN_A
-  BNE @SelectLetter
-
-  LDA buttons1
-  AND #BTN_B
-  BNE @Erase
-
-  JMP UpdateCursorLetterSprites
-
-@SelectLetter:
+EngineLogicAlphabetSelectLetter:
   LDA hilitedltr
   CMP #$6B					; user selected OK?
-  BEQ @End
+  BEQ EngineLogicAlphabetEndState
   CMP #$6A					; user selected backspace
-  BEQ @Erase
+  BEQ EngineLogicAlphabetEraseLetter
   LDX numletters
   CPX #$08
-  BEQ @Done
+  BEQ EngineLogicAlphabetDoneSelecting
   STA name1, X
   INC numletters
-  JMP @Done
-@Erase:
+  JMP EngineLogicAlphabetDoneSelecting
+EngineLogicAlphabetEraseLetter:
   LDA #$00
   DEC numletters
   LDX numletters
@@ -143,9 +115,9 @@ EngineLogicAlphabet:
   STX numletters
 @StoreValue:
   STA name1, X
-@Done:
+EngineLogicAlphabetDoneSelecting:
   JMP UpdateCursorLetterSprites
-@End:
+EngineLogicAlphabetEndState:
   JMP EndAlphabetState
 
 MoveCursorUp:
@@ -308,12 +280,11 @@ EngineLogicLandmark:
   LDA landmarkptr, x
   STA vector+1
 
-
-  LDA buttons1
-  AND #BTN_START
-  BEQ +
-  JMP (vector)
-+ JMP GameEngineLogicDone
+  ; if START button is pressed, jump to the specific function specified for
+  ; this landmark, whether that be a river crossing decision, etc.
+  CheckForButton #BTN_START, (vector), GameEngineLogicDone
+; the following functions could be special functions called for the specific
+; type of landmark. See landmarkptr
 EndLandmarkState:
   ; go into paused state b/c we're exiting the landmark state so the player
   ; can decide what to do next
@@ -338,7 +309,8 @@ EndGame:
 ;;;;;;;;; 
 EngineLogicStore:
   ;; logic associated with general store
-  CheckForStartButton EndStoreGameState, GameEngineLogicDone
+  CheckForButton #BTN_START, EndStoreGameState, +
++ JMP GameEngineLogicDone
 EndStoreGameState:
   ; user is exiting store state, switch to "starting-month" state, unless
   ; curlandmark is greater than 0, which means that we're already in our journey
@@ -359,15 +331,12 @@ EndStoreGameStateAlreadyTraveling:
 ;;;;;;;;;
 EngineLogicPaused:
   ;; logic associated with paused screen
-  LDA buttons1
-  AND #BTN_UPARROW
-  BNE MovePausedCursorUp
+  CheckForButton #BTN_UPARROW, MovePausedCursorUp, +
++ CheckForButton #BTN_DOWNARROW, MovePausedCursorDown, +
++ CheckForButton #BTN_A, EndPausedGameStateItemSelected, +
++ CheckForButton #BTN_START, EndPausedGameState, +
 
-  LDA buttons1
-  AND #BTN_DOWNARROW
-  BNE MovePausedCursorDown
-
-  JMP UpdatePausedCursorSprite
++ JMP GameEngineLogicDone
 
 MovePausedCursorUp:
   LDA choice
@@ -429,9 +398,8 @@ UpdatePausedCursorSprite:
   LDA cursorX
   STA $0200, x
 
-  CheckForAButton EndPausedGameStateItemSelected, GamePauseCheckNextButton
-GamePauseCheckNextButton:
-  CheckForStartButton EndPausedGameState, GameEngineLogicDone
+  JMP GameEngineLogicDone
+
 EndPausedGameState:
   ; user is exiting paused state, switch back to traveling state
   LDA #STATETRAVELING
@@ -459,15 +427,11 @@ EndPausedGameStateLoadRations:
 ;;;;;;;;;
 EngineLogicPace:
   ;; logic associated with pace screen
-  LDA buttons1
-  AND #BTN_UPARROW
-  BNE MovePaceCursorUp
+  CheckForButton #BTN_UPARROW, MovePaceCursorUp, +
++ CheckForButton #BTN_DOWNARROW, MovePaceCursorDown, +
++ CheckForButton #BTN_A, EndPaceGameState, +
 
-  LDA buttons1
-  AND #BTN_DOWNARROW
-  BNE MovePaceCursorDown
-
-  JMP UpdatePaceCursorSprite
++ JMP UpdatePaceCursorSprite
 
 MovePaceCursorUp:
   LDA pace
@@ -529,7 +493,7 @@ UpdatePaceCursorSprite:
   LDA cursorX
   STA $0200, x
 
-  CheckForAButton EndPaceGameState, GameEngineLogicDone
+  JMP GameEngineLogicDone
 EndPaceGameState:
   ; user is exiting pace state, switch back to PAUSED state
   LDA #STATEPAUSED
@@ -541,15 +505,11 @@ EndPaceGameState:
 ;;;;;;;;;
 EngineLogicRations:
   ;; logic associated with rations screen
-  LDA buttons1
-  AND #BTN_UPARROW
-  BNE MoveRationsCursorUp
+  CheckForButton #BTN_UPARROW, MoveRationsCursorUp, +
++ CheckForButton #BTN_DOWNARROW, MoveRationsCursorDown, +
++ CheckForButton #BTN_A, EndRationsGameState, +
 
-  LDA buttons1
-  AND #BTN_DOWNARROW
-  BNE MoveRationsCursorDown
-
-  JMP UpdateRationsCursorSprite
++ JMP GameEngineLogicDone
 
 MoveRationsCursorUp:
   LDA rations
@@ -611,7 +571,7 @@ UpdateRationsCursorSprite:
   LDA cursorX
   STA $0200, x
 
-  CheckForAButton EndRationsGameState, GameEngineLogicDone
+  JMP GameEngineLogicDone
 EndRationsGameState:
   ; user is exiting pace state, switch back to PAUSED state
   LDA #STATEPAUSED
@@ -624,16 +584,11 @@ EndRationsGameState:
 ;;;;;;;;;
 EngineLogicDecisionFort:
   ;; logic associated with the decision screen for forts
-  LDA buttons1
-  AND #BTN_UPARROW
-  BNE MoveDecisionFortCursorUp
+  CheckForButton #BTN_UPARROW, MoveDecisionFortCursorUp, +
++ CheckForButton #BTN_DOWNARROW, MoveDecisionFortCursorDown, +
++ CheckForButton #BTN_A, EndDecisionFortGameState, +
 
-  LDA buttons1
-  AND #BTN_DOWNARROW
-  BNE MoveDecisionFortCursorDown
-
-  JMP UpdateDecisionFortCursorSprite
-
++ JMP GameEngineLogicDone
 MoveDecisionFortCursorUp:
   LDA choice
   SEC
@@ -694,7 +649,7 @@ UpdateDecisionFortCursorSprite:
   LDA cursorX
   STA $0200, x
 
-  CheckForAButton EndDecisionFortGameState, GameEngineLogicDone
+  JMP GameEngineLogicDone
 EndDecisionFortGameState:
   ; user is exiting fort-decision state
   LDA choice
@@ -712,15 +667,11 @@ EndDecisionFortGameStateGoToStore:
 ;;;;;;;;;
 EngineLogicOccupation:
   ;; logic associated with occupation screen
-  LDA buttons1
-  AND #BTN_UPARROW
-  BNE MoveOccupationCursorUp
-
-  LDA buttons1
-  AND #BTN_DOWNARROW
-  BNE MoveOccupationCursorDown
-
-  JMP UpdateOccupationCursorSprite
+  CheckForButton #BTN_UPARROW, MoveOccupationCursorUp, +
++ CheckForButton #BTN_DOWNARROW, MoveOccupationCursorDown, +
++ CheckForButton #BTN_A, EndOccupationGameState, +
+  
++ JMP GameEngineLogicDone
 
 MoveOccupationCursorUp:
   LDA occupation
@@ -782,7 +733,7 @@ UpdateOccupationCursorSprite:
   LDA cursorX
   STA $0200, x
 
-  CheckForAButton EndOccupationGameState, GameEngineLogicDone
+  JMP GameEngineLogicDone
 EndOccupationGameState:
   ; user is exiting occupation state, switch to store state
   LDA #STATESTORE
@@ -792,15 +743,11 @@ EndOccupationGameState:
 ;;;;;;;;;
 EngineLogicMonth:
   ;; logic associated with "start-month" screen
-  LDA buttons1
-  AND #BTN_UPARROW
-  BNE MoveMonthCursorUp
+  CheckForButton #BTN_UPARROW, MoveMonthCursorUp, +
++ CheckForButton #BTN_DOWNARROW, MoveMonthCursorDown, +
++ CheckForButton #BTN_A, EndMonthGameState, +
 
-  LDA buttons1
-  AND #BTN_DOWNARROW
-  BNE MoveMonthCursorDown
-
-  JMP UpdateMonthCursorSprite
++ JMP UpdateMonthCursorSprite
 
 MoveMonthCursorUp:
   LDA month
@@ -860,7 +807,7 @@ UpdateMonthCursorSprite:
   LDA cursorX
   STA $0200, x
 
-  CheckForAButton EndMonthGameState, GameEngineLogicDone
+  JMP GameEngineLogicDone
 EndMonthGameState:
   ; user is exiting month state, switch to landmark state so we can load initial
   ; landmark (Independence, MO)
@@ -965,7 +912,7 @@ EngineLogicTraveling:
   LDX #$24
   JSR UpdateStatusIcons
 
-  CheckForStartButton EnterPausedGameState, NotEnteringPausedGameState
+  CheckForButton #BTN_START, EnterPausedGameState, NotEnteringPausedGameState
 EnterPausedGameState:
   ; user is entering pause state
   LDA #STATEPAUSED
