@@ -553,7 +553,7 @@ bg_landmark_fort_decision_screen:
   .incbin "src/assets/bg_landmark_fort_decision_screen.rle"
 
 bankvalues:
-  .db $00,$01,$02
+  .db $00,$01,$02,$03
 
 
 ; points to appropriate 'load-new-screen' functions so they can get called
