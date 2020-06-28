@@ -3,9 +3,11 @@
 * Independence, MO
 * _(102 miles)_
 * Kansas River Crossing
+    * Crossing options: Ford the river, caulk the wagon and float, ferry ($5, lose 3 days)
     * ![](img/ot_kansas_river_crossing.png?raw=true)
 * _(83 miles)_
 * Big Blue River Crossing
+    * Crossing options: Ford the river, caulk the wagon and float
     * ![](img/ot_big_blue_river_crossing.png?raw=true)
 * _(119 miles)_
 * Fort Kearney
