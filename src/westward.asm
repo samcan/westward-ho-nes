@@ -25,6 +25,7 @@ yokeoxen	.dsb 1		; number of yoke of oxen
 pace		.dsb 1		; travel pace (steady, strenuous, grueling)
 rations		.dsb 1
 occupation	.dsb 1
+basemileage	.dsb 1		; base miles per day
 curlandmark	.dsb 1		; current landmark we're traveling toward (index value)
 month		.dsb 1		; current month (we're assuming a year of 1848)
 						; March-July are valid options for starting point
@@ -134,10 +135,6 @@ MAX_MI_PER_DAY_B	= $18			; max miles per day after Fort Laramie
 PACE_STEADY			= $01
 PACE_STRENUOUS		= $02
 PACE_GRUELING		= $03
-
-LANDMARK_FT_LARAMIE	= $05			; Fort Laramie has a landmark index of 6.
-									; Once we've passed this landmark, we need
-									; to adjust our miles traveled per day.
 
 ; controller buttons
 BTN_A			= 1 << 7
@@ -423,6 +420,9 @@ SetInitialState:
   LDA #$00
   STA curlandmark
 
+  LDA #MAX_MI_PER_DAY_A
+  STA basemileage
+
   ; set 3 yoke of oxen
   LDA #$03
   STA yokeoxen
@@ -663,7 +663,7 @@ landmarkbank:
 landmarkptr:
   .dw EndLandmarkState, EndLandmarkState, EndLandmarkState
   .dw EndLandmarkStateFort, EndLandmarkState
-  .dw EndLandmarkStateFort, EndLandmarkState
+  .dw EndLandmarkStateFortLaramie, EndLandmarkState
   .dw EndLandmarkState
   .dw EndLandmarkStateFort, EndLandmarkState
   .dw EndLandmarkStateFort, EndLandmarkState

@@ -299,6 +299,14 @@ EndLandmarkStateFort:
   LDA #STATECHOOSEFORT
   STA newgmstate
   JMP GameEngineLogicDone
+EndLandmarkStateFortLaramie:
+  ; we're at Fort Laramie, so we need to update our base mileage to be less
+  ; (as we're now entering the mountains). Then we'll jump to the main "fort
+  ; decision" screen
+  LDA #MAX_MI_PER_DAY_B
+  STA basemileage
+  JMP EndLandmarkStateFort
+
 
 EndGame:
   ; we've reached the Willamette Valley. Switch back to the Title
@@ -850,17 +858,7 @@ EngineLogicTraveling:
 @UpdateMileageEachDay:
   ;; increase mi traveled
   ; calc mi traveled
-  ; check if we've passed Fort Laramie or not, as this is the dividing line between
-  ; the max number of mi traveled per day
-  LDA #LANDMARK_FT_LARAMIE
-  CMP curlandmark
-  BCC @mileageB
-@mileageA:
-  MultiplyPercentageDistance #MAX_MI_PER_DAY_A, yokeoxen, tempcalcb
-  JMP @cont
-@mileageB:
-  MultiplyPercentageDistance #MAX_MI_PER_DAY_B, yokeoxen, tempcalcb
-@cont:
+  MultiplyPercentageDistance basemileage, yokeoxen, tempcalcb
   LDA tempcalcb
   STA tempcalca
   MultiplyPercentageDistance tempcalca, pace, tempcalcb
