@@ -488,7 +488,15 @@ SetInitialState:
   RTS
 
 
-  .org $E000
+  ; The ".org $E000" directive isn't necessary as it's artificially partitioning
+  ; the ROM's PRG-ROM. I still had a lot of space to fill before this point, and
+  ; some space after the palette and background definitions, but this would mean
+  ; that I'd have to be careful to line data exactly up so it fit in the remain.
+  ; space. This way, all the PRG-ROM data is in one chunk, and as I add data,
+  ; whether it be background definitions, audio data, or game logic, the PRG-ROM
+  ; will just naturally grow and fill up all the space.
+  ;.org $E000
+
   ; set palettes
 palette:
   .db $0F,$3D,$09,$19,  $0F,$06,$15,$36,  $0F,$05,$26,$10,  $0F,$16,$27,$18   ;;background palette
