@@ -292,6 +292,7 @@ EngineLogicLandmark:
 EndLandmarkState:
   ; go into paused state b/c we're exiting the landmark state so the player
   ; can decide what to do next
+  JSR FamiToneMusicStop
   INC curlandmark
   LDA #STATEPAUSED
   STA newgmstate
@@ -299,6 +300,7 @@ EndLandmarkState:
 EndLandmarkStateFort:
   ; we're at a fort, so we need to switch to the screen where the player
   ; can make a decision to purchase supplies or continue on their journey
+  JSR FamiToneMusicStop
   INC curlandmark
   LDA #STATECHOOSEFORT
   STA newgmstate
@@ -316,6 +318,7 @@ EndGame:
   ; we've reached the Willamette Valley. Switch back to the Title
   ; Screen once the user presses START by triggering RESET. (Eventually,
   ; we should switch to the Score Screen first.)
+  JSR FamiToneMusicStop
   JMP RESET
 
 ;;;;;;;;; 

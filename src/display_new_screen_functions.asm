@@ -59,6 +59,11 @@ DisplayLandmarkScreen:
 
   PaletteLoad palette_landmark
 
+  ; start playing landmark music
+  LDX curlandmark
+  LDA landmarksongs, X
+  JSR FamiToneMusicPlay
+
   ; load background into nametable 0
   LDA curlandmark
   ASL A
