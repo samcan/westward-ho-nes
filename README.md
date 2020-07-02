@@ -32,7 +32,7 @@ your path as well.
 6. This will RLE-compress the background files and compile `src\westward.nes`. This can
 be run in Mesen.
 
-### Compiling on Linux
+### Compiling on Linux - OUTDATED
 Tested in a live CD environment of Pop!OS 20.04 and in an install of Ubuntu 20.04.
 
 #### Prerequisites
