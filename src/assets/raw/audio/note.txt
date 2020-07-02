@@ -1,0 +1,2 @@
+FamiTone2 note! Number of rows per song must be less than 256! Otherwise, conversion
+to format for FamiTone2 won't work.

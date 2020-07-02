@@ -64,6 +64,10 @@ EngineLogicTitle:
   CheckForButton #BTN_START, EndTitleState, GameEngineLogicDone
 EndTitleState:
   ; user is exiting title state, switch to new game state
+
+  ; stop music
+  JSR FamiToneMusicStop
+
   LDA #STATENEWGAME
   STA newgmstate
   JMP GameEngineLogicDone

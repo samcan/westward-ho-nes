@@ -81,6 +81,7 @@ tileX		.dsb 1
 tileY		.dsb 1
 tile		.dsb 1
 tilepal		.dsb 1
+; note that we're reserving $FD-$FF for FamiTone2
   .ende
 
 ;; DECLARE CONSTANTS HERE
@@ -273,6 +274,13 @@ clrmem:
   LDA #%00011110   ; enable sprites, enable background, no clipping on left side
   STA PpuMask
 
+  LDA #<audio_data_music_data
+  TAX
+  LDA #>audio_data_music_data
+  TAY
+  LDA #$01
+  JSR FamiToneInit
+
 Forever:
   JMP Forever     ;jump back to Forever, infinite loop, waiting for NMI
 
@@ -350,7 +358,8 @@ UpdateCurrentScreen:
   JSR ReadController1  ;;get the current button data for player 1
   JMP GameEngineLogic  ;;process game engine logic
 
-GameEngineLogicDone:  
+GameEngineLogicDone:
+  JSR FamiToneUpdate
   RTI             		; return from interrupt
 
 
@@ -399,6 +408,10 @@ FinishLoadNewScreen:
   .include "src/engine_logic_functions.asm"
 
   .include "src/helper.asm"
+
+  ; audio library (FamiTone2) and audio data file
+  .include "src/audio/famitone2/famitone2_asm6.asm"
+  .include "src/assets/audio/audio_data.asm"
 
 ;;;;;;;;;;;;;;
 SetInitialState:

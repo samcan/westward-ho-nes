@@ -93,7 +93,12 @@ rm_build_number:
 $(RLE_FILES): %.rle: %.bin
 	$(PYTHON) $(PY_COMPRESS_RLE) --input $< --output $@
 
-westward.nes: $(RLE_FILES) $(ASM_FILE)
+# NOT YET WORKING FOR LINUX AS WE CALL WINDOWS PROGRAM
+# NEED TO ADD VARS FOR CALLING LINUX-COMPILED VERSION
+#audio: $(DIR_ASSETS)/raw/audio/audio.txt
+#	util/famitone2/text2data -asm6 $<
+
+westward.nes: | $(RLE_FILES) $(ASM_FILE)
 	$(ASM) $(ASM_FLAGS) $(ASM_FILE) $(NES_FILE)
 
 westward: | add_build_number westward.nes rm_build_number

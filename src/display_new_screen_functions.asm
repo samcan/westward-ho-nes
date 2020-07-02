@@ -31,6 +31,11 @@ DisplayTitleScreen:
   JSR LoadPalettes
 
   LoadRLEScreen bg_title_screen, $00
+
+  ; start playing title music
+  LDA #$00
+  JSR FamiToneMusicPlay
+
   JMP FinishLoadNewScreen
 
 DisplayNewGameScreen:
