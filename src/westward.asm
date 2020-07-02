@@ -188,6 +188,10 @@ CHOOSEFORT_MAX_Y		= $67
 OXEN_TOP_Y		= $90
 OXEN_TOP_X		= $C8
 
+; song names
+HOME_ON_THE_RANGE	= $00
+YANKEE_DOODLE		= $01
+
 ; PPU addresses
 PpuCtrl			= $2000
 PpuMask			= $2001
@@ -686,16 +690,16 @@ landmarkptr:
   .dw EndLandmarkState
 
 landmarksongs:
-  .db $01, $01, $01
-  .db $01, $01
-  .db $01, $01
-  .db $01
-  .db $01, $01
-  .db $01, $01
-  .db $01, $01
-  .db $01, $01
-  .db $01
-  .db $01
+  .db #YANKEE_DOODLE, #YANKEE_DOODLE, #YANKEE_DOODLE
+  .db #YANKEE_DOODLE, #YANKEE_DOODLE
+  .db #YANKEE_DOODLE, #YANKEE_DOODLE
+  .db #YANKEE_DOODLE
+  .db #YANKEE_DOODLE, #YANKEE_DOODLE
+  .db #YANKEE_DOODLE, #YANKEE_DOODLE
+  .db #YANKEE_DOODLE, #YANKEE_DOODLE
+  .db #YANKEE_DOODLE, #YANKEE_DOODLE
+  .db #YANKEE_DOODLE
+  .db #YANKEE_DOODLE
 
 daysinmonth:
   ; we fill [0] with fake value and that way we can use the month [3] to get the

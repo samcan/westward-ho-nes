@@ -32,8 +32,8 @@ DisplayTitleScreen:
 
   LoadRLEScreen bg_title_screen, $00
 
-  ; start playing title music
-  LDA #$00
+  ; start playing title music (Home on the Range)
+  LDA #HOME_ON_THE_RANGE
   JSR FamiToneMusicPlay
 
   JMP FinishLoadNewScreen
