@@ -191,6 +191,7 @@ OXEN_TOP_X		= $C8
 ; song names
 HOME_ON_THE_RANGE	= $00
 YANKEE_DOODLE		= $01
+CAMPTOWN_RACES		= $02
 
 ; PPU addresses
 PpuCtrl			= $2000
@@ -690,7 +691,7 @@ landmarkptr:
   .dw EndLandmarkState
 
 landmarksongs:
-  .db #YANKEE_DOODLE, #YANKEE_DOODLE, #YANKEE_DOODLE
+  .db #YANKEE_DOODLE, #CAMPTOWN_RACES, #YANKEE_DOODLE
   .db #YANKEE_DOODLE, #YANKEE_DOODLE
   .db #YANKEE_DOODLE, #YANKEE_DOODLE
   .db #YANKEE_DOODLE
