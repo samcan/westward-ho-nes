@@ -12,6 +12,8 @@ MIRRORING		= 1   ; background mirroring
 
 ;;;;;;;;;;;;;;;
 
+;AUDIO_YES		; define to include audio support
+
 ;; DECLARE VARIABLES HERE
   .enum $0000  ;;start variables at ram location 0
 
@@ -289,6 +291,7 @@ clrmem:
   LDA #%00011110   ; enable sprites, enable background, no clipping on left side
   STA PpuMask
 
+  .ifdef AUDIO_YES
   ; load audio data and initialize audio driver
   LDA #<audio_data_music_data
   TAX
@@ -296,6 +299,7 @@ clrmem:
   TAY
   LDA #$01
   JSR FamiToneInit
+  .endif
 
 Forever:
   JMP Forever     ;jump back to Forever, infinite loop, waiting for NMI
@@ -418,9 +422,11 @@ FinishLoadNewScreen:
   JMP FinishNMI
 ;;
 FinishNMI:
+  .ifdef AUDIO_YES
   ; Update music if playing. Note that this should be the last thing
   ; done before returning from the interrupt.
   JSR FamiToneUpdate
+  .endif
   RTI             		; return from interrupt
 ;;;;;;;; NMI should be complete here
 ;;;;;;;;;;;;;;

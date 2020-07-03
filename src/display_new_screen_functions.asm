@@ -32,9 +32,11 @@ DisplayTitleScreen:
 
   LoadRLEScreen bg_title_screen, $00
 
+  .ifdef AUDIO_YES
   ; start playing title music
   LDA #TITLE_SONG
   JSR FamiToneMusicPlay
+  .endif
 
   JMP FinishLoadNewScreen
 
@@ -59,10 +61,12 @@ DisplayLandmarkScreen:
 
   PaletteLoad palette_landmark
 
+  .ifdef AUDIO_YES
   ; start playing landmark music
   LDX curlandmark
   LDA landmarksongs, X
   JSR FamiToneMusicPlay
+  .endif
 
   ; load background into nametable 0
   LDA curlandmark
