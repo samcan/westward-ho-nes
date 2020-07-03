@@ -279,6 +279,7 @@ clrmem:
   LDA #%00011110   ; enable sprites, enable background, no clipping on left side
   STA PpuMask
 
+  ; load audio data and initialize audio driver
   LDA #<audio_data_music_data
   TAX
   LDA #>audio_data_music_data
@@ -364,6 +365,8 @@ UpdateCurrentScreen:
   JMP GameEngineLogic  ;;process game engine logic
 
 GameEngineLogicDone:
+  ; Update music if playing. Note that this should be the last thing
+  ; done before returning from the interrupt.
   JSR FamiToneUpdate
   RTI             		; return from interrupt
 
