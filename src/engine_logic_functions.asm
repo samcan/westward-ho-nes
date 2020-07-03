@@ -961,22 +961,6 @@ LoadFrameOne:
 
   JMP GameEngineLogicDone
 ;;;;;;;;;;
-UpdateCalendar:
-  ; adds one day to the game's calendar
-  ;
-  ; Clobbers: A, X
-  INC day
-  LDX month
-  LDA daysinmonth, X
-  CMP day
-  BCC @UpdateMonth
-  RTS
-@UpdateMonth:
-  INC month
-  LDA #$01
-  STA day
-  RTS
-;;;;;;;;;;
 UpdateTravelingSpritesFrameZero:
   ; wagon metatile
   LDA #$04
