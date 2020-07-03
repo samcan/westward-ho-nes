@@ -638,6 +638,27 @@ titlewestwardtext:
 titletextattr:
   .db $00
 
+; Note regarding Landmarks and the data surrounding them:
+;
+; Right now I have several pieces of data associated with given
+; landmarks:
+;
+;   * The bank they're loaded from
+;   * The distance in mi to them
+;   * The bg table responsible for displaying the landmark screen
+;   * The function ptr called after the user leaves the landmark screen
+;   * The song associated with the landmark screen
+;   * (Eventually) The small icon displayed on the main map while traveling for the
+;     landmark
+;
+; Reading _The Pragmatic Programmer_, it seems like I should create one universal table
+; responsible for storing all information about landmarks, so that it's easy to see at a
+; glance and make changes to this info.
+;
+; However, at least right now, I'm not making the change. Unfortunately I can't combine
+; .db and .dw directives on a single line, which means I need to figure out some way to
+; get all of this data (two-byte words and one-byte items) into a single line without making
+; it look too long.
 landmarkicons:
   .dw metatile_landmark_river
 
