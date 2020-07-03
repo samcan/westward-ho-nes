@@ -29,6 +29,11 @@ I'm limited by FamiTone2 to 17 songs per data file, so I'll probably need to hav
 * ["Yankee Doodle"](https://en.wikipedia.org/wiki/Yankee_Doodle) - DONE
 * ["Yellow Rose of Texas"](https://en.wikipedia.org/wiki/The_Yellow_Rose_of_Texas_(song)) - INITIAL TRACKING DONE
 
-I also tracked "Home on the Range" as the title song. Yes, it's anachronistic probably, but who cares?
+## Other Tracked Songs
+* "Arkansas Traveler" - INITIAL TRACKING DONE
+* "Battle Hymn of the Republic" - INITIAL TRACKING DONE (end song)
+* "Home on the Range" - DONE (title song—yes, it's anachronistic probably, but who cares?)
+* "Irish Washerwoman" - INITIAL TRACKING DONE
+* "My Old Kentucky Home" - INITIAL TRACKING DONE
 
 [williamsdances]: http://www.voyagerrecords.com/otbook.htm
