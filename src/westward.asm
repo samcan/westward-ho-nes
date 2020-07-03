@@ -263,10 +263,6 @@ clrmem:
   STA paletteptr+1
   JSR LoadPalettes
 
-  ; test switching to bank 1 from bank 0 on the CHR-ROM
-  ; LDA #$01
-  ; JSR BankSwitch
-
   ; Interesting. Apparently, once I've switched to a different bank (like in
   ; the traveling state), if I reset the console, it won't automatically go
   ; back to the original bank. So I need to explicitly set the bank to 0.
