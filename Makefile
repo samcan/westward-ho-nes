@@ -52,6 +52,7 @@ RLE_FILES = $(DIR_ASSETS)/bg_alphabet_screen.rle \
 			$(DIR_ASSETS)/bg_landmark_the_dalles.rle \
 			$(DIR_ASSETS)/bg_landmark_willamette_valley.rle \
 			$(DIR_ASSETS)/bg_landmark_fort_decision_screen.rle \
+			$(DIR_ASSETS)/bg_landmark_blue_mtn_decision_screen.rle \
 			$(DIR_ASSETS)/bg_occupation_screen.rle \
 			$(DIR_ASSETS)/bg_pace_screen.rle \
 			$(DIR_ASSETS)/bg_paused_screen.rle \

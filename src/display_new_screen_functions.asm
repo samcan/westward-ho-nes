@@ -455,6 +455,40 @@ DisplayDecisionFortScreen:
 
   JMP FinishLoadNewScreen
 
+
+DisplayDecisionBlueMountainsScreen:
+  LDA #$01
+  JSR BankSwitch
+
+  PaletteLoad palette
+
+  LoadRLEScreen bg_landmark_blue_mtn_decision_screen, $00
+
+  LDA #$00
+  STA choice
+
+; set up cursor
+  LDX #$04
+  LDA #CHOOSEBLUE_MIN_Y
+  STA cursorY
+  STA $0200, X
+
+  INX
+  LDA #CHOOSEBLUE_CURSOR_SPR
+  STA $0200, x
+
+  INX
+  LDA #%00100000
+  STA $0200, x
+
+  INX
+  LDA #CHOOSEBLUE_X
+  STA cursorX
+  STA $0200, x
+
+  JMP FinishLoadNewScreen
+
+
 DisplayMonthScreen:
   LDA #$01
   JSR BankSwitch

@@ -101,6 +101,7 @@ STATEMONTH		= $09
 STATEOCCUPATION	= $0A
 STATECHOOSEFORT = $0B
 STATERATIONS	= $0C
+STATECHOOSEBLUE = $0D
 
 FRAMECOUNT		= $30
 
@@ -185,6 +186,11 @@ CHOOSEFORT_X			= $40
 CHOOSEFORT_MIN_Y		= $57
 CHOOSEFORT_MAX_Y		= $67
 
+; decision Blue Mountains screen
+CHOOSEBLUE_CURSOR_SPR	= $3F
+CHOOSEBLUE_X			= $20
+CHOOSEBLUE_MIN_Y		= $57
+CHOOSEBLUE_MAX_Y		= $67
 
 ; traveling screen
 OXEN_TOP_Y		= $90
@@ -616,6 +622,8 @@ bg_landmark_green_river:
 ; landmark decision screens
 bg_landmark_fort_decision_screen:
   .incbin "src/assets/bg_landmark_fort_decision_screen.rle"
+bg_landmark_blue_mtn_decision_screen:
+  .incbin "src/assets/bg_landmark_blue_mtn_decision_screen.rle"
 
 bankvalues:
   .db $00,$01,$02,$03
@@ -629,7 +637,7 @@ screen:
   .dw $0000
   .dw DisplayAlphabetScreen, DisplayPaceScreen, DisplayMonthScreen
   .dw DisplayOccupationScreen, DisplayDecisionFortScreen
-  .dw DisplayRationsScreen
+  .dw DisplayRationsScreen, DisplayDecisionBlueMountainsScreen
 
 ; points to appropriate engine logic functions so they can get called by
 ; the engine
@@ -639,7 +647,7 @@ enginelogic:
   .dw $0000
   .dw EngineLogicAlphabet, EngineLogicPace, EngineLogicMonth
   .dw EngineLogicOccupation, EngineLogicDecisionFort
-  .dw EngineLogicRations
+  .dw EngineLogicRations, EngineLogicDecisionBlueMountains
 
 ; new line = $00, space char needs to be something else, $FF = done
 ; first byte is starting y pos
@@ -728,7 +736,7 @@ landmarkptr:
   .dw EndLandmarkState
   .dw EndLandmarkStateFort, EndLandmarkState
   .dw EndLandmarkStateFort, EndLandmarkState
-  .dw EndLandmarkStateFort, EndLandmarkState
+  .dw EndLandmarkStateFort, EndLandmarkStateBlueMountains
   .dw EndLandmarkStateFort, EndLandmarkState
   .dw EndGame
   .dw EndLandmarkState

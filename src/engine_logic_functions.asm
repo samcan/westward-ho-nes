@@ -319,6 +319,13 @@ EndLandmarkStateFortLaramie:
   LDA #MAX_MI_PER_DAY_B
   STA basemileage
   JMP EndLandmarkStateFort
+EndLandmarkStateBlueMountains
+  ; we're not going to INC curlandmark here, instead we need to get the decision
+  ; the player makes (detour to Fort Walla Walla or not) and then update the
+  ; curlandmark accordingly
+  LDA #STATECHOOSEBLUE
+  STA newgmstate
+  JMP GameEngineLogicDone
 
 
 EndGame:
@@ -687,6 +694,99 @@ EndDecisionFortGameStateGoToStore:
   LDA #STATESTORE
   STA newgmstate
   JMP GameEngineLogicDone
+
+
+
+;;;;;;;;;
+EngineLogicDecisionBlueMountains:
+  ;; logic associated with the decision screen for the Blue Mountains
+  CheckForButton #BTN_UPARROW, MoveDecisionBlueMountainsCursorUp, +
++ CheckForButton #BTN_DOWNARROW, MoveDecisionBlueMountainsCursorDown, +
++ CheckForButton #BTN_A, EndDecisionBlueMountainsGameState, +
+
++ JMP GameEngineLogicDone
+MoveDecisionBlueMountainsCursorUp:
+  LDA choice
+  SEC
+  SBC #$01
+  STA choice
+
+  LDA cursorY
+  SEC
+  SBC #$10
+  ; compare to CHOOSEBlueMountains_MIN_Y
+  CMP #CHOOSEBLUE_MIN_Y
+  BCS +
+  LDA choice
+  CLC
+  ADC #$01
+  STA choice
+
+  LDA #CHOOSEBLUE_MIN_Y
++ STA cursorY
+  JMP UpdateDecisionBlueMountainsCursorSprite
+
+MoveDecisionBlueMountainsCursorDown:
+  LDA choice
+  CLC
+  ADC #$01
+  STA choice
+
+  LDA cursorY
+  CLC
+  ADC #$10
+  ; compare to CHOOSEBlueMountains_MAX_Y
+  CMP #CHOOSEBLUE_MAX_Y
+  BCC +
+  BEQ +
+  LDA choice
+  SEC
+  SBC #$01
+  STA choice
+
+  LDA #CHOOSEBLUE_MAX_Y
++ STA cursorY
+  JMP UpdateDecisionBlueMountainsCursorSprite
+
+UpdateDecisionBlueMountainsCursorSprite:
+  LDX #$04
+  LDA cursorY
+  STA $0200, X
+
+  INX
+  LDA #CHOOSEBLUE_CURSOR_SPR
+  STA $0200, x
+
+  INX
+  LDA #%00100000
+  STA $0200, x
+
+  INX
+  LDA cursorX
+  STA $0200, x
+
+  JMP GameEngineLogicDone
+EndDecisionBlueMountainsGameState:
+  ; user is exiting Blue Mountains-decision state
+  LDA choice
+  BEQ EndDecisionBlueMountainsGameStateBypass
+EndDecisionBlueMountainsGameStateDetour:
+  INC curlandmark
+  JMP EndDecisionBlueMountainsGameStateFinish
+EndDecisionBlueMountainsGameStateBypass:
+  INC curlandmark
+  INC curlandmark
+  ; we're grabbing a hard-coded value as we need to get
+  ; the distance for the bypass. Not sure yet how to work
+  ; around this so we're doing this for now.
+  LDX #$13
+  LDA landmarkdist, X
+  STA miremaining
+EndDecisionBlueMountainsGameStateFinish:
+  LDA #STATEPAUSED
+  STA newgmstate
+  JMP GameEngineLogicDone
+
 
 
 ;;;;;;;;;
