@@ -3,8 +3,12 @@
 The following list is based on the incidental music included in Oregon Trail II, as
 noted in *Oregon Trail II: The Official Strategy Guide*, published by Prima.
 
+[Songs and Dances of the Oregon Trail][williamsdances] has a list of even more songs and dances. Some dances might be good traveling music, or even for fort landmarks? And perhaps the end (the Willamette Valley)?
+
 Depending on space available in the ROM and time constraints, I probably won't use all
 of these, but it's good to have options available.
+
+I'm limited by FamiTone2 to 17 songs per data file, so I'll probably need to have two audio data files given there's about sixteen or seventeen landmarks plus a title song. And if I want different traveling music...
 
 * ["Blue Tail Fly"](https://en.wikipedia.org/wiki/Jimmy_Crack_Corn)
 * ["Buffalo Gals"](https://en.wikipedia.org/wiki/Buffalo_Gals)
@@ -26,3 +30,5 @@ of these, but it's good to have options available.
 * ["Yellow Rose of Texas"](https://en.wikipedia.org/wiki/The_Yellow_Rose_of_Texas_(song)) - INITIAL TRACKING DONE
 
 I also tracked "Home on the Range" as the title song. Yes, it's anachronistic probably, but who cares?
+
+[williamsdances]: http://www.voyagerrecords.com/otbook.htm
