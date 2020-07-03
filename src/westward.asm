@@ -365,10 +365,7 @@ UpdateCurrentScreen:
   JMP GameEngineLogic  ;;process game engine logic
 
 GameEngineLogicDone:
-  ; Update music if playing. Note that this should be the last thing
-  ; done before returning from the interrupt.
-  JSR FamiToneUpdate
-  RTI             		; return from interrupt
+  JMP FinishNMI
 
 
 ;;
@@ -408,8 +405,15 @@ FinishLoadNewScreen:
   ;; now that we've finished loading the new screen, re-enable the NMI and
   ;; return from interrupt
   JSR EnableNMI
-  RTI
+  JMP FinishNMI
 ;;
+FinishNMI:
+  ; Update music if playing. Note that this should be the last thing
+  ; done before returning from the interrupt.
+  JSR FamiToneUpdate
+  RTI             		; return from interrupt
+
+
   .include "src/display_new_screen_functions.asm"
 ;;;;;;;; NMI should be complete here
 
