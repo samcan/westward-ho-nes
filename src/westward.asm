@@ -517,11 +517,6 @@ palette_landmark:
   .db $0F,$22,$09,$19,  $0F,$21,$19,$36,  $0F,$05,$26,$10,  $0F,$16,$27,$18   ;;background palette
   .db $1F,$00,$27,$10,  $1F,$1C,$06,$10,  $1F,$07,$20,$10,  $1F,$07,$17,$10   ;;sprite palette
 
-traveling_wagon:
-  .db #OXEN_TOP_Y+$08,$17,%00000011,#OXEN_TOP_X+$10,  #OXEN_TOP_Y+$08,$18,%00000011,#OXEN_TOP_X+$18,  #OXEN_TOP_Y,$07,%00000011,#OXEN_TOP_X+$10,  #OXEN_TOP_Y,$08,%00000011,#OXEN_TOP_X+$18
-traveling_oxen:
-  .db #OXEN_TOP_Y+$08,$15,%00000011,#OXEN_TOP_X,  #OXEN_TOP_Y+$08,$16,%00000011,#OXEN_TOP_X+$08,  #OXEN_TOP_Y,$05,%00000011,#OXEN_TOP_X,  #OXEN_TOP_Y,$06,%00000011,#OXEN_TOP_X+$08
-
 ; metatile description is the following:
 ; tile num, palette num IN THE FOLLOWING ORDER:
 ; TOP LEFT, TOP RIGHT, BOTTOM LEFT, BOTTOM RIGHT
