@@ -20,6 +20,22 @@ def main(input_file, output_file):
             elif byte == prev_byte:
                 count += 1
             
+            # I may modify this at some point to use negative
+            # numbers to represent a list of bytes which should
+            # be copied as-is. For example, a count of -6 would mean
+            # that the next six bytes should be copied as-is.
+            #
+            # I could convert a negative number n to an 8-bit two's complement
+            # number for conversion to hex by doing the following per the Wikipedia
+            # article:
+            #
+            # = 2^8 - n
+            #
+            # For n = -5
+            # = 2^8 - 5
+            # = 251
+            #
+            # This means I would need to limit the following count to 127
             if count == 255:
                 write_byte(output_file, count, prev_byte)
                 prev_byte = byte
