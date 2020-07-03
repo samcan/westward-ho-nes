@@ -412,19 +412,7 @@ FinishNMI:
   ; done before returning from the interrupt.
   JSR FamiToneUpdate
   RTI             		; return from interrupt
-
-
-  .include "src/display_new_screen_functions.asm"
 ;;;;;;;; NMI should be complete here
-
-  .include "src/engine_logic_functions.asm"
-
-  .include "src/helper.asm"
-
-  ; audio library (FamiTone2) and audio data file
-  .include "src/audio/famitone2/famitone2_asm6.asm"
-  .include "src/assets/audio/audio_data.asm"
-
 ;;;;;;;;;;;;;;
 SetInitialState:
   LDA #$FF
@@ -493,7 +481,7 @@ SetInitialState:
 
   RTS
 
-
+;;;;;;;;;;;;;;
   ; The ".org $E000" directive isn't necessary as it's artificially partitioning
   ; the ROM's PRG-ROM. I still had a lot of space to fill before this point, and
   ; some space after the palette and background definitions, but this would mean
@@ -502,6 +490,14 @@ SetInitialState:
   ; whether it be background definitions, audio data, or game logic, the PRG-ROM
   ; will just naturally grow and fill up all the space.
   ;.org $E000
+
+  .include "src/display_new_screen_functions.asm"
+  .include "src/engine_logic_functions.asm"
+  .include "src/helper.asm"
+
+  ; audio library (FamiTone2) and audio data file
+  .include "src/audio/famitone2/famitone2_asm6.asm"
+  .include "src/assets/audio/audio_data.asm"
 
   ; set palettes
 palette:
