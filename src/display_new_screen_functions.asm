@@ -22,6 +22,7 @@ ENDM
 MACRO DisplayNumberHundreds sprOffset, num1, num, startX, startY, attr
   ; Clobbers: A, X, Y
   ; Returns: X for next sprite offset
+  LDX sprOffset
   LDA num1					; get the hundreds value
   BEQ @SkipHundreds
 
@@ -111,13 +112,13 @@ MACRO DisplayNumberHundreds sprOffset, num1, num, startX, startY, attr
   LDA #startX + $10
   STA $0200, x
   INX
-  STX temp
+  STX sprOffset
 ENDM
 ;;;;;;;;;;;;;;;
 MACRO DisplayNumberThousands sprOffset, bcd3, bcd2, bcd1, bcd, startX, startY, attr
   ; Clobbers: A, X, Y, thousshown, hundsshown
   ; Returns: X - next sprite offset
-  LDX #sprOffset
+  LDX sprOffset
 
   LDA #$00
   STA thousshown
@@ -228,7 +229,7 @@ MACRO DisplayNumberThousands sprOffset, bcd3, bcd2, bcd1, bcd, startX, startY, a
   LDA #startX + $18
   STA $0200, x
   INX
-  STX temp
+  STX sprOffset
 ENDM
 
 
