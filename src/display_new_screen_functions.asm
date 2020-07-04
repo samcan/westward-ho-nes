@@ -19,6 +19,69 @@ MACRO PaletteLoad pltte
   JSR LoadPalettes
 ENDM
 ;;;;;;;;;;;;;;;
+MACRO DisplayNumberTens sprOffset, num, startX, startY, attr
+  ; Clobbers: A, X, Y
+  ; Returns: X for next sprite offset
+  LDX sprOffset
+
+@Tens:
+  ; we need to display the tens if there's a value greater than 0
+  ; grab the tens value
+  LDA num
+  AND #%11110000
+  LSR A
+  LSR A
+  LSR A
+  LSR A
+  TAY
+
+  BEQ @TensZero
+@TensNotZero:
+  TYA
+  CLC
+  ADC #$44
+  TAY						; store in Y for safe-keeping
+  JMP @DisplayTens
+@TensZero:
+  LDA #$00					; set tile index of $00 as we want blank space
+  TAY
+@DisplayTens:
+  LDA #startY
+  STA $0200, x
+  INX
+  TYA						; transfer tile index back off of Y
+  STA $0200, x
+  INX
+  LDA #attr
+  STA $0200, x
+  INX
+  LDA #startX + $08
+  STA $0200, x
+  INX
+
+@DisplayOnes:
+  ; now we'll display ones, which are easy because we always display the
+  ; ones place
+  LDA num
+  AND #%00001111
+  CLC
+  ADC #$44
+  PHA
+  LDA #startY
+  STA $0200, x
+  INX
+  PLA
+  STA $0200, x
+  INX
+  LDA #attr
+  STA $0200, x
+  INX
+  LDA #startX + $10
+  STA $0200, x
+  INX
+  STX sprOffset
+ENDM
+;;;;;;;;;;;;;;;
 MACRO DisplayNumberHundreds sprOffset, num1, num, startX, startY, attr
   ; Clobbers: A, X, Y
   ; Returns: X for next sprite offset
