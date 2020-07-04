@@ -38,7 +38,10 @@ temperature	.dsb 1		; current temperature status
 weathernum	.dsb 1		; current number for weather (translated into status)
 weather		.dsb 1		; current weather status
 food		.dsb 2
+clothes		.dsb 1
 cash		.dsb 2
+bullets		.dsb 2		; individual number of bullets (100/box)
+spareparts	.dsb 1
 
 storeoxen	.dsb 1
 storeoxenpr	.dsb 2
@@ -46,6 +49,10 @@ storefood	.dsb 1
 storefoodpr	.dsb 2
 storeclth	.dsb 1
 storeclthpr	.dsb 2
+storebllt	.dsb 1
+storeblltpr	.dsb 2
+storepart	.dsb 1
+storepartpr	.dsb 1
 
 sproffset	.dsb 1
 textxpos    .dsb 1
@@ -510,10 +517,10 @@ SetInitialState:
   STA day
 
   ; set food of $7D0 (2000 lbs)
-  LDA #$D0
-  STA food
-  LDA #$07
-  STA food+1
+  ;LDA #$D0
+  ;STA food
+  ;LDA #$07
+  ;STA food+1
 
   LDA #$00
   STA scrollH

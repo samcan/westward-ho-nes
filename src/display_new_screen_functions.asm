@@ -362,6 +362,10 @@ DisplayStoreScreen:
   LDA #$00
   STA choice
   STA storeoxen
+  STA storefood
+  STA storeclth
+  STA storebllt
+  STA storepart
 
 DrawCursor:
   ; set up cursor
@@ -391,7 +395,7 @@ DrawCashStart:
   STA bcdNum+1
   JSR SixteenBitHexToDec
 
-  LDA #$08
+  LDA #$04
   STA temp
   DisplayNumberThousands temp, bcdResult+3, bcdResult+2, bcdResult+1, bcdResult, #CASH_START_X, #CASH_START_Y, %00000001
 
@@ -405,7 +409,7 @@ DrawPrices:
   STA htd_in
   JSR EightBitHexToDec
 
-  LDA #$18
+  LDA #$14
   STA temp
   DisplayNumberHundreds, temp, htd_out+1, htd_out, #CASH_START_X + $08, #CASH_START_Y + $10, %00000001
 
@@ -420,7 +424,7 @@ DrawPrices:
   STA htd_in
   JSR EightBitHexToDec
 
-  LDA #$24
+  LDA #$20
   STA temp
   DisplayNumberHundreds, temp, htd_out+1, htd_out, #CASH_START_X + $08, #CASH_START_Y + $28, %00000001
 
@@ -434,7 +438,7 @@ DrawPrices:
   LDA storeprices, X
   STA htd_in
   JSR EightBitHexToDec
-  LDA #$30
+  LDA #$2C
   STA temp
   DisplayNumberHundreds, temp, htd_out+1, htd_out, #CASH_START_X + $08, #CASH_START_Y + $40, %00000001
 
@@ -448,7 +452,7 @@ DrawPrices:
   LDA storeprices, X
   STA htd_in
   JSR EightBitHexToDec
-  LDA #$3C
+  LDA #$38
   STA temp
   DisplayNumberHundreds, temp, htd_out+1, htd_out, #CASH_START_X + $08, #CASH_START_Y + $58, %00000001
 
@@ -462,7 +466,7 @@ DrawPrices:
   LDA storeprices, X
   STA htd_in
   JSR EightBitHexToDec
-  LDA #$48
+  LDA #$44
   STA temp
   DisplayNumberHundreds, temp, htd_out+1, htd_out, #CASH_START_X + $08, #CASH_START_Y + $70, %00000001
 

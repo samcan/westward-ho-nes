@@ -42,6 +42,35 @@ MACRO CheckForButton btn,jumpto,elsejumpto
 + JMP elsejumpto
 ENDM
 ;;;;;;;;;;;;;;;;;;;
+MACRO UpdateStoreDisplayRegular sprOffset,item,peritempr,itempr,firstX,firstY,secondX,secondY,firstAttr,secondAttr
+  LDA peritempr
+  PHA
+  LDA item
+  STA htd_in
+  JSR EightBitHexToDec
+  LDA #sprOffset
+  STA temp
+  DisplayNumberHundreds temp, htd_out+1, htd_out, firstX, firstY, firstAttr
+
+  ; display total price
+  PLA ; transfers peritempr to Y from stack
+  TAY
+  LDA item
+
+  JSR Multiply
+  STY bcdNum+1
+  STA bcdNum
+  LDA bcdNum
+  STA itempr
+  LDA bcdNum+1
+  STA itempr+1
+
+  JSR SixteenBitHexToDec
+  LDA #sprOffset + $0C
+  STA temp
+  DisplayNumberThousands temp, bcdResult+3, bcdResult+2, bcdResult+1, bcdResult, secondX, secondY, secondAttr
+ENDM
+;;;;;;;;;;;;;;;;;;;
 GameEngineLogic:  
   LDA gamestate
   ASL A
@@ -437,6 +466,10 @@ MoveValueDown:
   BEQ @AdjustFoodDown
   CMP #$02
   BEQ @AdjustClothesDown
+  CMP #$03
+  BEQ @AdjustBulletsDown
+  CMP #$04
+  BEQ @AdjustSparePartsDown
   JMP @MoveValueDownDone
 @AdjustOxenDown:
   LDA #$00
@@ -465,6 +498,25 @@ MoveValueDown:
 @SubtractClothes:
   DEC storeclth
   JMP @MoveValueDownDone
+@AdjustBulletsDown:
+  LDA #$00
+  CMP storebllt
+  BCC @SubtractBullets
+  JMP @MoveValueDownDone
+@SubtractBullets:
+  LDA storebllt
+  SEC
+  SBC #10
+  STA storebllt
+  JMP @MoveValueDownDone
+@AdjustSparePartsDown:
+  LDA #$00
+  CMP storepart
+  BCC @SubtractSpareParts
+  JMP @MoveValueDownDone
+@SubtractSpareParts:
+  DEC storepart
+  JMP @MoveValueDownDone
 @MoveValueDownDone:
   JMP UpdateStoreDisplay
 
@@ -475,6 +527,10 @@ MoveValueUp:
   BEQ @AdjustFoodUp
   CMP #$02
   BEQ @AdjustClothesUp
+  CMP #$03
+  BEQ @AdjustBulletsUp
+  CMP #$04
+  BEQ @AdjustSparePartsUp
   JMP @MoveValueUpDone
 @AdjustOxenUp:
   LDA storeoxen
@@ -503,11 +559,30 @@ MoveValueUp:
 @AddClothes:
   INC storeclth
   JMP @MoveValueUpDone
+@AdjustBulletsUp:
+  LDA storebllt
+  CMP #100
+  BCC @AddBullets
+  JMP @MoveValueUpDone
+@AddBullets:
+  LDA storebllt
+  CLC
+  ADC #10
+  STA storebllt
+  JMP @MoveValueUpDone
+@AdjustSparePartsUp:
+  LDA storepart
+  CMP #99
+  BCC @AddSpareParts
+  JMP @MoveValueUpDone
+@AddSpareParts:
+  INC storepart
+  JMP @MoveValueUpDone
 @MoveValueUpDone:
   JMP UpdateStoreDisplay
 
 UpdateStorePtrs:
-  .dw UpdateOxen, UpdateFood, UpdateClothes
+  .dw UpdateOxen, UpdateFood, UpdateClothes, UpdateBullets, UpdateSpareParts
 
 UpdateStoreDisplay:
   LDA choice
@@ -522,36 +597,14 @@ UpdateStoreDisplay:
 
 UpdateOxen:
   ; display oxen
-  LDA storeoxen
-  STA htd_in
-  JSR EightBitHexToDec
-  LDA #$70
-  STA temp
-  DisplayNumberHundreds temp, htd_out+1, htd_out, #CASH_START_X - $30, #CASH_START_Y + $18, %00000001
-
-  ; display oxen total price (multiply number of oxen by price)
   LDA curlandmark
   ASL A
   ASL A
   TAX
   LDA storeprices, X
-  TAY
-
-  LDA storeoxen
-
-  JSR Multiply
-  STY bcdNum+1
-  STA bcdNum
-  LDA bcdNum
-  STA storeoxenpr
-  LDA bcdNum+1
-  STA storeoxenpr+1
-
-  JSR SixteenBitHexToDec
-  LDA #$7C
   STA temp
-  DisplayNumberThousands temp, bcdResult+3, bcdResult+2, bcdResult+1, bcdResult, #CASH_START_X, #CASH_START_Y + $18, %00000001
 
+  UpdateStoreDisplayRegular #$64, storeoxen, temp, storeoxenpr, #CASH_START_X - $30, #CASH_START_Y + $18, #CASH_START_X, #CASH_START_Y + $18, %00000001, %00000001
   JMP DoneUpdatingStore
 
 UpdateFood:
@@ -559,7 +612,7 @@ UpdateFood:
   LDA storefood
   STA htd_in
   JSR EightBitHexToDec
-  LDA #$8C
+  LDA #$80
   STA temp
   DisplayNumberTens temp, htd_out, #CASH_START_X - $40, #CASH_START_Y + $30, %00000001
 
@@ -567,7 +620,7 @@ foodhundszero:
   LDA storefood
   BEQ +
   JMP foodtenszero
-+ LDX #$90
++ LDX #$84
   LDA #CASH_START_Y + $30
   STA $0200, X
   INX
@@ -581,7 +634,7 @@ foodhundszero:
   STA $0200, X
 
 foodtenszero:
-  LDX #$94
+  LDX #$88
   LDA #CASH_START_Y + $30
   STA $0200, X
   INX
@@ -599,7 +652,7 @@ foodtenszero:
   STA $0200, X
 
 foodoneszero:
-  LDX #$98
+  LDX #$8C
   LDA #CASH_START_Y + $30
   STA $0200, X
   INX
@@ -644,7 +697,7 @@ foodoneszero:
   ASL A
   ORA bcdResult
   STA htd_out
-  LDA #$9C
+  LDA #$90
   STA temp
   DisplayNumberHundreds temp, htd_out+1, htd_out, #CASH_START_X + $08, #CASH_START_Y + $30, %00000001
 
@@ -653,36 +706,41 @@ foodoneszero:
 
 UpdateClothes:
   ; display clothes
-  LDA storeclth
-  STA htd_in
-  JSR EightBitHexToDec
-  LDA #$A8
-  STA temp
-  DisplayNumberHundreds temp, htd_out+1, htd_out, #CASH_START_X - $30, #CASH_START_Y + $48, %00000001
-
-  ; display clothes total price
   LDA curlandmark
   ASL A
   ASL A
   TAX
   INX
   LDA storeprices, X
-  TAY
-
-  LDA storeclth
-
-  JSR Multiply
-  STY bcdNum+1
-  STA bcdNum
-  LDA bcdNum
-  STA storeclthpr
-  LDA bcdNum+1
-  STA storeclthpr+1
-
-  JSR SixteenBitHexToDec
-  LDA #$B4
   STA temp
-  DisplayNumberThousands temp, bcdResult+3, bcdResult+2, bcdResult+1, bcdResult, #CASH_START_X, #CASH_START_Y + $48, %00000001
+  UpdateStoreDisplayRegular $9C, storeclth, temp, storeclthpr, #CASH_START_X - $30, #CASH_START_Y + $48, #CASH_START_X, #CASH_START_Y + $48, %00000001, %00000001
+
+  JMP DoneUpdatingStore
+
+UpdateBullets:
+  ; display bullets
+  LDA curlandmark
+  ASL A
+  ASL A
+  TAX
+  INX
+  INX
+  LDA storeprices, X
+  STA temp
+  UpdateStoreDisplayRegular $B8, storebllt, temp, storeblltpr, #CASH_START_X - $30, #CASH_START_Y + $60, #CASH_START_X, #CASH_START_Y + $60, %00000001, %00000001
+
+  JMP DoneUpdatingStore
+
+UpdateSpareParts:
+  ; display spare parts
+  LDA curlandmark
+  ASL A
+  ASL A
+  TAX
+  INX
+  LDA storeprices, X
+  STA temp
+  UpdateStoreDisplayRegular $D4, storepart, temp, storepartpr, #CASH_START_X - $30, #CASH_START_Y + $78, #CASH_START_X, #CASH_START_Y + $78, %00000001, %00000001
 
   JMP DoneUpdatingStore
 
@@ -721,6 +779,24 @@ DoneUpdatingStore:
   SBC storeclthpr+1
   STA bcdNum+1
 
+  ; subtract price of bullets
+  SEC
+  LDA bcdNum
+  SBC storeblltpr
+  STA bcdNum
+  LDA bcdNum+1
+  SBC storeblltpr+1
+  STA bcdNum+1
+
+  ; subtract price of spare parts
+  SEC
+  LDA bcdNum
+  SBC storepartpr
+  STA bcdNum
+  LDA bcdNum+1
+  SBC storepartpr+1
+  STA bcdNum+1
+
   JSR SixteenBitHexToDec
   LDA #$54
   STA temp
@@ -728,6 +804,83 @@ DoneUpdatingStore:
 
   JMP GameEngineLogicDone
 EndStoreGameState:
+  ; user is exiting store state, move remaining cash to cash, and all items to
+  ; inventory
+  LDA storeoxen			; this is individual oxen, and I need yokes (I'll probably
+						; revise later to store individ. oxen)
+  ROR A
+  CLC
+  ADC yokeoxen
+  STA yokeoxen
+
+  ; multiply food by 100
+  ; (see http://wiki.nesdev.com/w/index.php/Multiplication_by_a_constant_integer)
+  LDA #$00
+  STA Res2
+  LDA storefood
+  ASL A
+  ROL Res2
+  ADC storefood
+  ASL A
+  ROL Res2
+  ASL A
+  ROL Res2
+  ASL A
+  ROL Res2
+  ADC storefood
+  ASL A
+  ROL Res2
+  ASL A
+  ROL Res2
+  STA Res
+
+  CLC
+  LDA Res
+  ADC food
+  STA food
+  LDA Res2
+  ADC food+1
+  STA food+1
+
+  LDA storeclth
+  CLC
+  ADC clothes
+  STA clothes
+
+  ; multiply box of bullets by 100
+  ; (see http://wiki.nesdev.com/w/index.php/Multiplication_by_a_constant_integer)
+  LDA #$00
+  STA Res2
+  LDA storebllt
+  ASL A
+  ROL Res2
+  ADC storebllt
+  ASL A
+  ROL Res2
+  ASL A
+  ROL Res2
+  ASL A
+  ROL Res2
+  ADC storebllt
+  ASL A
+  ROL Res2
+  ASL A
+  ROL Res2
+  STA Res
+
+  CLC
+  LDA bullets
+  ADC Res
+  STA bullets
+  LDA Res2
+  ADC bullets+1
+  STA bullets+1
+
+  LDA storepart
+  CLC
+  ADC spareparts
+  STA spareparts
+
   ; user is exiting store state, switch to "starting-month" state, unless
   ; curlandmark is greater than 0, which means that we're already in our journey
   ; and have been at a fort's store, and so need to resume traveling by going to
