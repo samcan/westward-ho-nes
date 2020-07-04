@@ -1456,19 +1456,21 @@ UpdateStatusIcons:
   DisplayNumberHundreds temp, htd_out+1, htd_out, $A8, #STATUS_ICON_Y + $18, %00000001
 
 MileageTraveled:
-  TXA
-  PHA
+  ;TXA
+  ;PHA
   LDA mitraveled
   STA bcdNum
   LDA mitraveled+1
   STA bcdNum+1
   JSR SixteenBitHexToDec
 
-  PLA
-  TAX
+  ;PLA
+  ;TAX
   ;STX temp
   ; total mileage traveled
   ;DisplayNumberThousands temp, bcdResult+3, bcdResult+2, bcdResult+1, bcdResult, $50 + $50, #STATUS_ICON_Y + $20, %00000001
+  ; NEED TO FIGURE OUT WHY MACRO ISN'T WORKING HERE AND FOR FOOD REMAINING
+  LDX temp
   LDA #$00
   STA thousshown
   STA hundsshown

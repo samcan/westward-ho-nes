@@ -111,6 +111,7 @@ MACRO DisplayNumberHundreds sprOffset, num1, num, startX, startY, attr
   LDA #startX + $10
   STA $0200, x
   INX
+  STX temp
 ENDM
 ;;;;;;;;;;;;;;;
 MACRO DisplayNumberThousands sprOffset, bcd3, bcd2, bcd1, bcd, startX, startY, attr
@@ -227,6 +228,7 @@ MACRO DisplayNumberThousands sprOffset, bcd3, bcd2, bcd1, bcd, startX, startY, a
   LDA #startX + $18
   STA $0200, x
   INX
+  STX temp
 ENDM
 
 
