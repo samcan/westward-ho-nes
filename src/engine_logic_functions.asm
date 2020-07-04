@@ -797,6 +797,11 @@ DoneUpdatingStore:
   SBC storepartpr+1
   STA bcdNum+1
 
+  LDA bcdNum
+  STA cashremain
+  LDA bcdNum+1
+  STA cashremain+1
+
   JSR SixteenBitHexToDec
   LDA #$54
   STA temp
@@ -806,6 +811,12 @@ DoneUpdatingStore:
 EndStoreGameState:
   ; user is exiting store state, move remaining cash to cash, and all items to
   ; inventory
+
+  LDA cashremain
+  STA cash
+  LDA cashremain+1
+  STA cash+1
+
   LDA storeoxen			; this is individual oxen, and I need yokes (I'll probably
 						; revise later to store individ. oxen)
   ROR A

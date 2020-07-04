@@ -40,6 +40,7 @@ weather		.dsb 1		; current weather status
 food		.dsb 2
 clothes		.dsb 1
 cash		.dsb 2
+cashremain	.dsb 2
 bullets		.dsb 2		; individual number of bullets (100/box)
 spareparts	.dsb 1
 
