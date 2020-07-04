@@ -543,6 +543,24 @@ UpdateFood:
   STA temp
   DisplayNumberTens temp, htd_out, #CASH_START_X - $40, #CASH_START_Y + $30, %00000001
 
+foodhundszero:
+  LDA storefood
+  BEQ +
+  JMP foodtenszero
++ LDX #$90
+  LDA #CASH_START_Y + $30
+  STA $0200, X
+  INX
+  LDA #$00
+  STA $0200, X
+  INX
+  LDA #%00000001
+  STA $0200, X
+  INX
+  LDA #CASH_START_X - $20
+  STA $0200, X
+
+foodtenszero:
   LDX #$94
   LDA #CASH_START_Y + $30
   STA $0200, X
@@ -560,16 +578,13 @@ UpdateFood:
   LDA #CASH_START_X - $28
   STA $0200, X
 
+foodoneszero:
   LDX #$98
   LDA #CASH_START_Y + $30
   STA $0200, X
   INX
-  LDA storefood
-  BEQ +
   LDA #$44
-  JMP ++
-+ LDA #$00
-++ STA $0200, X
+  STA $0200, X
   INX
   LDA #%00000001
   STA $0200, X
