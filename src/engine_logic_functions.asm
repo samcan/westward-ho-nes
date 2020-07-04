@@ -399,7 +399,7 @@ AdvanceChoice:
 
   CMP #$05
   BCC +
-  JMP EndStoreGameState			; TODO need to move purchases into inventory
+  JMP EndStoreGameState
 
 + ; move cursor down
   LDX #$00
@@ -458,7 +458,6 @@ RetractChoice:
   JMP UpdateStoreDisplay
 
 
-; TODO need to handle player spending too much money
 MoveValueDown:
   LDA choice
   BEQ @AdjustOxenDown
@@ -479,7 +478,7 @@ MoveValueDown:
 @SubtractOxen:
   LDA storeoxen
   SEC
-  SBC #$02
+  SBC #OXEN_INC
   STA storeoxen
   JMP @MoveValueDownDone
 @AdjustFoodDown:
@@ -488,7 +487,10 @@ MoveValueDown:
   BCC @SubtractFood
   JMP @MoveValueDownDone
 @SubtractFood:
-  DEC storefood
+  LDA storefood
+  SEC
+  SBC #FOOD_INC
+  STA storefood
   JMP @MoveValueDownDone
 @AdjustClothesDown:
   LDA #$00
@@ -496,7 +498,10 @@ MoveValueDown:
   BCC @SubtractClothes
   JMP @MoveValueDownDone
 @SubtractClothes:
-  DEC storeclth
+  LDA storeclth
+  SEC
+  SBC #CLOTHES_INC
+  STA storeclth
   JMP @MoveValueDownDone
 @AdjustBulletsDown:
   LDA #$00
@@ -506,7 +511,7 @@ MoveValueDown:
 @SubtractBullets:
   LDA storebllt
   SEC
-  SBC #10
+  SBC #BULLETS_INC
   STA storebllt
   JMP @MoveValueDownDone
 @AdjustSparePartsDown:
@@ -515,7 +520,10 @@ MoveValueDown:
   BCC @SubtractSpareParts
   JMP @MoveValueDownDone
 @SubtractSpareParts:
-  DEC storepart
+  LDA storepart
+  SEC
+  SBC #SPAREPARTS_INC
+  STA storepart
   JMP @MoveValueDownDone
 @MoveValueDownDone:
   JMP UpdateStoreDisplay
@@ -534,49 +542,58 @@ MoveValueUp:
   JMP @MoveValueUpDone
 @AdjustOxenUp:
   LDA storeoxen
-  CMP #80
+  CMP #OXEN_MAX
   BCC @AddOxen
   JMP @MoveValueUpDone
 @AddOxen:
   LDA storeoxen
   CLC
-  ADC #$02
+  ADC #OXEN_INC
   STA storeoxen
   JMP @MoveValueUpDone
 @AdjustFoodUp:
   LDA storefood
-  CMP #$13
+  CMP #FOOD_MAX
   BCC @AddFood
   JMP @MoveValueUpDone
 @AddFood:
-  INC storefood
+  LDA storefood
+  CLC
+  ADC #FOOD_INC
+  STA storefood
   JMP @MoveValueUpDone
 @AdjustClothesUp:
   LDA storeclth
-  CMP #100
+  CMP #CLOTHES_MAX
   BCC @AddClothes
   JMP @MoveValueUpDone
 @AddClothes:
-  INC storeclth
+  LDA storeclth
+  CLC
+  ADC #CLOTHES_INC
+  STA storeclth
   JMP @MoveValueUpDone
 @AdjustBulletsUp:
   LDA storebllt
-  CMP #100
+  CMP #BULLETS_MAX
   BCC @AddBullets
   JMP @MoveValueUpDone
 @AddBullets:
   LDA storebllt
   CLC
-  ADC #10
+  ADC #BULLETS_INC
   STA storebllt
   JMP @MoveValueUpDone
 @AdjustSparePartsUp:
   LDA storepart
-  CMP #99
+  CMP #SPAREPARTS_MAX
   BCC @AddSpareParts
   JMP @MoveValueUpDone
 @AddSpareParts:
-  INC storepart
+  LDA storepart
+  CLC
+  ADC #SPAREPARTS_INC
+  STA storepart
   JMP @MoveValueUpDone
 @MoveValueUpDone:
   JMP UpdateStoreDisplay
@@ -802,6 +819,63 @@ DoneUpdatingStore:
   LDA bcdNum+1
   STA cashremain+1
 
+  ; check if our remaining cash is >= $0. If it isn't, we need to see what item
+  ; we're currently on, subtract one of the increments, and then jmp back to
+  ; UpdateStoreDisplay
+  ; (http://www.6502.org/tutorials/compare_beyond.html#6)
+  LDA cashremain
+  CMP #$00
+  LDA cashremain+1
+  SBC #$00
+  BVC CONT
+  EOR #$80
+CONT:
+  BMI NEGMONEY
+  JMP POSMONEY
+NEGMONEY:
+  LDA choice
+  CMP #$00
+  BEQ @AdjustOxen
+  CMP #$01
+  BEQ @AdjustFood
+  CMP #$02
+  BEQ @AdjustClothes
+  CMP #$03
+  BEQ @AdjustBullets
+  CMP #$04
+  BEQ @AdjustSpareParts
+  JMP UpdateStoreDisplay
+@AdjustOxen:
+  LDA storeoxen
+  SEC
+  SBC #OXEN_INC
+  STA storeoxen
+  JMP UpdateStoreDisplay
+@AdjustFood:
+  LDA storefood
+  SEC
+  SBC #FOOD_INC
+  STA storefood
+  JMP UpdateStoreDisplay
+@AdjustClothes:
+  LDA storeclth
+  SEC
+  SBC #CLOTHES_INC
+  STA storeclth
+  JMP UpdateStoreDisplay
+@AdjustBullets:
+  LDA storebllt
+  SEC
+  SBC #BULLETS_INC
+  STA storebllt
+  JMP UpdateStoreDisplay
+@AdjustSpareParts:
+  LDA storepart
+  SEC
+  SBC #SPAREPARTS_INC
+  STA storepart
+  JMP UpdateStoreDisplay
+POSMONEY:
   JSR SixteenBitHexToDec
   LDA #$54
   STA temp
