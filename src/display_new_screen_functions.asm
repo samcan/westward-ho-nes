@@ -19,6 +19,126 @@ MACRO PaletteLoad pltte
   JSR LoadPalettes
 ENDM
 ;;;;;;;;;;;;;;;
+MACRO DisplayNumberThousands sprOffset, bcd3, bcd2, bcd1, bcd, startX, startY, attr
+  ; Clobbers: A, X, Y, thousshown, hundsshown
+  ; Returns: X - next sprite offset
+  LDX #sprOffset
+
+  LDA #$00
+  STA thousshown
+  STA hundsshown
+
+  ; display thousands
+  LDA bcd3
+  BEQ @ThousandsNotShown
+  JMP @ThousandsShown
+@ThousandsNotShown:
+  LDA #$00
+  TAY
+  JMP @ContThousands
+@ThousandsShown:
+  CLC
+  ADC #$44
+  TAY
+  LDA #$01
+  STA thousshown
+@ContThousands:
+  LDA startY
+  STA $0200, x
+  INX
+  TYA
+  STA $0200, x
+  INX
+  LDA #attr
+  STA $0200, x
+  INX
+  LDA startX
+  STA $0200, x
+  INX
+
+@DisplayHundreds:
+  ; display hundreds
+  LDA bcd2
+  BEQ @HundredsZero
+  JMP @HundredsShown
+@HundredsZero:
+  LDA thousshown
+  BEQ @HundredsNotShown
+  JMP @HundredsShown
+@HundredsNotShown:
+  LDA #$00
+  TAY
+  JMP @ContHundreds
+@HundredsShown:
+  LDA #$01
+  STA hundsshown
+  LDA bcd2
+  CLC
+  ADC #$44
+  TAY
+@ContHundreds:
+  LDA startY
+  STA $0200, x
+  INX
+  TYA
+  STA $0200, x
+  INX
+  LDA #attr
+  STA $0200, x
+  INX
+  LDA startX + $08
+  STA $0200, x
+  INX
+
+  ; display tens
+  LDA startY
+  STA $0200, x
+  INX
+  LDA bcd1
+  BEQ @TensZero
+@TensNotZero:
+  LDA bcd1
+  CLC
+  ADC #$44
+  JMP @ContTens
+@TensZero:
+  LDA thousshown
+  ORA hundsshown
+  BNE @TensNotZero
+  LDA #$00
+@ContTens:
+  STA $0200, x
+  INX
+  LDA #attr
+  STA $0200, x
+  INX
+  LDA startX + $10
+  STA $0200, x
+  INX
+  ; now we'll display ones, which are easy because we always display the
+  ; ones place
+  LDA bcd
+  CLC
+  ADC #$44
+  PHA
+  LDA startY
+  STA $0200, x
+  INX
+  PLA
+  STA $0200, x
+  INX
+  LDA #attr
+  STA $0200, x
+  INX
+  LDA startX + $18
+  STA $0200, x
+  INX
+ENDM
+
+
+
+
+;;;;;;;;;;;;;;;
 DisplayTitleScreen:
   LDA #$00
   JSR BankSwitch
@@ -87,116 +207,7 @@ DrawCashStart:
   STA bcdNum+1
   JSR SixteenBitHexToDec
 
-  LDX #$08
-  LDA #$00
-  STA thousshown
-  STA hundsshown
-
-  ; display thousands
-  LDA bcdResult+3
-  BEQ @ThousandsNotShown
-  JMP @ThousandsShown
-@ThousandsNotShown:
-  LDA #$00
-  TAY
-  JMP @ContThousands
-@ThousandsShown:
-  CLC
-  ADC #$44
-  TAY
-  LDA #$01
-  STA thousshown
-@ContThousands:
-  LDA #CASH_START_Y
-  STA $0200, x
-  INX
-  TYA
-  STA $0200, x
-  INX
-  LDA #%00000001
-  STA $0200, x
-  INX
-  LDA #CASH_START_X
-  STA $0200, x
-  INX
-
-@DisplayHundreds:
-  ; display hundreds
-  LDA bcdResult+2
-  BEQ @HundredsZero
-  JMP @HundredsShown
-@HundredsZero:
-  LDA thousshown
-  BEQ @HundredsNotShown
-  JMP @HundredsShown
-@HundredsNotShown:
-  LDA #$00
-  TAY
-  JMP @ContHundreds
-@HundredsShown:
-  LDA #$01
-  STA hundsshown
-  LDA bcdResult+2
-  CLC
-  ADC #$44
-  TAY
-@ContHundreds:
-  LDA #CASH_START_Y
-  STA $0200, x
-  INX
-  TYA
-  STA $0200, x
-  INX
-  LDA #%00000001
-  STA $0200, x
-  INX
-  LDA #CASH_START_X + $08
-  STA $0200, x
-  INX
-
-  ; display tens
-  LDA #CASH_START_Y
-  STA $0200, x
-  INX
-  LDA bcdResult+1
-  BEQ @TensZero
-@TensNotZero:
-  LDA bcdResult+1
-  CLC
-  ADC #$44
-  JMP @ContTens
-@TensZero:
-  LDA thousshown
-  ORA hundsshown
-  BNE @TensNotZero
-  LDA #$00
-@ContTens:
-  STA $0200, x
-  INX
-  LDA #%00000001
-  STA $0200, x
-  INX
-  LDA #CASH_START_X + $10
-  STA $0200, x
-  INX
-  ; now we'll display ones, which are easy because we always display the
-  ; ones place
-  LDA bcdResult
-  CLC
-  ADC #$44
-  PHA
-  LDA #CASH_START_Y
-  STA $0200, x
-  INX
-  PLA
-  STA $0200, x
-  INX
-  LDA #%00000001
-  STA $0200, x
-  INX
-  LDA #CASH_START_X + $18
-  STA $0200, x
-  INX
+  DisplayNumberThousands $08, bcdResult+3, bcdResult+2, bcdResult+1, bcdResult, #CASH_START_X, #CASH_START_Y, %00000001
 
   JMP FinishLoadNewScreen
 

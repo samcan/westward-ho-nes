@@ -1554,7 +1554,9 @@ MileageTraveled:
 
   PLA
   TAX
+  ;STX temp
   ; total mileage traveled
+  ;DisplayNumberThousands temp, bcdResult+3, bcdResult+2, bcdResult+1, bcdResult, $50 + $50, #STATUS_ICON_Y + $20, %00000001
   LDA #$00
   STA thousshown
   STA hundsshown
