@@ -71,6 +71,14 @@ DisplayNewGameScreen:
   JMP FinishLoadNewScreen
 
 DisplayStoreScreen:
+  LDA #$01
+  JSR BankSwitch
+
+  PaletteLoad palette
+
+  ; load nametable 0
+  LoadRLEScreen bg_store_screen, $00
+
   JMP FinishLoadNewScreen
 
 DisplayLandmarkScreen:

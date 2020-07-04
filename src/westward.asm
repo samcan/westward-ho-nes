@@ -591,6 +591,8 @@ bg_occupation_screen:
   .incbin "src/assets/bg_occupation_screen.rle"
 bg_rations_screen:
   .incbin "src/assets/bg_rations_screen.rle"
+bg_store_screen:
+  .incbin "src/assets/bg_store_screen.rle"
 bg_landmark_kansas_river:
   .incbin "src/assets/bg_landmark_kansas_river.rle"
 bg_landmark_big_blue_river:
@@ -674,6 +676,28 @@ titlewestwardtext:
   .db $A0,$6B,$62,$63,$50,$61,$63,$FF
 titletextattr:
   .db $00
+
+  ; yoke of oxen, spare parts/clothes, box of bullets, 1 lb of food (/100)
+storeprices:
+  .db 20, 10, 2, 20
+  .db 0, 0, 0, 0
+  .db 0, 0, 0, 0
+  .db 25, 12, 2, 25
+  .db 0, 0, 0, 0
+  .db 30, 15, 3, 30
+  .db 0, 0, 0, 0
+  .db 0, 0, 0, 0
+  .db 35, 17, 3, 35
+  .db 0, 0, 0, 0
+  .db 40, 20, 4, 40
+  .db 0, 0, 0, 0
+  .db 45, 22, 4, 45
+  .db 0, 0, 0, 0
+  .db 50, 25, 5, 50
+  .db 0, 0, 0, 0
+  .db 0, 0, 0, 0
+  .db 0, 0, 0, 0
+
 
 ; Note regarding Landmarks and the data surrounding them:
 ;
