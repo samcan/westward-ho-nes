@@ -19,6 +19,100 @@ MACRO PaletteLoad pltte
   JSR LoadPalettes
 ENDM
 ;;;;;;;;;;;;;;;
+MACRO DisplayNumberHundreds sprOffset, num1, num, startX, startY, attr
+  ; Clobbers: A, X, Y
+  ; Returns: X for next sprite offset
+  LDA num1					; get the hundreds value
+  BEQ @SkipHundreds
+
+@LoadHundreds:
+  CLC
+  ADC #$44					; adds $44 to get the tile number we need
+  TAY						; transfer to Y for safe-keeping
+  STA hundsshown			; store non-zero value in hundsshown
+  JMP @DisplayHundreds
+
+@SkipHundreds:
+  LDA #$00					; load blank tile for hundreds
+  TAY						; transfer to Y for safe-keeping
+  STA hundsshown			; store zero value in hundsshown
+
+@DisplayHundreds:
+  LDA #startY
+  STA $0200, x
+  INX
+  TYA						; transfer tile index back off of Y
+  STA $0200, x
+  INX
+  LDA #attr
+  STA $0200, x
+  INX
+  LDA #startX
+  STA $0200, x
+  INX
+
+@Tens:
+  ; we need to display the tens if there's a value greater than 0 or if
+  ; the value in the hundreds place is greater than 0
+
+  ; grab the tens value
+  LDA num
+  AND #%11110000
+  LSR A
+  LSR A
+  LSR A
+  LSR A
+  TAY
+
+  BEQ @TensZero
+@TensNotZero:
+  TYA
+  CLC
+  ADC #$44
+  TAY						; store in Y for safe-keeping
+  JMP @DisplayTens
+@TensZero:
+  ; is the hundreds place shown?
+  LDA hundsshown
+  BNE @TensNotZero
+  LDA #$00					; set tile index of $00 as we want blank space
+  TAY
+@DisplayTens:
+  LDA #startY
+  STA $0200, x
+  INX
+  TYA						; transfer tile index back off of Y
+  STA $0200, x
+  INX
+  LDA #attr
+  STA $0200, x
+  INX
+  LDA #startX + $08
+  STA $0200, x
+  INX
+
+@DisplayOnes:
+  ; now we'll display ones, which are easy because we always display the
+  ; ones place
+  LDA num
+  AND #%00001111
+  CLC
+  ADC #$44
+  PHA
+  LDA #startY
+  STA $0200, x
+  INX
+  PLA
+  STA $0200, x
+  INX
+  LDA #attr
+  STA $0200, x
+  INX
+  LDA #startX + $10
+  STA $0200, x
+  INX
+ENDM
+;;;;;;;;;;;;;;;
 MACRO DisplayNumberThousands sprOffset, bcd3, bcd2, bcd1, bcd, startX, startY, attr
   ; Clobbers: A, X, Y, thousshown, hundsshown
   ; Returns: X - next sprite offset
