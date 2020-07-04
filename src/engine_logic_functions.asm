@@ -73,6 +73,17 @@ EndTitleState:
   JMP GameEngineLogicDone
 
 ;;;;;;;;;
+EngineLogicColumbiaRiver:
+  CheckForButton #BTN_START, EndColumbiaRiverState, GameEngineLogicDone
+EndColumbiaRiverState:
+  ; user is exiting state, switch to Willamette Valley landmark state
+  LDA #$10
+  STA curlandmark
+  LDA #STATELANDMARK
+  STA newgmstate
+  JMP GameEngineLogicDone
+
+;;;;;;;;;
 EngineLogicNewGame:
   CheckForButton #BTN_START, EndNewGameState, +
 
@@ -324,6 +335,10 @@ EndLandmarkStateBlueMountains
   ; the player makes (detour to Fort Walla Walla or not) and then update the
   ; curlandmark accordingly
   LDA #STATECHOOSEBLUE
+  STA newgmstate
+  JMP GameEngineLogicDone
+EndLandmarkStateDalles:
+  LDA #STATECHOOSEDLLS
   STA newgmstate
   JMP GameEngineLogicDone
 
@@ -694,6 +709,90 @@ EndDecisionFortGameStateGoToStore:
   LDA #STATESTORE
   STA newgmstate
   JMP GameEngineLogicDone
+
+
+
+;;;;;;;;;
+EngineLogicDecisionDalles:
+  ;; logic associated with the decision screen for Dalles
+  CheckForButton #BTN_UPARROW, MoveDecisionDallesCursorUp, +
++ CheckForButton #BTN_DOWNARROW, MoveDecisionDallesCursorDown, +
++ CheckForButton #BTN_A, EndDecisionDallesGameState, +
+
++ JMP GameEngineLogicDone
+MoveDecisionDallesCursorUp:
+  LDA choice
+  SEC
+  SBC #$01
+  STA choice
+
+  LDA cursorY
+  SEC
+  SBC #$10
+  CMP #CHOOSEDALLES_MIN_Y
+  BCS +
+  LDA choice
+  CLC
+  ADC #$01
+  STA choice
+
+  LDA #CHOOSEDALLES_MIN_Y
++ STA cursorY
+  JMP UpdateDecisionDallesCursorSprite
+
+MoveDecisionDallesCursorDown:
+  LDA choice
+  CLC
+  ADC #$01
+  STA choice
+
+  LDA cursorY
+  CLC
+  ADC #$10
+  CMP #CHOOSEDALLES_MAX_Y
+  BCC +
+  BEQ +
+  LDA choice
+  SEC
+  SBC #$01
+  STA choice
+
+  LDA #CHOOSEDALLES_MAX_Y
++ STA cursorY
+  JMP UpdateDecisionDallesCursorSprite
+
+UpdateDecisionDallesCursorSprite:
+  LDX #$04
+  LDA cursorY
+  STA $0200, X
+
+  INX
+  LDA #CHOOSEDALLES_CURSOR_SPR
+  STA $0200, x
+
+  INX
+  LDA #%00100000
+  STA $0200, x
+
+  INX
+  LDA cursorX
+  STA $0200, x
+
+  JMP GameEngineLogicDone
+EndDecisionDallesGameState:
+  ; user is exiting Dalles decision state
+  LDA choice
+  BEQ EndDecisionDallesGameStateRaftColumbia
+EndDecisionDallesGameStateBarlowRoad:
+  INC curlandmark
+  LDA #STATEPAUSED
+  STA newgmstate
+  JMP GameEngineLogicDone
+EndDecisionDallesGameStateRaftColumbia:
+  LDA #STATECLMBIARVR
+  STA newgmstate
+  JMP GameEngineLogicDone
+
 
 
 

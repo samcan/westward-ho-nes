@@ -40,6 +40,25 @@ DisplayTitleScreen:
 
   JMP FinishLoadNewScreen
 
+
+
+DisplayColumbiaRiverScreen:
+  LDA #$01
+  JSR BankSwitch
+
+  ; set up palette
+  LDA #<palette
+  STA paletteptr
+  LDA #>palette
+  STA paletteptr+1
+  JSR LoadPalettes
+
+  LoadRLEScreen bg_columbia_river_screen, $00
+
+  JMP FinishLoadNewScreen
+
+
+
 DisplayNewGameScreen:
   LDA #$01
   JSR BankSwitch
@@ -454,6 +473,42 @@ DisplayDecisionFortScreen:
   STA $0200, x
 
   JMP FinishLoadNewScreen
+
+
+
+DisplayDecisionDallesScreen:
+  LDA #$01
+  JSR BankSwitch
+
+  PaletteLoad palette
+
+  LoadRLEScreen bg_landmark_dalles_decision_screen, $00
+
+  LDA #$00
+  STA choice
+
+; set up cursor
+  LDX #$04
+  LDA #CHOOSEDALLES_MIN_Y
+  STA cursorY
+  STA $0200, X
+
+  INX
+  LDA #CHOOSEDALLES_CURSOR_SPR
+  STA $0200, x
+
+  INX
+  LDA #%00100000
+  STA $0200, x
+
+  INX
+  LDA #CHOOSEDALLES_X
+  STA cursorX
+  STA $0200, x
+
+  JMP FinishLoadNewScreen
+
+
 
 
 DisplayDecisionBlueMountainsScreen:

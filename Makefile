@@ -32,6 +32,7 @@ COMMIT = $(shell git rev-parse --short HEAD)
 
 RLE_FILES = $(DIR_ASSETS)/bg_alphabet_screen.rle \
 			$(DIR_ASSETS)/bg_blank_traveling_screen.rle \
+			$(DIR_ASSETS)/bg_columbia_river_screen.rle \
 			$(DIR_ASSETS)/bg_instruction_screen.rle \
 			$(DIR_ASSETS)/bg_landmark_big_blue_river.rle \
 			$(DIR_ASSETS)/bg_landmark_blue_mountains.rle \
@@ -53,6 +54,7 @@ RLE_FILES = $(DIR_ASSETS)/bg_alphabet_screen.rle \
 			$(DIR_ASSETS)/bg_landmark_willamette_valley.rle \
 			$(DIR_ASSETS)/bg_landmark_fort_decision_screen.rle \
 			$(DIR_ASSETS)/bg_landmark_blue_mtn_decision_screen.rle \
+			$(DIR_ASSETS)/bg_landmark_dalles_decision_screen.rle \
 			$(DIR_ASSETS)/bg_occupation_screen.rle \
 			$(DIR_ASSETS)/bg_pace_screen.rle \
 			$(DIR_ASSETS)/bg_paused_screen.rle \
