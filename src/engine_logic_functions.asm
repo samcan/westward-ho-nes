@@ -359,6 +359,16 @@ EngineLogicStore:
   CheckForButton #BTN_START, EndStoreGameState, +
 +
 
+  ; display cash remaining
+  LDA cash
+  STA bcdNum
+  LDA cash+1
+  STA bcdNum+1
+  JSR SixteenBitHexToDec
+  LDA #$54
+  STA temp
+  DisplayNumberThousands temp, bcdResult+3, bcdResult+2, bcdResult+1, bcdResult, #CASH_START_X, #CASH_START_Y + $88, %00000001
+
   JMP GameEngineLogicDone
 EndStoreGameState:
   ; user is exiting store state, switch to "starting-month" state, unless
