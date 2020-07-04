@@ -44,6 +44,8 @@ storeoxen	.dsb 1
 storeoxenpr	.dsb 2
 storefood	.dsb 1
 storefoodpr	.dsb 2
+storeclth	.dsb 1
+storeclthpr	.dsb 2
 
 sproffset	.dsb 1
 textxpos    .dsb 1

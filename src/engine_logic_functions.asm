@@ -435,6 +435,8 @@ MoveValueDown:
   BEQ @AdjustOxenDown
   CMP #$01
   BEQ @AdjustFoodDown
+  CMP #$02
+  BEQ @AdjustClothesDown
   JMP @MoveValueDownDone
 @AdjustOxenDown:
   LDA #$00
@@ -455,6 +457,14 @@ MoveValueDown:
 @SubtractFood:
   DEC storefood
   JMP @MoveValueDownDone
+@AdjustClothesDown:
+  LDA #$00
+  CMP storeclth
+  BCC @SubtractClothes
+  JMP @MoveValueDownDone
+@SubtractClothes:
+  DEC storeclth
+  JMP @MoveValueDownDone
 @MoveValueDownDone:
   JMP UpdateStoreDisplay
 
@@ -463,6 +473,8 @@ MoveValueUp:
   BEQ @AdjustOxenUp
   CMP #$01
   BEQ @AdjustFoodUp
+  CMP #$02
+  BEQ @AdjustClothesUp
   JMP @MoveValueUpDone
 @AdjustOxenUp:
   LDA storeoxen
@@ -483,11 +495,19 @@ MoveValueUp:
 @AddFood:
   INC storefood
   JMP @MoveValueUpDone
+@AdjustClothesUp:
+  LDA storeclth
+  CMP #100
+  BCC @AddClothes
+  JMP @MoveValueUpDone
+@AddClothes:
+  INC storeclth
+  JMP @MoveValueUpDone
 @MoveValueUpDone:
   JMP UpdateStoreDisplay
 
 UpdateStorePtrs:
-  .dw UpdateOxen, UpdateFood
+  .dw UpdateOxen, UpdateFood, UpdateClothes
 
 UpdateStoreDisplay:
   LDA choice
@@ -631,6 +651,42 @@ foodoneszero:
   JMP DoneUpdatingStore
 
 
+UpdateClothes:
+  ; display clothes
+  LDA storeclth
+  STA htd_in
+  JSR EightBitHexToDec
+  LDA #$A8
+  STA temp
+  DisplayNumberHundreds temp, htd_out+1, htd_out, #CASH_START_X - $30, #CASH_START_Y + $48, %00000001
+
+  ; display clothes total price
+  LDA curlandmark
+  ASL A
+  ASL A
+  TAX
+  INX
+  LDA storeprices, X
+  TAY
+
+  LDA storeclth
+
+  JSR Multiply
+  STY bcdNum+1
+  STA bcdNum
+  LDA bcdNum
+  STA storeclthpr
+  LDA bcdNum+1
+  STA storeclthpr+1
+
+  JSR SixteenBitHexToDec
+  LDA #$B4
+  STA temp
+  DisplayNumberThousands temp, bcdResult+3, bcdResult+2, bcdResult+1, bcdResult, #CASH_START_X, #CASH_START_Y + $48, %00000001
+
+  JMP DoneUpdatingStore
+
+
 DoneUpdatingStore:
   ; display cash remaining
   LDA cash
@@ -654,6 +710,15 @@ DoneUpdatingStore:
   STA bcdNum
   LDA bcdNum+1
   SBC storefoodpr+1
+  STA bcdNum+1
+
+  ; subtract price of clothes
+  SEC
+  LDA bcdNum
+  SBC storeclthpr
+  STA bcdNum
+  LDA bcdNum+1
+  SBC storeclthpr+1
   STA bcdNum+1
 
   JSR SixteenBitHexToDec
