@@ -356,14 +356,291 @@ EndGame:
 ;;;;;;;;; 
 EngineLogicStore:
   ;; logic associated with general store
-  CheckForButton #BTN_START, EndStoreGameState, +
-+
+  CheckForButton #BTN_A, AdvanceChoice, +
++ CheckForButton #BTN_B, RetractChoice, +
++ CheckForButton #BTN_LEFTARROW, MoveValueDown, +
++ CheckForButton #BTN_RIGHTARROW, MoveValueUp, +
+;+ CheckForButton #BTN_START, EndStoreGameState, UpdateStoreDisplay
 
++ JMP UpdateStoreDisplay
+
+AdvanceChoice:
+  INC choice
+  LDA choice
+
+  CMP #$05
+  BCC +
+  JMP EndStoreGameState			; TODO need to move purchases into inventory
+
++ ; move cursor down
+  LDX #$00
+  LDA cursorY
+  CLC
+  ADC #$18
+  STA cursorY
+  STA $0200, X
+
+  INX
+  LDA #OCC_CURSOR_SPR
+  STA $0200, x
+
+  INX
+  LDA #%00100000
+  STA $0200, x
+
+  INX
+  LDA cursorX
+  STA $0200, x
+
+  JMP UpdateStoreDisplay
+
+
+RetractChoice:
+  DEC choice
+  LDA choice
+
+  CMP #$00
+  BPL +
+
+  LDA #$00
+  STA choice
+  JMP GameEngineLogicDone
+
+  ; move cursor up
++ LDX #$00
+  LDA cursorY
+  SEC
+  SBC #$18
+  STA cursorY
+  STA $0200, X
+
+  INX
+  LDA #OCC_CURSOR_SPR
+  STA $0200, x
+
+  INX
+  LDA #%00100000
+  STA $0200, x
+
+  INX
+  LDA cursorX
+  STA $0200, x
+
+  JMP UpdateStoreDisplay
+
+
+; TODO need to handle player spending too much money
+MoveValueDown:
+  LDA choice
+  BEQ @AdjustOxenDown
+  CMP #$01
+  BEQ @AdjustFoodDown
+  JMP @MoveValueDownDone
+@AdjustOxenDown:
+  LDA #$00
+  CMP storeoxen
+  BCC @SubtractOxen
+  JMP @MoveValueDownDone
+@SubtractOxen:
+  LDA storeoxen
+  SEC
+  SBC #$02
+  STA storeoxen
+  JMP @MoveValueDownDone
+@AdjustFoodDown:
+  LDA #$00
+  CMP storefood
+  BCC @SubtractFood
+  JMP @MoveValueDownDone
+@SubtractFood:
+  DEC storefood
+  JMP @MoveValueDownDone
+@MoveValueDownDone:
+  JMP UpdateStoreDisplay
+
+MoveValueUp:
+  LDA choice
+  BEQ @AdjustOxenUp
+  CMP #$01
+  BEQ @AdjustFoodUp
+  JMP @MoveValueUpDone
+@AdjustOxenUp:
+  LDA storeoxen
+  CMP #80
+  BCC @AddOxen
+  JMP @MoveValueUpDone
+@AddOxen:
+  LDA storeoxen
+  CLC
+  ADC #$02
+  STA storeoxen
+  JMP @MoveValueUpDone
+@AdjustFoodUp:
+  LDA storefood
+  CMP #$13
+  BCC @AddFood
+  JMP @MoveValueUpDone
+@AddFood:
+  INC storefood
+  JMP @MoveValueUpDone
+@MoveValueUpDone:
+  JMP UpdateStoreDisplay
+
+UpdateStorePtrs:
+  .dw UpdateOxen, UpdateFood
+
+UpdateStoreDisplay:
+  LDA choice
+  ASL A
+  TAX
+  LDA UpdateStorePtrs, X
+  STA vector
+  INX
+  LDA UpdateStorePtrs, X
+  STA vector+1
+  JMP (vector)
+
+UpdateOxen:
+  ; display oxen
+  LDA storeoxen
+  STA htd_in
+  JSR EightBitHexToDec
+  LDA #$70
+  STA temp
+  DisplayNumberHundreds temp, htd_out+1, htd_out, #CASH_START_X - $30, #CASH_START_Y + $18, %00000001
+
+  ; display oxen total price (multiply number of oxen by price)
+  LDA curlandmark
+  ASL A
+  ASL A
+  TAX
+  LDA storeprices, X
+  TAY
+
+  LDA storeoxen
+
+  JSR Multiply
+  STY bcdNum+1
+  STA bcdNum
+  LDA bcdNum
+  STA storeoxenpr
+  LDA bcdNum+1
+  STA storeoxenpr+1
+
+  JSR SixteenBitHexToDec
+  LDA #$7C
+  STA temp
+  DisplayNumberThousands temp, bcdResult+3, bcdResult+2, bcdResult+1, bcdResult, #CASH_START_X, #CASH_START_Y + $18, %00000001
+
+  JMP DoneUpdatingStore
+
+UpdateFood:
+  ; display food
+  LDA storefood
+  STA htd_in
+  JSR EightBitHexToDec
+  LDA #$8C
+  STA temp
+  DisplayNumberTens temp, htd_out, #CASH_START_X - $40, #CASH_START_Y + $30, %00000001
+
+  LDX #$94
+  LDA #CASH_START_Y + $30
+  STA $0200, X
+  INX
+  LDA storefood
+  BEQ +
+  LDA #$44
+  JMP ++
++ LDA #$00
+++ STA $0200, X
+  INX
+  LDA #%00000001
+  STA $0200, X
+  INX
+  LDA #CASH_START_X - $28
+  STA $0200, X
+
+  LDX #$98
+  LDA #CASH_START_Y + $30
+  STA $0200, X
+  INX
+  LDA storefood
+  BEQ +
+  LDA #$44
+  JMP ++
++ LDA #$00
+++ STA $0200, X
+  INX
+  LDA #%00000001
+  STA $0200, X
+  INX
+  LDA #CASH_START_X - $20
+  STA $0200, X
+
+
+  ; display food total price
+  LDA curlandmark
+  ASL A
+  ASL A
+  CLC
+  ADC #$03
+  TAX
+  LDA storeprices, X
+  TAY
+
+  LDA storefood
+
+  JSR Multiply
+  STY bcdNum+1
+  STA bcdNum
+  LDA bcdNum
+  STA storefoodpr
+  LDA bcdNum+1
+  STA storefoodpr+1
+
+  JSR SixteenBitHexToDec
+
+  LDA bcdResult+2
+  STA htd_out+1
+  LDA bcdResult+1
+  ASL A
+  ASL A
+  ASL A
+  ASL A
+  ORA bcdResult
+  STA htd_out
+  LDA #$9C
+  STA temp
+  DisplayNumberHundreds temp, htd_out+1, htd_out, #CASH_START_X + $08, #CASH_START_Y + $30, %00000001
+
+  JMP DoneUpdatingStore
+
+
+DoneUpdatingStore:
   ; display cash remaining
   LDA cash
   STA bcdNum
   LDA cash+1
   STA bcdNum+1
+
+  ; subtract price of oxen
+  SEC
+  LDA bcdNum
+  SBC storeoxenpr
+  STA bcdNum
+  LDA bcdNum+1
+  SBC storeoxenpr+1
+  STA bcdNum+1
+
+  ; subtract price of food
+  SEC
+  LDA bcdNum
+  SBC storefoodpr
+  STA bcdNum
+  LDA bcdNum+1
+  SBC storefoodpr+1
+  STA bcdNum+1
+
   JSR SixteenBitHexToDec
   LDA #$54
   STA temp

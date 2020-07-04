@@ -40,6 +40,11 @@ weather		.dsb 1		; current weather status
 food		.dsb 2
 cash		.dsb 2
 
+storeoxen	.dsb 1
+storeoxenpr	.dsb 2
+storefood	.dsb 1
+storefoodpr	.dsb 2
+
 sproffset	.dsb 1
 textxpos    .dsb 1
 textypos	.dsb 1
@@ -64,6 +69,9 @@ thousshown	.dsb 1
 hundsshown	.dsb 1
 bcdNum		.dsb 2
 bcdResult	.dsb 5
+Factor		.dsb 1
+Res			.dsb 1
+Res2		.dsb 1
 seed		.dsb 2		; seed for PRNG
 
 landmarkX	.dsb 1
@@ -529,6 +537,7 @@ SetInitialState:
   .include "src/display_new_screen_functions.asm"
   .include "src/engine_logic_functions.asm"
   .include "src/helper.asm"
+  .include "src/math.asm"
 
   ; audio library (FamiTone2) and audio data file
   .include "src/audio/famitone2/famitone2_asm6.asm"

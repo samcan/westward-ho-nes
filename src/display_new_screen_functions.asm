@@ -359,6 +359,30 @@ DisplayStoreScreen:
   ; load nametable 0
   LoadRLEScreen bg_store_screen, $00
 
+  LDA #$00
+  STA choice
+  STA storeoxen
+
+DrawCursor:
+  ; set up cursor
+  LDX #$00
+  LDA #CASH_START_Y + $18
+  STA cursorY
+  STA $0200, X
+
+  INX
+  LDA #OCC_CURSOR_SPR
+  STA $0200, x
+
+  INX
+  LDA #%00100000
+  STA $0200, x
+
+  INX
+  LDA #CASH_START_X - $54
+  STA cursorX
+  STA $0200, x
+
   ; draw cash start
 DrawCashStart:
   LDA cash
