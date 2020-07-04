@@ -43,7 +43,7 @@ MACRO DisplayNumberThousands sprOffset, bcd3, bcd2, bcd1, bcd, startX, startY, a
   LDA #$01
   STA thousshown
 @ContThousands:
-  LDA startY
+  LDA #startY
   STA $0200, x
   INX
   TYA
@@ -52,7 +52,7 @@ MACRO DisplayNumberThousands sprOffset, bcd3, bcd2, bcd1, bcd, startX, startY, a
   LDA #attr
   STA $0200, x
   INX
-  LDA startX
+  LDA #startX
   STA $0200, x
   INX
 
@@ -77,7 +77,7 @@ MACRO DisplayNumberThousands sprOffset, bcd3, bcd2, bcd1, bcd, startX, startY, a
   ADC #$44
   TAY
 @ContHundreds:
-  LDA startY
+  LDA #startY
   STA $0200, x
   INX
   TYA
@@ -86,7 +86,7 @@ MACRO DisplayNumberThousands sprOffset, bcd3, bcd2, bcd1, bcd, startX, startY, a
   LDA #attr
   STA $0200, x
   INX
-  LDA startX + $08
+  LDA #startX + $08
   STA $0200, x
   INX
 
@@ -112,7 +112,7 @@ MACRO DisplayNumberThousands sprOffset, bcd3, bcd2, bcd1, bcd, startX, startY, a
   LDA #attr
   STA $0200, x
   INX
-  LDA startX + $10
+  LDA #startX + $10
   STA $0200, x
   INX
   ; now we'll display ones, which are easy because we always display the
@@ -121,7 +121,7 @@ MACRO DisplayNumberThousands sprOffset, bcd3, bcd2, bcd1, bcd, startX, startY, a
   CLC
   ADC #$44
   PHA
-  LDA startY
+  LDA #startY
   STA $0200, x
   INX
   PLA
@@ -130,7 +130,7 @@ MACRO DisplayNumberThousands sprOffset, bcd3, bcd2, bcd1, bcd, startX, startY, a
   LDA #attr
   STA $0200, x
   INX
-  LDA startX + $18
+  LDA #startX + $18
   STA $0200, x
   INX
 ENDM
