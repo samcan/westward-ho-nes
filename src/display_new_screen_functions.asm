@@ -79,6 +79,125 @@ DisplayStoreScreen:
   ; load nametable 0
   LoadRLEScreen bg_store_screen, $00
 
+  ; draw cash start
+DrawCashStart:
+  LDA cash
+  STA bcdNum
+  LDA cash+1
+  STA bcdNum+1
+  JSR SixteenBitHexToDec
+
+  LDX #$08
+  LDA #$00
+  STA thousshown
+  STA hundsshown
+
+  ; display thousands
+  LDA bcdResult+3
+  BEQ @ThousandsNotShown
+  JMP @ThousandsShown
+@ThousandsNotShown:
+  LDA #$00
+  TAY
+  JMP @ContThousands
+@ThousandsShown:
+  CLC
+  ADC #$44
+  TAY
+  LDA #$01
+  STA thousshown
+@ContThousands:
+  LDA #CASH_START_Y
+  STA $0200, x
+  INX
+  TYA
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #CASH_START_X
+  STA $0200, x
+  INX
+
+@DisplayHundreds:
+  ; display hundreds
+  LDA bcdResult+2
+  BEQ @HundredsZero
+  JMP @HundredsShown
+@HundredsZero:
+  LDA thousshown
+  BEQ @HundredsNotShown
+  JMP @HundredsShown
+@HundredsNotShown:
+  LDA #$00
+  TAY
+  JMP @ContHundreds
+@HundredsShown:
+  LDA #$01
+  STA hundsshown
+  LDA bcdResult+2
+  CLC
+  ADC #$44
+  TAY
+@ContHundreds:
+  LDA #CASH_START_Y
+  STA $0200, x
+  INX
+  TYA
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #CASH_START_X + $08
+  STA $0200, x
+  INX
+
+  ; display tens
+  LDA #CASH_START_Y
+  STA $0200, x
+  INX
+  LDA bcdResult+1
+  BEQ @TensZero
+@TensNotZero:
+  LDA bcdResult+1
+  CLC
+  ADC #$44
+  JMP @ContTens
+@TensZero:
+  LDA thousshown
+  ORA hundsshown
+  BNE @TensNotZero
+  LDA #$00
+@ContTens:
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #CASH_START_X + $10
+  STA $0200, x
+  INX
+  ; now we'll display ones, which are easy because we always display the
+  ; ones place
+  LDA bcdResult
+  CLC
+  ADC #$44
+  PHA
+  LDA #CASH_START_Y
+  STA $0200, x
+  INX
+  PLA
+  STA $0200, x
+  INX
+  LDA #%00000001
+  STA $0200, x
+  INX
+  LDA #CASH_START_X + $18
+  STA $0200, x
+  INX
+
   JMP FinishLoadNewScreen
 
 DisplayLandmarkScreen:

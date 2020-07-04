@@ -38,6 +38,7 @@ temperature	.dsb 1		; current temperature status
 weathernum	.dsb 1		; current number for weather (translated into status)
 weather		.dsb 1		; current weather status
 food		.dsb 2
+cash		.dsb 2
 
 sproffset	.dsb 1
 textxpos    .dsb 1
@@ -175,6 +176,10 @@ PAUSED_CURSOR_SPR	= $3F
 PAUSED_X			= $30
 PAUSED_MIN_Y		= $87
 PAUSED_MAX_Y		= $AF
+
+; store screen
+CASH_START_X		= $D0
+CASH_START_Y		= $2F
 
 ; start-month screen
 MONTH_CURSOR_SPR	= $3F

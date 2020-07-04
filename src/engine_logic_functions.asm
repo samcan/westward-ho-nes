@@ -357,7 +357,9 @@ EndGame:
 EngineLogicStore:
   ;; logic associated with general store
   CheckForButton #BTN_START, EndStoreGameState, +
-+ JMP GameEngineLogicDone
++
+
+  JMP GameEngineLogicDone
 EndStoreGameState:
   ; user is exiting store state, switch to "starting-month" state, unless
   ; curlandmark is greater than 0, which means that we're already in our journey
@@ -898,10 +900,10 @@ EngineLogicOccupation:
 + JMP GameEngineLogicDone
 
 MoveOccupationCursorUp:
-  LDA occupation
+  LDA choice
   SEC
   SBC #$01
-  STA occupation
+  STA choice
 
   LDA cursorY
   SEC
@@ -909,20 +911,20 @@ MoveOccupationCursorUp:
   ; compare to OCC_MIN_Y
   CMP #OCC_MIN_Y
   BCS +
-  LDA occupation
+  LDA choice
   CLC
   ADC #$01
-  STA occupation
+  STA choice
 
   LDA #OCC_MIN_Y
 + STA cursorY
   JMP UpdateOccupationCursorSprite
 
 MoveOccupationCursorDown:
-  LDA occupation
+  LDA choice
   CLC
   ADC #$01
-  STA occupation
+  STA choice
 
   LDA cursorY
   CLC
@@ -931,10 +933,10 @@ MoveOccupationCursorDown:
   CMP #OCC_MAX_Y
   BCC +
   BEQ +
-  LDA occupation
+  LDA choice
   SEC
   SBC #$01
-  STA occupation
+  STA choice
 
   LDA #OCC_MAX_Y
 + STA cursorY
@@ -960,6 +962,33 @@ UpdateOccupationCursorSprite:
   JMP GameEngineLogicDone
 EndOccupationGameState:
   ; user is exiting occupation state, switch to store state
+  LDA choice
+  STA occupation
+
+  ; TODO replace hardcoded cash amounts with constants
+  CMP #$00
+  BEQ @Farmer
+  CMP #$01
+  BEQ @Carpenter
+@Banker:
+  LDA #$40
+  STA cash
+  LDA #$06
+  STA cash+1
+  JMP @ContExitStore
+@Carpenter:
+  LDA #$20
+  STA cash
+  LDA #$03
+  STA cash+1
+  JMP @ContExitStore
+@Farmer:
+  LDA #$90
+  STA cash
+  LDA #$01
+  STA cash+1
+  JMP @ContExitStore
+@ContExitStore:
   LDA #STATESTORE
   STA newgmstate
   JMP GameEngineLogicDone
