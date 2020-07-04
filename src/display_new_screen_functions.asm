@@ -303,7 +303,80 @@ DrawCashStart:
   STA bcdNum+1
   JSR SixteenBitHexToDec
 
-  DisplayNumberThousands $08, bcdResult+3, bcdResult+2, bcdResult+1, bcdResult, #CASH_START_X, #CASH_START_Y, %00000001
+  LDA #$08
+  STA temp
+  DisplayNumberThousands temp, bcdResult+3, bcdResult+2, bcdResult+1, bcdResult, #CASH_START_X, #CASH_START_Y, %00000001
+
+DrawPrices:
+  ; oxen
+  LDA curlandmark
+  ASL A
+  ASL A
+  TAX
+  LDA storeprices, X
+  STA htd_in
+  JSR EightBitHexToDec
+
+  LDA #$18
+  STA temp
+  DisplayNumberHundreds, temp, htd_out+1, htd_out, #CASH_START_X + $08, #CASH_START_Y + $10, %00000001
+
+  ; food
+  LDA curlandmark
+  ASL A
+  ASL A
+  CLC
+  ADC #3
+  TAX
+  LDA storeprices, X
+  STA htd_in
+  JSR EightBitHexToDec
+
+  LDA #$24
+  STA temp
+  DisplayNumberHundreds, temp, htd_out+1, htd_out, #CASH_START_X + $08, #CASH_START_Y + $28, %00000001
+
+  ; clothes
+  LDA curlandmark
+  ASL A
+  ASL A
+  CLC
+  ADC #1
+  TAX
+  LDA storeprices, X
+  STA htd_in
+  JSR EightBitHexToDec
+  LDA #$30
+  STA temp
+  DisplayNumberHundreds, temp, htd_out+1, htd_out, #CASH_START_X + $08, #CASH_START_Y + $40, %00000001
+
+  ; bullets
+  LDA curlandmark
+  ASL A
+  ASL A
+  CLC
+  ADC #2
+  TAX
+  LDA storeprices, X
+  STA htd_in
+  JSR EightBitHexToDec
+  LDA #$3C
+  STA temp
+  DisplayNumberHundreds, temp, htd_out+1, htd_out, #CASH_START_X + $08, #CASH_START_Y + $58, %00000001
+
+  ; spare parts
+  LDA curlandmark
+  ASL A
+  ASL A
+  CLC
+  ADC #1
+  TAX
+  LDA storeprices, X
+  STA htd_in
+  JSR EightBitHexToDec
+  LDA #$48
+  STA temp
+  DisplayNumberHundreds, temp, htd_out+1, htd_out, #CASH_START_X + $08, #CASH_START_Y + $70, %00000001
 
   JMP FinishLoadNewScreen
 

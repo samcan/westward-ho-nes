@@ -1454,6 +1454,7 @@ UpdateStatusIcons:
   TAX
   STA temp
   DisplayNumberHundreds temp, htd_out+1, htd_out, $A8, #STATUS_ICON_Y + $18, %00000001
+  LDX temp
 
 MileageTraveled:
   ;TXA
