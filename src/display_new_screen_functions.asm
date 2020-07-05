@@ -502,8 +502,14 @@ DisplayLandmarkScreen:
   LDA landmarkbank, X
   JSR BankSwitch
 
+  LDA curlandmark
+  CMP #$07
+  BEQ +
   PaletteLoad palette_landmark
+  JMP ++
++ PaletteLoad palette_landmark_south_pass
 
+++
   .ifdef AUDIO_YES
   ; start playing landmark music
   LDX curlandmark
