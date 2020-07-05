@@ -198,7 +198,7 @@ PAUSED_MAX_Y		= $AF
 ; store screen
 CASH_START_X		= $D0
 CASH_START_Y		= $2F
-OXEN_INC			= $02
+OXEN_INC			= $01
 OXEN_MAX			= 80
 FOOD_INC			= $01
 FOOD_MAX			= $13
