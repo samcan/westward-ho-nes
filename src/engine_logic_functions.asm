@@ -917,25 +917,8 @@ EndStoreGameState:
   STA oxen
 
   ; multiply food by 100
-  ; (see http://wiki.nesdev.com/w/index.php/Multiplication_by_a_constant_integer)
-  LDA #$00
-  STA Res2
   LDA storefood
-  ASL A
-  ROL Res2
-  ADC storefood
-  ASL A
-  ROL Res2
-  ASL A
-  ROL Res2
-  ASL A
-  ROL Res2
-  ADC storefood
-  ASL A
-  ROL Res2
-  ASL A
-  ROL Res2
-  STA Res
+  JSR Mult100
 
   CLC
   LDA Res
@@ -952,24 +935,8 @@ EndStoreGameState:
 
   ; multiply box of bullets by 100
   ; (see http://wiki.nesdev.com/w/index.php/Multiplication_by_a_constant_integer)
-  LDA #$00
-  STA Res2
   LDA storebllt
-  ASL A
-  ROL Res2
-  ADC storebllt
-  ASL A
-  ROL Res2
-  ASL A
-  ROL Res2
-  ASL A
-  ROL Res2
-  ADC storebllt
-  ASL A
-  ROL Res2
-  ASL A
-  ROL Res2
-  STA Res
+  JSR Mult100
 
   CLC
   LDA bullets

@@ -25,3 +25,32 @@ Multiply:
 	lda Res
 	ldy Res2
 	rts
+
+
+  ; multiply food by 100
+  ; (see http://wiki.nesdev.com/w/index.php/Multiplication_by_a_constant_integer)
+  ; 71 cycles
+  ; input: A
+  ; output: Res, Res2
+  ; Clobbers: A, temp
+Mult100:
+  STA temp
+  LDA #$00
+  STA Res2
+  LDA temp
+  ASL A
+  ROL Res2
+  ADC temp
+  ASL A
+  ROL Res2
+  ASL A
+  ROL Res2
+  ASL A
+  ROL Res2
+  ADC temp
+  ASL A
+  ROL Res2
+  ASL A
+  ROL Res2
+  STA Res
+  RTS
