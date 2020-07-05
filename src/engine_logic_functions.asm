@@ -1039,6 +1039,15 @@ UpdatePausedCursorSprite:
 
   JMP GameEngineLogicDone
 
+; where each of the menu items on the PAUSED screen goes
+PAUSEDSELECTIONFUNCTIONS:
+  .dw EndPausedGameState
+  .dw $0000
+  .dw $0000
+  .dw EndPausedGameStateLoadPace
+  .dw EndPausedGameStateLoadRations
+  .dw $0000
+
 EndPausedGameState:
   ; user is exiting paused state, switch back to traveling state
   LDA #STATETRAVELING
@@ -1047,12 +1056,13 @@ EndPausedGameState:
 EndPausedGameStateItemSelected:
   ; what item did the user select from the PAUSED screen?
   LDA choice
-  BEQ EndPausedGameState			; user selected to continue traveling
-  CMP #$03
-  BEQ EndPausedGameStateLoadPace
-  CMP #$04
-  BEQ EndPausedGameStateLoadRations
-  JMP GameEngineLogicDone
+  ASL A
+  TAX
+  LDA PAUSEDSELECTIONFUNCTIONS, X
+  STA vector
+  LDA PAUSEDSELECTIONFUNCTIONS+1, X
+  STA vector+1
+  JMP (vector)
 EndPausedGameStateLoadPace:
   LDA #STATEPACE
   STA newgmstate
