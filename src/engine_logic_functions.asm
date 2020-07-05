@@ -144,7 +144,7 @@ EngineLogicAlphabetSelectLetter:
   LDX numletters
   CPX #$08
   BEQ EngineLogicAlphabetDoneSelecting
-  STA name1, X
+  STA name0, X
   INC numletters
   JMP EngineLogicAlphabetDoneSelecting
 EngineLogicAlphabetEraseLetter:
@@ -158,7 +158,7 @@ EngineLogicAlphabetEraseLetter:
   LDX #$00
   STX numletters
 @StoreValue:
-  STA name1, X
+  STA name0, X
 EngineLogicAlphabetDoneSelecting:
   JMP UpdateCursorLetterSprites
 EngineLogicAlphabetEndState:
@@ -270,19 +270,19 @@ UpdateCursorLetterSprites:
   STA $0200, x
 
   ; draw selected letters
-  LDA #$30
+  LDA #NAME0_X
   STA letterX
 
   LDY #$00
 - INX
-  LDA #$20
+  LDA #NAME0_Y
   STA $0200, X
 
   INX
   STX temp
   TYA
   TAX
-  LDA name1, X
+  LDA name0, X
   LDX temp
   STA $0200, X
 

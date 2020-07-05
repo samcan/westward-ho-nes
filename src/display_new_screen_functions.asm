@@ -622,15 +622,18 @@ DisplayAlphabetScreen:
   STA letterX
   STA numletters
 
-  ; clear name1
-  LDX #$08
+  ; clear name0-name4
+  LDX #$28
 - DEX
-  STA name1, X
+  STA name0, X
   CPX #$00
   BNE -
 
   LDA #$50
   STA hilitedltr
+
+  LDA <name0
+  STA curname
 
   ; set up cursor
   LDX #$04

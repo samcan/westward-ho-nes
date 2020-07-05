@@ -93,7 +93,12 @@ hilitedltr	.dsb 1
 letterX		.dsb 1
 numletters	.dsb 1
 temp		.dsb 1
+curname		.dsb 1
+name0		.dsb 8
 name1		.dsb 8
+name2		.dsb 8
+name3		.dsb 8
+name4		.dsb 8
 
 ; top-left for metatile
 tileptr		.dsb 2
@@ -176,6 +181,16 @@ MIN_Y			= $8F
 MAX_Y			= $BF
 MIN_X			= $48
 MAX_X			= $A8
+NAME0_X			= $30
+NAME0_Y			= $2F
+NAME1_X			= #NAME0_X
+NAME1_Y			= #NAME0_Y + $10
+NAME2_X			= #NAME0_X
+NAME2_Y			= #NAME1_Y + $10
+NAME3_X			= #NAME0_X
+NAME3_Y			= #NAME2_Y + $10
+NAME4_X			= #NAME0_X
+NAME4_Y			= #NAME3_Y + $10
 
 ; pace screen
 PACE_CURSOR_SPR	= $3F
