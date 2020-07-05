@@ -597,8 +597,8 @@ palette_landmark:
   .db $1F,$00,$27,$10,  $1F,$1C,$06,$10,  $1F,$07,$20,$10,  $1F,$07,$17,$10   ;;sprite palette
 
 palette_landmark_south_pass:
-  .hex 31 0F 3D 20   31 17 19 29   31 17 19 0F   31 09 19 29
-  .hex 31 00 27 10   31 1C 06 10   31 07 20 10   31 07 17 10
+  .hex 31 0F 3D 10   31 17 19 29   31 17 19 0F   31 09 19 29
+  .hex 31 0F 27 10   31 0F 06 10   31 07 20 10   31 07 17 10
 
 ; metatile description is the following:
 ; tile num, palette num IN THE FOLLOWING ORDER:
