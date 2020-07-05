@@ -835,6 +835,18 @@ DisplayOccupationScreen:
 
   JMP FinishLoadNewScreen
 
+DisplayRestScreen:
+  LDA #$01
+  JSR BankSwitch
+
+  PaletteLoad palette
+
+  LoadRLEScreen bg_rest_screen, $00
+
+  LDA #$00
+  STA choice
+
+  JMP FinishLoadNewScreen
 
 DisplayRationsScreen:
   LDA #$01

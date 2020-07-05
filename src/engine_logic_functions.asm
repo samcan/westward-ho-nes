@@ -1046,7 +1046,7 @@ PAUSEDSELECTIONFUNCTIONS:
   .dw $0000
   .dw EndPausedGameStateLoadPace
   .dw EndPausedGameStateLoadRations
-  .dw $0000
+  .dw EndPausedGameStateLoadRest
 
 EndPausedGameState:
   ; user is exiting paused state, switch back to traveling state
@@ -1069,6 +1069,10 @@ EndPausedGameStateLoadPace:
   JMP GameEngineLogicDone
 EndPausedGameStateLoadRations:
   LDA #STATERATIONS
+  STA newgmstate
+  JMP GameEngineLogicDone
+EndPausedGameStateLoadRest:
+  LDA #STATEREST
   STA newgmstate
   JMP GameEngineLogicDone
 
@@ -1592,6 +1596,74 @@ EndOccupationGameState:
   LDA #STATESTORE
   STA newgmstate
   JMP GameEngineLogicDone
+
+
+
+;;;;;;;;;
+EngineLogicRestScreen:
+  ;; logic associated with rest screen
+  CheckForButton #BTN_UPARROW | #BTN_RIGHTARROW, MoveRestNumberUp, +
++ CheckForButton #BTN_DOWNARROW | #BTN_LEFTARROW, MoveRestNumberDown, +
++ CheckForButton #BTN_B, EndRestGameStateNoRest, +
++ CheckForButton #BTN_A, EndRestGameStateRest, +
+
++ JMP UpdateRestNumberSprites
+
+MoveRestNumberUp:
+  LDA choice
+  CLC
+  ADC #$01
+  STA choice
+
+  CMP #$0A
+  BCC +
+  SEC
+  SBC #$01
+  STA choice
+
++ JMP UpdateRestNumberSprites
+
+MoveRestNumberDown:
+  LDA choice
+  SEC
+  SBC #$01
+  STA choice
+
+  CMP #$00
+  BPL +
+  CLC
+  ADC #$01
+  STA choice
+
++ JMP UpdateRestNumberSprites
+
+UpdateRestNumberSprites:
+  LDA choice
+  STA htd_in
+  JSR EightBitHexToDec
+
+  LDA #$08
+  STA temp
+  DisplayNumberTens temp, htd_out, $58, $57, %00000001
+
+  JMP GameEngineLogicDone
+EndRestGameStateRest:
+  LDA choice
+  BEQ EndRestGameStateNoRest
+
+  TAY
+- JSR UpdateCalendar
+  DEY
+  CPY #$00
+  BNE -
+EndRestGameStateNoRest:
+  ; user is exiting rest game state, switch to paused screen
+  ; user backed out so no rest
+  LDA #STATEPAUSED
+  STA newgmstate
+  JMP GameEngineLogicDone
+
+
 
 ;;;;;;;;;
 EngineLogicMonth:

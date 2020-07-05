@@ -128,6 +128,7 @@ STATERATIONS	= $0C
 STATECHOOSEBLUE = $0D
 STATECLMBIARVR  = $0E
 STATECHOOSEDLLS = $0F
+STATEREST		= $10
 
 FRAMECOUNT		= $30
 
@@ -640,6 +641,8 @@ bg_occupation_screen:
   .incbin "src/assets/bg_occupation_screen.rle"
 bg_rations_screen:
   .incbin "src/assets/bg_rations_screen.rle"
+bg_rest_screen:
+  .incbin "src/assets/bg_rest_screen.rle"
 bg_store_screen:
   .incbin "src/assets/bg_store_screen.rle"
 bg_landmark_kansas_river:
@@ -702,6 +705,7 @@ screen:
   .dw DisplayOccupationScreen, DisplayDecisionFortScreen
   .dw DisplayRationsScreen, DisplayDecisionBlueMountainsScreen
   .dw DisplayColumbiaRiverScreen, DisplayDecisionDallesScreen
+  .dw DisplayRestScreen
 
 ; points to appropriate engine logic functions so they can get called by
 ; the engine
@@ -713,6 +717,7 @@ enginelogic:
   .dw EngineLogicOccupation, EngineLogicDecisionFort
   .dw EngineLogicRations, EngineLogicDecisionBlueMountains
   .dw EngineLogicColumbiaRiver, EngineLogicDecisionDalles
+  .dw EngineLogicRestScreen
 
 ; new line = $00, space char needs to be something else, $FF = done
 ; first byte is starting y pos
