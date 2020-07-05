@@ -911,12 +911,10 @@ EndStoreGameState:
   LDA cashremain+1
   STA cash+1
 
-  LDA storeoxen			; this is individual oxen, and I need yokes (I'll probably
-						; revise later to store individ. oxen)
-  ROR A
+  LDA storeoxen
   CLC
-  ADC yokeoxen
-  STA yokeoxen
+  ADC oxen
+  STA oxen
 
   ; multiply food by 100
   ; (see http://wiki.nesdev.com/w/index.php/Multiplication_by_a_constant_integer)
@@ -1728,7 +1726,10 @@ EngineLogicTraveling:
 @UpdateMileageEachDay:
   ;; increase mi traveled
   ; calc mi traveled
-  MultiplyPercentageDistance basemileage, yokeoxen, tempcalcb
+  LDA oxen
+  ROR A
+  STA temp
+  MultiplyPercentageDistance basemileage, temp, tempcalcb
   LDA tempcalcb
   STA tempcalca
   MultiplyPercentageDistance tempcalca, pace, tempcalcb

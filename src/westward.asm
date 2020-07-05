@@ -23,7 +23,7 @@ buttons1    .dsb 1		; player 1 controller buttons pressed
 miremaining	.dsb 1		; number of miles remaining (in curr. segment of map)
 mitraveldy  .dsb 1		; number of miles traveled (curr. day)
 mitraveled	.dsb 2		; number of miles traveled (total)
-yokeoxen	.dsb 1		; number of yoke of oxen
+oxen	.dsb 1			; number of oxen
 pace		.dsb 1		; travel pace (steady, strenuous, grueling)
 rations		.dsb 1
 occupation	.dsb 1
@@ -499,9 +499,9 @@ SetInitialState:
   LDA #MAX_MI_PER_DAY_A
   STA basemileage
 
-  ; set 3 yoke of oxen
-  LDA #$03
-  STA yokeoxen
+  ; set 0 oxen (until you buy some)
+  LDA #$00
+  STA oxen
 
   ; set initial pace of STEADY
   LDA #PACE_STEADY
