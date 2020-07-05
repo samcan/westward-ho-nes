@@ -615,7 +615,11 @@ UpdateStoreDisplay:
 UpdateOxen:
   ; display oxen
   LDA curlandmark
-  ASL A
+  CMP #$00
+  BEQ +
+  SEC
+  SBC #$01
++ ASL A
   ASL A
   TAX
   LDA storeprices, X
@@ -685,7 +689,11 @@ foodoneszero:
 
   ; display food total price
   LDA curlandmark
-  ASL A
+  CMP #$00
+  BEQ +
+  SEC
+  SBC #$01
++ ASL A
   ASL A
   CLC
   ADC #$03
@@ -724,7 +732,11 @@ foodoneszero:
 UpdateClothes:
   ; display clothes
   LDA curlandmark
-  ASL A
+  CMP #$00
+  BEQ +
+  SEC
+  SBC #$01
++ ASL A
   ASL A
   TAX
   INX
@@ -737,7 +749,11 @@ UpdateClothes:
 UpdateBullets:
   ; display bullets
   LDA curlandmark
-  ASL A
+  CMP #$00
+  BEQ +
+  SEC
+  SBC #$01
++ ASL A
   ASL A
   TAX
   INX
@@ -751,7 +767,11 @@ UpdateBullets:
 UpdateSpareParts:
   ; display spare parts
   LDA curlandmark
-  ASL A
+  CMP #$00
+  BEQ +
+  SEC
+  SBC #$01
++ ASL A
   ASL A
   TAX
   INX

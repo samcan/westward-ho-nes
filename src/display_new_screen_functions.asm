@@ -366,6 +366,11 @@ DisplayStoreScreen:
   STA storeclth
   STA storebllt
   STA storepart
+  STA storeoxenpr
+  STA storefoodpr
+  STA storeclthpr
+  STA storeblltpr
+  STA storepartpr
 
 DrawCursor:
   ; set up cursor
@@ -402,7 +407,11 @@ DrawCashStart:
 DrawPrices:
   ; oxen
   LDA curlandmark
-  ASL A
+  CMP #$00
+  BEQ +
+  SEC
+  SBC #$01
++ ASL A
   ASL A
   TAX
   LDA storeprices, X
@@ -415,7 +424,11 @@ DrawPrices:
 
   ; food
   LDA curlandmark
-  ASL A
+  CMP #$00
+  BEQ +
+  SEC
+  SBC #$01
++ ASL A
   ASL A
   CLC
   ADC #3
@@ -430,7 +443,11 @@ DrawPrices:
 
   ; clothes
   LDA curlandmark
-  ASL A
+  CMP #$00
+  BEQ +
+  SEC
+  SBC #$01
++ ASL A
   ASL A
   CLC
   ADC #1
@@ -444,7 +461,11 @@ DrawPrices:
 
   ; bullets
   LDA curlandmark
-  ASL A
+  CMP #$00
+  BEQ +
+  SEC
+  SBC #$01
++ ASL A
   ASL A
   CLC
   ADC #2
@@ -458,7 +479,11 @@ DrawPrices:
 
   ; spare parts
   LDA curlandmark
-  ASL A
+  CMP #$00
+  BEQ +
+  SEC
+  SBC #$01
++ ASL A
   ASL A
   CLC
   ADC #1
