@@ -596,9 +596,15 @@ palette_landmark:
   .db $0F,$22,$09,$19,  $0F,$21,$19,$36,  $0F,$05,$26,$10,  $0F,$16,$27,$18   ;;background palette
   .db $1F,$00,$27,$10,  $1F,$1C,$06,$10,  $1F,$07,$20,$10,  $1F,$07,$17,$10   ;;sprite palette
 
+palette_landmark_chimney_rock:
+  .hex 31 0F 3D 10   31 17 19 29   31 17 27 0F   31 09 19 29				  ;;background palette
+  .hex 31 0F 27 10   31 0F 06 10   31 07 20 10   31 07 17 10				  ;;sprite palette
+
 palette_landmark_south_pass:
-  .hex 31 0F 3D 10   31 17 19 29   31 17 19 0F   31 09 19 29
-  .hex 31 0F 27 10   31 0F 06 10   31 07 20 10   31 07 17 10
+  .hex 31 0F 3D 10   31 17 19 29   31 17 19 0F   31 09 19 29				  ;;background palette
+  .hex 31 0F 27 10   31 0F 06 10   31 07 20 10   31 07 17 10				  ;;sprite palette
+
+
 
 ; metatile description is the following:
 ; tile num, palette num IN THE FOLLOWING ORDER:
@@ -815,7 +821,7 @@ landmarkdisplay:
 
 landmarkbank:
   .db $01, $01, $01
-  .db $01, $01
+  .db $01, $02
   .db $01, $01
   .db $02
   .db $01, $01

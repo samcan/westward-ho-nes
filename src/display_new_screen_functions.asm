@@ -503,13 +503,20 @@ DisplayLandmarkScreen:
   JSR BankSwitch
 
   LDA curlandmark
+  CMP #$04
+  BEQ PALCHIMNEY
   CMP #$07
-  BEQ +
+  BEQ PALSOUTH
   PaletteLoad palette_landmark
-  JMP ++
-+ PaletteLoad palette_landmark_south_pass
+  JMP LANDCONT
+PALCHIMNEY:
+  PaletteLoad palette_landmark_chimney_rock
+  JMP LANDCONT
+PALSOUTH:
+  PaletteLoad palette_landmark_south_pass
+  JMP LANDCONT
 
-++
+LANDCONT:
   .ifdef AUDIO_YES
   ; start playing landmark music
   LDX curlandmark
