@@ -139,6 +139,7 @@ FRAMECOUNT_DAY	= $05
 LANDMARK_OFFSET = $78		; the sprite offset for the small landmark metatile
 LANDMARK_TOP_Y  = $90
 LANDMARK_LEFT_X = $00
+LANDMARK_MILES  = $64		; 100 dec.
 FRAME_LNDMRK_10 = $0E
 FRAME_LNDMRK_20	= $07
 FRAME_LNDMRK_30 = $04

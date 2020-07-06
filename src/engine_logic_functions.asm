@@ -1742,6 +1742,8 @@ EndMonthGameState:
 
 ;;;;;;;;;;
 EngineLogicTraveling:
+  ;; Set new miremaining for new landmark
+  ;
   ; we check the miremaining variable to see if it's equal to 0. If it is, that
   ; means we must have arrived at a landmark. We will now load in the next
   ; landmark's distance and store it in miremaining. Note that we assume that
@@ -1755,12 +1757,15 @@ EngineLogicTraveling:
   LDA landmarkdist, X
   STA miremaining
 
+  ;; Decrement frame counter currframe
+  ;
   ; right now we're displaying the background, scrolling it, and updating our
   ; wagon wheel animation. We have a little frame counter that keeps track of
   ; the current frame, and once it gets to 0, will then trigger the background
   ; update and the wagon wheel animation update.
 + DEC currframe
 
+  ;; Check if currframedy should trigger to update day
   LDA currframedy
   BEQ @UpdateDay
   JMP @DoneUpdatingMileage
@@ -1826,31 +1831,53 @@ EngineLogicTraveling:
   LDA #STATELANDMARK
   STA newgmstate
 
+  JMP GameEngineLogicDone
+
 @DoneUpdatingMileage:
+  ;; Now we're updating graphical sprites, including the status bar, the bg
+  ;; scroll, and the wagon animation
   LDX #$24
   JSR UpdateStatusIcons
 
-  CheckForButton #BTN_START, EnterPausedGameState, NotEnteringPausedGameState
+  ;; Check our currframe frame counter, and if it's zero (i.e. triggered) then
+  ;; increase the background scroll and flip the wagon animation to the other
+  ;; set of frames.
+  LDA currframe
+  BEQ +
+  JMP CheckLandmarkIcon
++ JSR IncreaseScrollAndFlipWagonAnim
+
+CheckLandmarkIcon:
+  ;; Check if we're going to update our small landmark icon
+  ;
+  ; draw small landmark icon once there's less than 100 miles remaining to the
+  ; landmark in question
+  LDA miremaining
+  CMP #LANDMARK_MILES
+  BCS @NoLandmarkIcon
+
+  ; load the current frame for landmark icon purposes and see if we've reached
+  ; zero yet. If we have, draw the landmark icon at the new spot. We will then
+  ; reset the frame counter for landmark icon purposes. The value we choose will
+  ; be dependent on the miles traveled that day (mitraveldy).
+  LDA currframeld
+  BNE @DontUpdateLandmarkIcon
+  JSR UpdateLandmarkIcon
+
+@DontUpdateLandmarkIcon:
+  DEC currframeld
+@NoLandmarkIcon:
+
+  ;; Check if we should enter Pause
+  CheckForButton #BTN_START, EnterPausedGameState, GameEngineLogicDone
+
 EnterPausedGameState:
   ; user is entering pause state
   LDA #STATEPAUSED
   STA newgmstate
   JMP GameEngineLogicDone
 
-NotEnteringPausedGameState:
-  ; load the current frame for landmark icon purposes and see if we've reached
-  ; zero yet. If we have, draw the landmark icon at the new spot. We will then
-  ; reset the frame counter for landmark icon purposes. The value we choose will
-  ; be dependent on the miles traveled that day (mitraveldy).
-  LDA currframeld
-  BNE CONTFRAME
-
-  ; draw small landmark icon once there's less than 100 miles remaining to the
-  ; landmark in question
-  LDA miremaining
-  CMP #$64					; 100 dec.
-  BCS IncreaseScrollAndFlipWagonAnim
-
+UpdateLandmarkIcon:
   ; load landmark metatile
   LDA #LANDMARK_OFFSET
   STA tileoffset
@@ -1915,13 +1942,10 @@ RESETFRAMELANDMARK:
   INC landmarkX
 
 CONTFRAME:
-  DEC currframeld
-
-  LDA currframe
-  BEQ IncreaseScrollAndFlipWagonAnim
-  JMP GameEngineLogicDone
-
+  RTS
+;;;;;;;;;;
 IncreaseScrollAndFlipWagonAnim:
+  ;; Increase the background scroll
   LDA scrollH
   SEC
   SBC #$01
@@ -1931,27 +1955,28 @@ IncreaseScrollAndFlipWagonAnim:
   ; the day update routine, which updates the mileage traveled
   DEC currframedy
 
-FlipWagonAnimation:
+@FlipWagonAnimation:
+  ;; Reset the currframe frame counter
   LDA #FRAMECOUNT
   STA currframe
 
   LDA currwagfrm
-  BEQ LoadFrameOne
+  BEQ @LoadFrameOne
 
-LoadFrameZero:
+@LoadFrameZero:
   LDA #$00
   STA currwagfrm
 
   JSR UpdateTravelingSpritesFrameZero
 
-  JMP GameEngineLogicDone
+  RTS
 
-LoadFrameOne:
+@LoadFrameOne:
   INC currwagfrm
 
   JSR UpdateTravelingSpritesFrameOne
 
-  JMP GameEngineLogicDone
+  RTS
 ;;;;;;;;;;
 UpdateTravelingSpritesFrameZero:
   ; wagon metatile
