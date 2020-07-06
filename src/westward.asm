@@ -23,7 +23,7 @@ buttons1    .dsb 1		; player 1 controller buttons pressed
 miremaining	.dsb 1		; number of miles remaining (in curr. segment of map)
 mitraveldy  .dsb 1		; number of miles traveled (curr. day)
 mitraveled	.dsb 2		; number of miles traveled (total)
-oxen	.dsb 1			; number of oxen
+oxen		.dsb 1			; number of oxen
 pace		.dsb 1		; travel pace (steady, strenuous, grueling)
 rations		.dsb 1
 occupation	.dsb 1
@@ -177,6 +177,8 @@ MAX_MI_PER_DAY_B	= $18			; max miles per day after Fort Laramie
 PACE_STEADY			= $01
 PACE_STRENUOUS		= $02
 PACE_GRUELING		= $03
+
+REST_DAYS_MAX		= $09
 
 ; controller buttons
 BTN_A			= 1 << 7

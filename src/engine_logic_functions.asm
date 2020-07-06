@@ -1615,8 +1615,9 @@ MoveRestNumberUp:
   ADC #$01
   STA choice
 
-  CMP #$0A
+  CMP #REST_DAYS_MAX
   BCC +
+  BEQ +
   SEC
   SBC #$01
   STA choice
