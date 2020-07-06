@@ -65,6 +65,7 @@ textattrHi	.dsb 1
 paletteptr	.dsb 2		; palette address
 currframe	.dsb 1
 currframedy	.dsb 1		; number of times frame has been updated in curr. day
+currframeld	.dsb 1
 currwagfrm	.dsb 1
 vector		.dsb 2
 pointer		.dsb 2
@@ -133,6 +134,11 @@ STATEREST		= $10
 FRAMECOUNT		= $30
 
 FRAMECOUNT_DAY	= $05
+
+; the sprite offset for the small landmark metatile
+LANDMARK_OFFSET = $78
+LANDMARK_TOP_Y  = $90
+LANDMARK_LEFT_X = $08
 
 STATUS_ICON_Y	= $17
 HEALTH_GOOD		= $21

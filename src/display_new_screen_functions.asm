@@ -1045,6 +1045,9 @@ DisplayTravelingScreen:
   ; load nametable 1
   LoadRLEScreen bg_blank_traveling_screen, $01
 
+  LDA #LANDMARK_LEFT_X
+  STA landmarkX
+
   ; load sprite 0 for status bar
   LDX #$00
   LDA #$36
@@ -1065,9 +1068,14 @@ DisplayTravelingScreen:
 
   LDA #FRAMECOUNT
   STA currframe
-  
+
   LDA #FRAMECOUNT_DAY
   STA currframedy
+
+  ; TODO store in constant
+  LDA #$07
+  STA currframeld
+  ; curr frame for landmark advance
 
   ; load sprites
   ; load wagon
@@ -1102,23 +1110,6 @@ DisplayTravelingScreen:
   LDA #<metatile_oxen_frame0
   STA tileptr
   LDA #>metatile_oxen_frame0
-  STA tileptr+1
-
-  JSR DrawMetatile
-
-  ; load landmark
-  ; landmark metatile
-  LDA #$78
-  STA tileoffset
-
-  LDA #OXEN_TOP_Y
-  STA tileY
-  LDA #$20
-  STA tileX
-
-  LDA #<metatile_landmark_river
-  STA tileptr
-  LDA #>metatile_landmark_river
   STA tileptr+1
 
   JSR DrawMetatile

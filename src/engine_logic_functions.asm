@@ -1838,11 +1838,47 @@ EnterPausedGameState:
   JMP GameEngineLogicDone
 
 NotEnteringPausedGameState:
+  LDA currframeld
+  BNE +
+  ; draw small landmark icon
+  LDA miremaining
+  CMP #$64					; 100 dec.
+  BCS +
+  ; load landmark
+  ; landmark metatile
+  LDA #LANDMARK_OFFSET
+  STA tileoffset
+
+  LDA #OXEN_TOP_Y
+  STA tileY
+  LDA landmarkX
+  STA tileX
+
+  LDA #<metatile_landmark_river
+  STA tileptr
+  LDA #>metatile_landmark_river
+  STA tileptr+1
+
+  JSR DrawMetatile
+  LDA landmarkX
+  CLC
+  ; todo store in constant
+  ADC #$01
+  STA landmarkX
+
+  LDA #$07
+  STA currframeld
++
+  DEC currframeld
+
   LDA currframe
   BEQ IncreaseScrollAndFlipWagonAnim
   JMP GameEngineLogicDone
 
 IncreaseScrollAndFlipWagonAnim:
+
+
++
   LDA scrollH
   SEC
   SBC #$01
@@ -1909,23 +1945,6 @@ UpdateTravelingSpritesFrameZero:
 
   JSR DrawMetatile
 
-  ; load landmark
-  ; landmark metatile
-  LDA #$78
-  STA tileoffset
-
-  LDA #OXEN_TOP_Y
-  STA tileY
-  LDA #$20
-  STA tileX
-
-  LDA #<metatile_landmark_river
-  STA tileptr
-  LDA #>metatile_landmark_river
-  STA tileptr+1
-
-  JSR DrawMetatile
-
   RTS
 
 UpdateTravelingSpritesFrameOne:
@@ -1963,23 +1982,6 @@ UpdateTravelingSpritesFrameOne:
 
   JSR DrawMetatile
 
-
-  ; load landmark
-  ; landmark metatile
-  LDA #$78
-  STA tileoffset
-
-  LDA #OXEN_TOP_Y
-  STA tileY
-  LDA #$20
-  STA tileX
-
-  LDA #<metatile_landmark_river
-  STA tileptr
-  LDA #>metatile_landmark_river
-  STA tileptr+1
-
-  JSR DrawMetatile
   RTS
 ;;;;;;;;;;;;;
 UpdateStatusIcons:
