@@ -1781,6 +1781,9 @@ EngineLogicTraveling:
   ;; increase mi traveled
   ; calc mi traveled
   LDA oxen
+  CLC				; need CLC to clear the carry flag; this was sometimes set
+					; and the ROR was shifting it into bit 7 which was throwing
+					; off calculations of mileage
   ROR A
   STA temp
   MultiplyPercentageDistance basemileage, temp, tempcalcb
