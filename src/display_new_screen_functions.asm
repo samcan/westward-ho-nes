@@ -1045,9 +1045,6 @@ DisplayTravelingScreen:
   ; load nametable 1
   LoadRLEScreen bg_blank_traveling_screen, $01
 
-  LDA #LANDMARK_LEFT_X
-  STA landmarkX
-
   ; load sprite 0 for status bar
   LDX #$00
   LDA #$36
@@ -1072,10 +1069,12 @@ DisplayTravelingScreen:
   LDA #FRAMECOUNT_DAY
   STA currframedy
 
-  ; TODO store in constant
-  LDA #$07
+  ; start frame counter for landmark icon advance
+  LDA #FRAME_LNDMRK_20
   STA currframeld
-  ; curr frame for landmark advance
+  ; starting X position for landmark icon
+  LDA #LANDMARK_LEFT_X
+  STA landmarkX
 
   ; load sprites
   ; load wagon

@@ -1838,22 +1838,30 @@ EnterPausedGameState:
   JMP GameEngineLogicDone
 
 NotEnteringPausedGameState:
+  ; load the current frame for landmark icon purposes and see if we've reached
+  ; zero yet. If we have, draw the landmark icon at the new spot. We will then
+  ; reset the frame counter for landmark icon purposes. The value we choose will
+  ; be dependent on the miles traveled that day (mitraveldy).
   LDA currframeld
-  BNE +
-  ; draw small landmark icon
+  BNE CONTFRAME
+
+  ; draw small landmark icon once there's less than 100 miles remaining to the
+  ; landmark in question
   LDA miremaining
   CMP #$64					; 100 dec.
-  BCS +
-  ; load landmark
-  ; landmark metatile
+  BCS IncreaseScrollAndFlipWagonAnim
+
+  ; load landmark metatile
   LDA #LANDMARK_OFFSET
   STA tileoffset
 
-  LDA #OXEN_TOP_Y
+  LDA #LANDMARK_TOP_Y
   STA tileY
   LDA landmarkX
   STA tileX
 
+  ; TODO we will need to grab the appropriate metatile later based on the
+  ; landmark we are traveling towards
   LDA #<metatile_landmark_river
   STA tileptr
   LDA #>metatile_landmark_river
@@ -1862,13 +1870,51 @@ NotEnteringPausedGameState:
   JSR DrawMetatile
   LDA landmarkX
   CLC
-  ; todo store in constant
-  ADC #$01
-  STA landmarkX
 
-  LDA #$07
+  ; reset the currframeld counter
+  ; I have to adjust the counter starting value based on the miles traveled
+  ; that day. Right now I do it in ten mile increments starting at 10, going up
+  ; to 40.
+  ; TODO I may need to add values for the 5 mile increments in between. I'll
+  ; have to do more testing.
+  LDA mitraveldy
+  CMP #11
+  BCC TEN
+  JMP TESTTWENTY
+TEN:
+  LDA #FRAME_LNDMRK_10
   STA currframeld
-+
+  JMP RESETFRAMELANDMARK
+TESTTWENTY:
+  CMP #21
+  BCC TWENTY
+  JMP TESTTHIRTY
+TWENTY:
+  LDA #FRAME_LNDMRK_20
+  STA currframeld
+  JMP RESETFRAMELANDMARK
+TESTTHIRTY:
+  CMP #31
+  BCC THIRTY
+  JMP TESTFORTY
+THIRTY:
+  LDA #FRAME_LNDMRK_30
+  STA currframeld
+  JMP RESETFRAMELANDMARK
+TESTFORTY:
+  CMP #41
+  BCC FORTY
+  JMP RESETFRAMELANDMARK			; top mi per day should be 40 mi, so this
+									; should never be called
+FORTY:
+  LDA #FRAME_LNDMRK_40
+  STA currframeld
+  JMP RESETFRAMELANDMARK
+
+RESETFRAMELANDMARK:
+  INC landmarkX
+
+CONTFRAME:
   DEC currframeld
 
   LDA currframe
@@ -1876,9 +1922,6 @@ NotEnteringPausedGameState:
   JMP GameEngineLogicDone
 
 IncreaseScrollAndFlipWagonAnim:
-
-
-+
   LDA scrollH
   SEC
   SBC #$01

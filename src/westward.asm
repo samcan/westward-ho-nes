@@ -135,10 +135,14 @@ FRAMECOUNT		= $30
 
 FRAMECOUNT_DAY	= $05
 
-; the sprite offset for the small landmark metatile
-LANDMARK_OFFSET = $78
+; various specs for the landmark icon on the traveling screen
+LANDMARK_OFFSET = $78		; the sprite offset for the small landmark metatile
 LANDMARK_TOP_Y  = $90
-LANDMARK_LEFT_X = $08
+LANDMARK_LEFT_X = $00
+FRAME_LNDMRK_10 = $0E
+FRAME_LNDMRK_20	= $07
+FRAME_LNDMRK_30 = $04
+FRAME_LNDMRK_40 = $03
 
 STATUS_ICON_Y	= $17
 HEALTH_GOOD		= $21
