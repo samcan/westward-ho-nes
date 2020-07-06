@@ -24,3 +24,9 @@ My thought is that I can implement this using bit shifting:
 * Multiply by 50%? Just bitshift to the right one time (LSR). Note that this will discard the remainder,
 but that's alright.
 * Multiply by 75%? Bitshift to the right two times (LSR & LSR) and call that X. Then, add X shifted left (ROL, or 2X) + X. Again, this will disregard the remainder, but that's OK with me.
+
+## Small landmark icons on the trail
+Small landmark icons are visible on the left side of the traveling screen once the distance to the landmark is less
+than 100 miles. The icon will move right across the screen until it's just to the left of the ox/wagon icons,
+representing 0 miles. Hence, we can calculate how many miles each pixel represents. As we travel each day, slide the
+landmark icon to the right the appropriate number of pixels for that day's travel.
