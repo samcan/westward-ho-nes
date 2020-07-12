@@ -1891,11 +1891,15 @@ UpdateLandmarkIcon:
   LDA landmarkX
   STA tileX
 
-  ; TODO we will need to grab the appropriate metatile later based on the
+  ; grab the appropriate metatile later based on the
   ; landmark we are traveling towards
-  LDA #<metatile_landmark_river
+  LDA curlandmark
+  ASL A
+  TAX
+
+  LDA landmarkicons, X
   STA tileptr
-  LDA #>metatile_landmark_river
+  LDA landmarkicons+1, X
   STA tileptr+1
 
   JSR DrawMetatile

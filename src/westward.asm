@@ -638,10 +638,14 @@ metatile_oxen_frame1:
   .db $05,%00000011,  $06,%00000011
   .db $19,%00000011,  $1A,%00000011
 
+; Kansas River Crossing
 metatile_landmark_river:
   .db $94,%00000010,  $95,%00000010
   .db $A4,%00000010,  $A5,%00000010
 
+metatile_landmark_big_blue_river:
+  .db $96,%00000001,  $97,%00000001
+  .db $A6,%00000001,  $A7,%00000001
 
 bg_title_screen:
   ;.incbin "src/assets/bg_title_screen.bin"
@@ -798,6 +802,15 @@ storeprices:
 ; get all of this data (two-byte words and one-byte items) into a single line without making
 ; it look too long.
 landmarkicons:
+  .dw $0000, metatile_landmark_river, metatile_landmark_big_blue_river
+  .dw metatile_landmark_river, metatile_landmark_river
+  .dw metatile_landmark_river, metatile_landmark_river
+  .dw metatile_landmark_river
+  .dw metatile_landmark_river, metatile_landmark_river
+  .dw metatile_landmark_river, metatile_landmark_river
+  .dw metatile_landmark_river, metatile_landmark_river
+  .dw metatile_landmark_river, metatile_landmark_river
+  .dw metatile_landmark_river
   .dw metatile_landmark_river
 
 landmarkdist:
