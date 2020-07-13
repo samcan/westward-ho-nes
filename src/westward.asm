@@ -659,6 +659,10 @@ metatile_landmark_fort:
   .db $9C,%00000011,  $9D,%00000001
   .db $AC,%00000011,  $AD,%00000011
 
+metatile_landmark_independence_rock:
+  .db $9E,%00000000,  $9F,%00000000
+  .db $AE,%00000011,  $AF,%00000011
+
 bg_title_screen:
   ;.incbin "src/assets/bg_title_screen.bin"
   .incbin "src/assets/bg_title_screen.rle"
@@ -816,7 +820,7 @@ storeprices:
 landmarkicons:
   .dw $0000, metatile_landmark_river, metatile_landmark_big_blue_river
   .dw metatile_landmark_fort, metatile_landmark_chimney_rock
-  .dw metatile_landmark_fort, metatile_landmark_river
+  .dw metatile_landmark_fort, metatile_landmark_independence_rock
   .dw metatile_landmark_south_pass
   .dw metatile_landmark_fort, metatile_landmark_river
   .dw metatile_landmark_fort, metatile_landmark_river
