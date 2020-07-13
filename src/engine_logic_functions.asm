@@ -1854,16 +1854,27 @@ EngineLogicTraveling:
 CheckLandmarkIcon:
   ;; Check if we're going to update our small landmark icon
   ;
-  ; draw small landmark icon once there's less than 100 miles remaining to the
-  ; landmark in question
-  LDA miremaining
-  CMP #LANDMARK_MILES
-  BCS @NoLandmarkIcon
+  ; draw small landmark icon once there's days remaining <=4 to the
+  ; landmark in question at the current rate of travel. Once we've started
+  ; drawing small landmark icon, keep drawing it until we reach landmark.
+  LDA lndmrkicony
+  BEQ @ShouldLandmarkIconShow
+  JMP @ShouldUpdateLandmarkIcon
+@ShouldLandmarkIconShow:
+  ;is the landmark four days or less away at current pace?
+  LDA mitraveldy
+  ASL A
+  ASL A
+  CMP miremaining
+  BCC @NoLandmarkIcon
 
+  LDA #$01
+  STA lndmrkicony
   ; load the current frame for landmark icon purposes and see if we've reached
   ; zero yet. If we have, draw the landmark icon at the new spot. We will then
   ; reset the frame counter for landmark icon purposes. The value we choose will
   ; be dependent on the miles traveled that day (mitraveldy).
+@ShouldUpdateLandmarkIcon:
   LDA currframeld
   BNE @DontUpdateLandmarkIcon
   JSR UpdateLandmarkIcon

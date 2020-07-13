@@ -86,6 +86,7 @@ Res2		.dsb 1
 seed		.dsb 2		; seed for PRNG
 
 landmarkX	.dsb 1
+lndmrkicony .dsb 1		; whether landmark icon is shown (0 = NO, 1 = YES)
 
 choice		.dsb 1
 cursorX		.dsb 1

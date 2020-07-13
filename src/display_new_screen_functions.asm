@@ -1072,6 +1072,9 @@ DisplayTravelingScreen:
   ; start frame counter for landmark icon advance
   LDA #FRAME_LNDMRK_20
   STA currframeld
+
+  LDA #$00
+  STA lndmrkicony
   ; starting X position for landmark icon
   LDA #LANDMARK_LEFT_X
   STA landmarkX
