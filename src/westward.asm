@@ -655,6 +655,10 @@ metatile_landmark_south_pass:
   .db $9A,%00000011,  $9B,%00000011
   .db $AA,%00000011,  $AB,%00000011
 
+metatile_landmark_fort:
+  .db $9C,%00000011,  $9D,%00000001
+  .db $AC,%00000011,  $AD,%00000011
+
 bg_title_screen:
   ;.incbin "src/assets/bg_title_screen.bin"
   .incbin "src/assets/bg_title_screen.rle"
@@ -811,13 +815,13 @@ storeprices:
 ; it look too long.
 landmarkicons:
   .dw $0000, metatile_landmark_river, metatile_landmark_big_blue_river
-  .dw metatile_landmark_river, metatile_landmark_chimney_rock
-  .dw metatile_landmark_river, metatile_landmark_river
+  .dw metatile_landmark_fort, metatile_landmark_chimney_rock
+  .dw metatile_landmark_fort, metatile_landmark_river
   .dw metatile_landmark_south_pass
-  .dw metatile_landmark_river, metatile_landmark_river
-  .dw metatile_landmark_river, metatile_landmark_river
-  .dw metatile_landmark_river, metatile_landmark_river
-  .dw metatile_landmark_river, metatile_landmark_river
+  .dw metatile_landmark_fort, metatile_landmark_river
+  .dw metatile_landmark_fort, metatile_landmark_river
+  .dw metatile_landmark_fort, metatile_landmark_river
+  .dw metatile_landmark_fort, metatile_landmark_river
   .dw metatile_landmark_river
   .dw metatile_landmark_river
 
