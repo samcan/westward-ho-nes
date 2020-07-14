@@ -1036,7 +1036,68 @@ DisplayViewSupplyScreen:
 
   LoadRLEScreen bg_view_supply_screen, $00
 
-  ; load numbers here into screen
+  ; TODO I want to load the numbers into the background
+  ; rather than drawing sprites. However, for ease right
+  ; now, I'm going to do it as sprites.
+
+  ; display cash
+  LDA cash
+  STA bcdNum
+  LDA cash+1
+  STA bcdNum+1
+  JSR SixteenBitHexToDec
+
+  LDA #$04
+  STA temp
+  DisplayNumberThousands temp, bcdResult+3, bcdResult+2, bcdResult+1, bcdResult, #VIEW_CASH_X, #VIEW_CASH_Y, %00000001
+
+  ; display oxen
+  LDA oxen
+  STA htd_in
+  JSR EightBitHexToDec
+  LDA #$14
+  STA temp
+  DisplayNumberHundreds temp, htd_out+1, htd_out, #VIEW_OXEN_X, #VIEW_OXEN_Y, %00000001
+
+  ; display food
+  LDA food
+  STA bcdNum
+  LDA food+1
+  STA bcdNum+1
+  JSR SixteenBitHexToDec
+
+  LDA #$20
+  STA temp
+  DisplayNumberThousands temp, bcdResult+3, bcdResult+2, bcdResult+1, bcdResult, #VIEW_FOOD_X, #VIEW_FOOD_Y, %00000001
+
+  ; display clothes
+  LDA clothes
+  STA htd_in
+  JSR EightBitHexToDec
+  LDA #$30
+  STA temp
+  DisplayNumberHundreds temp, htd_out+1, htd_out, #VIEW_CLOTHES_X, #VIEW_CLOTHES_Y, %00000001
+
+  ; display bullets
+  LDA bullets
+  STA bcdNum
+  LDA bullets+1
+  STA bcdNum+1
+  JSR SixteenBitHexToDec
+
+  LDA #$3C
+  STA temp
+  DisplayNumberThousands temp, bcdResult+3, bcdResult+2, bcdResult+1, bcdResult, #VIEW_BULLETS_X, #VIEW_BULLETS_Y, %00000001
+
+  ; display spare parts
+  LDA spareparts
+  STA htd_in
+  JSR EightBitHexToDec
+  LDA #$4C
+  STA temp
+  DisplayNumberHundreds temp, htd_out+1, htd_out, #VIEW_SPAREPARTS_X, #VIEW_SPAREPARTS_Y, %00000001
+
+
   JMP FinishLoadNewScreen
 
 DisplayTravelingScreen:
