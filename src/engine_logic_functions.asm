@@ -125,7 +125,27 @@ EndNewGameState:
 
 ;;;;;;;;;
 EngineLogicAlphabet:
-  ; move cursor around
+  LDA curnameidx
+  BEQ @NameZero
+  CMP #$01
+  BEQ @NameOne
+
+@NameZero:
+  LDA #<name0
+  STA curname
+  LDA #>name0
+  STA curname+1
+  JMP @cont
+
+@NameOne:
+  LDA #<name1
+  STA curname
+  LDA #>name1
+  STA curname+1
+  JMP @cont
+
+
+@cont: ; move cursor around
   CheckForButton #BTN_UPARROW, MoveCursorUp, +
 + CheckForButton #BTN_DOWNARROW, MoveCursorDown, +
 + CheckForButton #BTN_LEFTARROW, MoveCursorLeft, +
@@ -144,7 +164,8 @@ EngineLogicAlphabetSelectLetter:
   LDX numletters
   CPX #$08
   BEQ EngineLogicAlphabetDoneSelecting
-  STA name0, X
+  LDY identity_table, X
+  STA (curname), Y
   INC numletters
   JMP EngineLogicAlphabetDoneSelecting
 EngineLogicAlphabetEraseLetter:
@@ -158,7 +179,8 @@ EngineLogicAlphabetEraseLetter:
   LDX #$00
   STX numletters
 @StoreValue:
-  STA name0, X
+  LDY identity_table, X
+  STA (curname), Y
 EngineLogicAlphabetDoneSelecting:
   JMP UpdateCursorLetterSprites
 EngineLogicAlphabetEndState:

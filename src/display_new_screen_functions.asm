@@ -645,8 +645,8 @@ DisplayAlphabetScreen:
   LDA #$50
   STA hilitedltr
 
-  LDA <name0
-  STA curname
+  LDA #$00
+  STA curnameidx
 
   ; set up cursor
   LDX #$04
