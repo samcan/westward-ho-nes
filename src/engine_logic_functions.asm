@@ -71,6 +71,48 @@ MACRO UpdateStoreDisplayRegular sprOffset,item,peritempr,itempr,firstX,firstY,se
   DisplayNumberThousands temp, bcdResult+3, bcdResult+2, bcdResult+1, bcdResult, secondX, secondY, secondAttr
 ENDM
 ;;;;;;;;;;;;;;;;;;;
+MACRO DrawName name,startX,startY
+  ; set X = sprite offset
+  ; set name to 16-bit address of name var
+  ; clobbers A, X, Y, temp, pointer
+  ; returns X = next sprite offset
+
+  LDA #<name
+  STA pointer
+  LDA #>name
+  STA pointer+1
+
+  LDA startX
+  STA letterX
+
+  LDY #$00
+- LDA startY
+  STA $0200, X
+
+  INX
+  STX temp
+  ;LDX identity_table, Y
+  LDA (pointer), Y
+  LDX temp
+  STA $0200, X
+
+  INX
+  LDA #%00000000
+  STA $0200, X
+
+  INX
+  LDA letterX
+  STA $0200, X
+  CLC
+  ADC #$10
+  STA letterX
+
+  INY
+  INX
+  CPY #MAX_LETTER_NAME
+  BNE -
+ENDM
+;;;;;;;;;;;;;;;;;;;
 GameEngineLogic:  
   LDA gamestate
   ASL A
@@ -129,6 +171,12 @@ EngineLogicAlphabet:
   BEQ @NameZero
   CMP #$01
   BEQ @NameOne
+  CMP #$02
+  BEQ @NameTwo
+  CMP #$03
+  BEQ @NameThree
+  CMP #MAX_NAMES
+  BEQ @NameFour
 
 @NameZero:
   LDA #<name0
@@ -141,6 +189,27 @@ EngineLogicAlphabet:
   LDA #<name1
   STA curname
   LDA #>name1
+  STA curname+1
+  JMP @cont
+
+@NameTwo:
+  LDA #<name2
+  STA curname
+  LDA #>name2
+  STA curname+1
+  JMP @cont
+
+@NameThree:
+  LDA #<name3
+  STA curname
+  LDA #>name3
+  STA curname+1
+  JMP @cont
+
+@NameFour:
+  LDA #<name4
+  STA curname
+  LDA #>name4
   STA curname+1
   JMP @cont
 
@@ -184,7 +253,14 @@ EngineLogicAlphabetEraseLetter:
 EngineLogicAlphabetDoneSelecting:
   JMP UpdateCursorLetterSprites
 EngineLogicAlphabetEndState:
+  LDA curnameidx
+  CMP #MAX_NAMES
+  BNE +
   JMP EndAlphabetState
++ INC curnameidx
+  LDA #$00
+  STA numletters
+  JMP GameEngineLogicDone
 
 MoveCursorUp:
   LDA hilitedltr
@@ -290,37 +366,14 @@ UpdateCursorLetterSprites:
   INX
   LDA cursorX
   STA $0200, x
-
-  ; draw selected letters
-  LDA #NAME0_X
-  STA letterX
-
-  LDY #$00
-- INX
-  LDA #NAME0_Y
-  STA $0200, X
-
   INX
-  STX temp
-  LDX identity_table, Y
-  LDA name0, X
-  LDX temp
-  STA $0200, X
 
-  INX
-  LDA #%00000000
-  STA $0200, X
-
-  INX
-  LDA letterX
-  STA $0200, X
-  CLC
-  ADC #$10
-  STA letterX
-
-  INY
-  CPY #$0A
-  BNE -
+  ; draw names
+  DrawName name0, #NAME0_X, #NAME0_Y
+  DrawName name1, #NAME1_X, #NAME1_Y
+  DrawName name2, #NAME2_X, #NAME2_Y
+  DrawName name3, #NAME3_X, #NAME3_Y
+  DrawName name4, #NAME4_X, #NAME4_Y
 
   ; now that we've implemented an OK button, we don't need to look
   ; for the START button to end this state

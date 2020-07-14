@@ -200,6 +200,8 @@ BTN_LEFTARROW	= 1 << 1
 BTN_RIGHTARROW	= 1 << 0
 
 ; alphabet screen
+MAX_NAMES		= $04				; including 0, so 5 names total
+MAX_LETTER_NAME = $08
 MIN_Y			= $8F
 MAX_Y			= $BF
 MIN_X			= $48
@@ -207,13 +209,13 @@ MAX_X			= $A8
 NAME0_X			= $30
 NAME0_Y			= $2F
 NAME1_X			= #NAME0_X
-NAME1_Y			= #NAME0_Y + $10
+NAME1_Y			= $3F
 NAME2_X			= #NAME0_X
-NAME2_Y			= #NAME1_Y + $10
+NAME2_Y			= $4F
 NAME3_X			= #NAME0_X
-NAME3_Y			= #NAME2_Y + $10
+NAME3_Y			= $5F
 NAME4_X			= #NAME0_X
-NAME4_Y			= #NAME3_Y + $10
+NAME4_Y			= $6F
 
 ; pace screen
 PACE_CURSOR_SPR	= $3F
