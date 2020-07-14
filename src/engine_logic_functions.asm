@@ -302,8 +302,7 @@ UpdateCursorLetterSprites:
 
   INX
   STX temp
-  TYA
-  TAX
+  LDX identity_table, Y
   LDA name0, X
   LDX temp
   STA $0200, X
