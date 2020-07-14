@@ -1853,6 +1853,7 @@ EngineLogicTraveling:
 + JSR IncreaseScrollAndFlipWagonAnim
 
 CheckLandmarkIcon:
+  .ifdef LANDMARK_ICON_YES
   ;; Check if we're going to update our small landmark icon
   ;
   ; draw small landmark icon once there's < 100 miles to the landmark in
@@ -1888,7 +1889,7 @@ CheckLandmarkIcon:
 @DontUpdateLandmarkIcon:
   DEC currframeld
 @NoLandmarkIcon:
-
+  .endif
   ;; Check if we should enter Pause
   CheckForButton #BTN_START, EnterPausedGameState, GameEngineLogicDone
 
@@ -1898,6 +1899,7 @@ EnterPausedGameState:
   STA newgmstate
   JMP GameEngineLogicDone
 
+.ifdef LANDMARK_ICON_YES
 UpdateLandmarkIcon:
   ; load landmark metatile
   LDA #LANDMARK_OFFSET
@@ -1972,6 +1974,7 @@ RESETFRAMELANDMARK:
 
 CONTFRAME:
   RTS
+.endif
 ;;;;;;;;;;
 IncreaseScrollAndFlipWagonAnim:
   ;; Increase the background scroll

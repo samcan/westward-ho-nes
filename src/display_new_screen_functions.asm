@@ -1069,6 +1069,7 @@ DisplayTravelingScreen:
   LDA #FRAMECOUNT_DAY
   STA currframedy
 
+  .ifdef LANDMARK_ICON_YES
   ; start frame counter for landmark icon advance
   LDA #FRAME_LNDMRK_20
   STA currframeld
@@ -1078,6 +1079,7 @@ DisplayTravelingScreen:
   ; starting X position for landmark icon
   LDA #LANDMARK_LEFT_X
   STA landmarkX
+  .endif
 
   ; load sprites
   ; load wagon

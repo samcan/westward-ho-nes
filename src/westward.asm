@@ -12,7 +12,8 @@ MIRRORING		= 1   ; background mirroring
 
 ;;;;;;;;;;;;;;;
 
-;AUDIO_YES		; define to include audio support
+;AUDIO_YES				; define to include audio support
+;SMALL_LANDMARK_YES		; define to include small landmarks
 
 ;; DECLARE VARIABLES HERE
   .enum $0000  ;;start variables at ram location 0
@@ -85,8 +86,10 @@ Res			.dsb 1
 Res2		.dsb 1
 seed		.dsb 2		; seed for PRNG
 
+.ifdef SMALL_LANDMARKS_YES
 landmarkX	.dsb 1
 lndmrkicony .dsb 1		; whether landmark icon is shown (0 = NO, 1 = YES)
+.endif
 
 choice		.dsb 1
 cursorX		.dsb 1
@@ -136,6 +139,7 @@ FRAMECOUNT		= $30
 
 FRAMECOUNT_DAY	= $05
 
+.ifdef LANDMARK_ICON_YES
 ; various specs for the landmark icon on the traveling screen
 LANDMARK_OFFSET = $78		; the sprite offset for the small landmark metatile
 LANDMARK_TOP_Y  = $90
@@ -146,6 +150,7 @@ FRAME_LNDMRK_10 = $0E
 FRAME_LNDMRK_20	= $07
 FRAME_LNDMRK_30 = $05
 FRAME_LNDMRK_40 = $03
+.endif
 
 STATUS_ICON_Y	= $17
 HEALTH_GOOD		= $21
