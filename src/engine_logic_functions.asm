@@ -1766,6 +1766,20 @@ EngineLogicTraveling:
   ; update and the wagon wheel animation update.
 + DEC currframe
 
+  ; calc mi traveled
+  LDA oxen
+  CLC				; need CLC to clear the carry flag; this was sometimes set
+					; and the ROR was shifting it into bit 7 which was throwing
+					; off calculations of mileage
+  ROR A
+  STA temp
+  MultiplyPercentageDistance basemileage, temp, tempcalcb
+  LDA tempcalcb
+  STA tempcalca
+  MultiplyPercentageDistance tempcalca, pace, tempcalcb
+  LDA tempcalcb
+  STA mitraveldy
+
   ;; Check if currframedy should trigger to update day
   LDA currframedy
   BEQ @UpdateDay
@@ -1780,19 +1794,6 @@ EngineLogicTraveling:
 
 @UpdateMileageEachDay:
   ;; increase mi traveled
-  ; calc mi traveled
-  LDA oxen
-  CLC				; need CLC to clear the carry flag; this was sometimes set
-					; and the ROR was shifting it into bit 7 which was throwing
-					; off calculations of mileage
-  ROR A
-  STA temp
-  MultiplyPercentageDistance basemileage, temp, tempcalcb
-  LDA tempcalcb
-  STA tempcalca
-  MultiplyPercentageDistance tempcalca, pace, tempcalcb
-  LDA tempcalcb
-  STA mitraveldy
 
   ; we've calculated the max distance we can travel today. However, we may have
   ; reached a landmark. For example, if we're traveling a max of 30 miles today,
@@ -1854,19 +1855,24 @@ EngineLogicTraveling:
 CheckLandmarkIcon:
   ;; Check if we're going to update our small landmark icon
   ;
-  ; draw small landmark icon once there's days remaining <=4 to the
-  ; landmark in question at the current rate of travel. Once we've started
-  ; drawing small landmark icon, keep drawing it until we reach landmark.
+  ; draw small landmark icon once there's < 100 miles to the landmark in
+  ; question. Once we've started drawing small landmark icon, keep drawing it
+  ; until we reach landmark.
   LDA lndmrkicony
   BEQ @ShouldLandmarkIconShow
   JMP @ShouldUpdateLandmarkIcon
 @ShouldLandmarkIconShow:
-  ;is the landmark four days or less away at current pace?
-  LDA mitraveldy
-  ASL A
-  ASL A
-  CMP miremaining
-  BCC @NoLandmarkIcon
+  ;is the landmark less than 100 miles away?
+  LDA miremaining
+  CMP #LANDMARK_MILES
+  BCS @NoLandmarkIcon
+
+  ;set our starting X position. This will be #LANDMARK_MILES - miremaining
+  ;(100 miles - miremaining), at 1 pixel per mi.
+  LDA #LANDMARK_MILES
+  SEC
+  SBC miremaining
+  STA landmarkX
 
   LDA #$01
   STA lndmrkicony
@@ -1900,7 +1906,11 @@ UpdateLandmarkIcon:
   LDA #LANDMARK_TOP_Y
   STA tileY
   LDA landmarkX
-  STA tileX
+  CMP #LANDMARK_MAX_X
+  BCC +
+  BEQ +
+  LDA #LANDMARK_MAX_X
++ STA tileX
 
   ; grab the appropriate metatile later based on the
   ; landmark we are traveling towards
