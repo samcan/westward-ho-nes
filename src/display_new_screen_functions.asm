@@ -1029,6 +1029,16 @@ DisplayMonthScreen:
 
   JMP FinishLoadNewScreen
 
+DisplayViewSupplyScreen:
+  LDA #$01
+  JSR BankSwitch
+  PaletteLoad palette
+
+  LoadRLEScreen bg_view_supply_screen, $00
+
+  ; load numbers here into screen
+  JMP FinishLoadNewScreen
+
 DisplayTravelingScreen:
   LDA #$01
   JSR BankSwitch

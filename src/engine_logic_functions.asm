@@ -1042,7 +1042,7 @@ UpdatePausedCursorSprite:
 ; where each of the menu items on the PAUSED screen goes
 PAUSEDSELECTIONFUNCTIONS:
   .dw EndPausedGameState
-  .dw $0000
+  .dw EndPausedGameStateLoadViewSupply
   .dw $0000
   .dw EndPausedGameStateLoadPace
   .dw EndPausedGameStateLoadRations
@@ -1063,6 +1063,10 @@ EndPausedGameStateItemSelected:
   LDA PAUSEDSELECTIONFUNCTIONS+1, X
   STA vector+1
   JMP (vector)
+EndPausedGameStateLoadViewSupply:
+  LDA #STATEVIEWSUPPLY
+  STA newgmstate
+  JMP GameEngineLogicDone
 EndPausedGameStateLoadPace:
   LDA #STATEPACE
   STA newgmstate
@@ -1741,6 +1745,13 @@ EndMonthGameState:
   STA newgmstate
   JMP GameEngineLogicDone
 
+;;;;;;;;;;
+EngineLogicViewSupplyScreen:
+  CheckForButton #BTN_A | #BTN_B, EndViewSupplyScreen, GameEngineLogicDone
+EndViewSupplyScreen:
+  LDA #STATEPAUSED
+  STA newgmstate
+  JMP GameEngineLogicDone
 ;;;;;;;;;;
 EngineLogicTraveling:
   ;; Set new miremaining for new landmark
