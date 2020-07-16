@@ -10,7 +10,7 @@ ready for distribution and demonstration at VCF PNW 2021 in early 2021.
 using [asm6f][asm6f]. Though we are testing the game with the
 [Mesen][mesen] emulator, we plan to produce a physical cartridge.
 
-![](docs/img/westward_001.png?raw=true)
+![](docs/img/westward_rc52bb61.png?raw=true)
 
 ## How to compile
 
