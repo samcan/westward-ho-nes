@@ -166,7 +166,7 @@ EndNewGameState:
   JMP GameEngineLogicDone
 
 ;;;;;;;;;
-EngineLogicAlphabet:
+SetCurName:
   LDA curnameidx
   BEQ @NameZero
   CMP #$01
@@ -183,38 +183,44 @@ EngineLogicAlphabet:
   STA curname
   LDA #>name0
   STA curname+1
-  JMP @cont
+  RTS
 
 @NameOne:
   LDA #<name1
   STA curname
   LDA #>name1
   STA curname+1
-  JMP @cont
+  RTS
 
 @NameTwo:
   LDA #<name2
   STA curname
   LDA #>name2
   STA curname+1
-  JMP @cont
+  RTS
 
 @NameThree:
   LDA #<name3
   STA curname
   LDA #>name3
   STA curname+1
-  JMP @cont
+  RTS
 
 @NameFour:
   LDA #<name4
   STA curname
   LDA #>name4
   STA curname+1
-  JMP @cont
+  RTS
+;;;;;;;;;
+GameEngineLogicDoneShortcutOne:
+  ; think of some other way I can do this that maybe doesn't look so hacky
+  JMP GameEngineLogicDone
+;;;;;;;;;
+EngineLogicAlphabet:
+  JSR SetCurName
 
-
-@cont: ; move cursor around
+  ; move cursor around
   CheckForButton #BTN_UPARROW, MoveCursorUp, +
 + CheckForButton #BTN_DOWNARROW, MoveCursorDown, +
 + CheckForButton #BTN_LEFTARROW, MoveCursorLeft, +
@@ -238,12 +244,38 @@ EngineLogicAlphabetSelectLetter:
   INC numletters
   JMP EngineLogicAlphabetDoneSelecting
 EngineLogicAlphabetEraseLetter:
+  ; if the user selects to erase when there's no letters for a given name,
+  ; we want to move to the previous name and erase that letter. Unless they're
+  ; on name0, in which case we should do nothing.
+  LDA numletters
+  BEQ @CheckOnNameZero
+
+@ContErase:
   LDA #$00
   DEC numletters
   LDX numletters
   CPX #$00
   BMI @Adjust
   JMP @StoreValue
+@CheckOnNameZero:
+  LDA curnameidx
+  BEQ GameEngineLogicDoneShortcutOne
+  ; we're on name0, so do nothing
+
+  ; else, move to previous name and erase letter. This means we need to iterate
+  ; through this new name to figure out the last letter so we can appropriately
+  ; set numletters
+  DEC curnameidx
+  JSR SetCurName
+  LDY #$00
+@lp:
+  LDA (curname), Y
+  INY
+  CMP #$00
+  BNE @lp
+  DEY
+  STY numletters
+  JMP EngineLogicAlphabetEraseLetter
 @Adjust:
   LDX #$00
   STX numletters
@@ -261,6 +293,8 @@ EngineLogicAlphabetEndState:
   LDA #$00
   STA numletters
   JMP GameEngineLogicDone
+
+
 
 MoveCursorUp:
   LDA hilitedltr
