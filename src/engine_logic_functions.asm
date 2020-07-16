@@ -72,22 +72,31 @@ MACRO UpdateStoreDisplayRegular sprOffset,item,peritempr,itempr,firstX,firstY,se
 ENDM
 ;;;;;;;;;;;;;;;;;;;
 MACRO DrawName name,startX,startY
-  ; set X = sprite offset
-  ; set name to 16-bit address of name var
-  ; clobbers A, X, Y, temp, pointer
-  ; returns X = next sprite offset
-
   LDA #<name
   STA pointer
   LDA #>name
   STA pointer+1
-
   LDA startX
+  LDY startY
+  JSR DrawNameSR
+ENDM
+
+DrawNameSR:
+  ; set X = sprite offset
+  ; set Y = start Y
+  ; set A = start X
+  ; set pointer to 16-bit address of name var
+  ; clobbers A, X, Y, temp
+  ; returns X = next sprite offset
+
   STA letterX
+  TYA
+  PHA
 
   LDY #$00
-- LDA startY
+- PLA
   STA $0200, X
+  PHA
 
   INX
   STX temp
@@ -111,7 +120,8 @@ MACRO DrawName name,startX,startY
   INX
   CPY #MAX_LETTER_NAME
   BNE -
-ENDM
+  PLA
+  RTS
 ;;;;;;;;;;;;;;;;;;;
 GameEngineLogic:  
   LDA gamestate
@@ -403,7 +413,7 @@ UpdateCursorLetterSprites:
   INX
 
   ; draw names
-  DrawName name0, #NAME0_X, #NAME0_Y
+  DrawName name0, #NAME0_X, #NAME0_Y 
   DrawName name1, #NAME1_X, #NAME1_Y
   DrawName name2, #NAME2_X, #NAME2_Y
   DrawName name3, #NAME3_X, #NAME3_Y
