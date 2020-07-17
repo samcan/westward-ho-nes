@@ -649,23 +649,10 @@ DisplayAlphabetScreen:
   STA curnameidx
 
   ; set up cursor
-  LDX #$04
   LDA #MIN_Y
   STA cursorY
-  STA $0200, X
-
-  INX
-  LDA #ALPHA_CURSOR_SP
-  STA $0200, x
-
-  INX
-  LDA #%00000000
-  STA $0200, x
-
-  INX
   LDA #MIN_X
   STA cursorX
-  STA $0200, x
 
   ; set up current name indicator
   LDA #NAME0_Y
