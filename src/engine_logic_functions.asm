@@ -71,7 +71,20 @@ MACRO UpdateStoreDisplayRegular sprOffset,item,peritempr,itempr,firstX,firstY,se
   DisplayNumberThousands temp, bcdResult+3, bcdResult+2, bcdResult+1, bcdResult, secondX, secondY, secondAttr
 ENDM
 ;;;;;;;;;;;;;;;;;;;
-MACRO DrawName name,startX,startY
+MACRO DrawName name,idx,nameidx,startX,startY
+  LDA idx
+  CMP nameidx
+  BEQ +
+  ; set value in hilitedname that we don't need to highlight this name
+  LDA #$00
+  STA hilitedname
+  JMP ++
+
++ ; set value in hilitedname that we need to highlight this name
+  LDA #$01
+  STA hilitedname
+
+++
   LDA #<name
   STA pointer
   LDA #>name
@@ -94,7 +107,8 @@ DrawNameSR:
   PHA
 
   LDY #$00
-- PLA
+@lp:
+  PLA
   STA $0200, X
   PHA
 
@@ -106,7 +120,13 @@ DrawNameSR:
   STA $0200, X
 
   INX
+  LDA hilitedname
+  BEQ @nohilit
+  LDA #%00000001
+  JMP @cont
+@nohilit:
   LDA #%00000000
+@cont:
   STA $0200, X
 
   INX
@@ -119,7 +139,7 @@ DrawNameSR:
   INY
   INX
   CPY #MAX_LETTER_NAME
-  BNE -
+  BNE @lp
   PLA
   RTS
 ;;;;;;;;;;;;;;;;;;;
@@ -289,13 +309,7 @@ EngineLogicAlphabetEraseLetter:
   BNE @lp
   DEY
   STY numletters
-  ; shift current name indicator up
-  LDA addlCursorY
-  SEC
-  SBC #$10
-  STA addlCursorY
-  ; set changed flag to true so the cursor indicator gets drawn in new position
-  ; on previous row
+  ; set changed flag to true so screen is redrawn
   LDA #$01
   STA changed
   .ifdef IMMEDIATELY_START_ERASING
@@ -320,11 +334,6 @@ EngineLogicAlphabetEndState:
 + INC curnameidx
   LDA #$00
   STA numletters
-  ; shift the current name indicator down
-  LDA addlCursorY
-  CLC
-  ADC #$10
-  STA addlCursorY
   ; set changed flag to true
   LDA #$01
   STA changed
@@ -437,31 +446,14 @@ UpdateCursorLetterSprites:
   INX
   LDA cursorX
   STA $0200, x
-
-  ; draw current name indicator
-  INX
-  LDA addlCursorY
-  STA $0200, x
-
-  INX
-  LDA #ALPHA_INDIC_SP
-  STA $0200, x
-
-  INX
-  LDA #%00000000
-  STA $0200, x
-
-  INX
-  LDA addlCursorX
-  STA $0200, x
   
   INX
   ; draw names
-  DrawName name0, #NAME0_X, #NAME0_Y 
-  DrawName name1, #NAME1_X, #NAME1_Y
-  DrawName name2, #NAME2_X, #NAME2_Y
-  DrawName name3, #NAME3_X, #NAME3_Y
-  DrawName name4, #NAME4_X, #NAME4_Y
+  DrawName name0, #0, curnameidx, #NAME0_X, #NAME0_Y
+  DrawName name1, #1, curnameidx, #NAME1_X, #NAME1_Y
+  DrawName name2, #2, curnameidx, #NAME2_X, #NAME2_Y
+  DrawName name3, #3, curnameidx, #NAME3_X, #NAME3_Y
+  DrawName name4, #4, curnameidx, #NAME4_X, #NAME4_Y
 
   ; now that we've implemented an OK button, we don't need to look
   ; for the START button to end this state

@@ -100,8 +100,7 @@ lndmrkicony .dsb 1		; whether landmark icon is shown (0 = NO, 1 = YES)
 choice		.dsb 1
 cursorX		.dsb 1
 cursorY		.dsb 1
-addlCursorX	.dsb 1
-addlCursorY	.dsb 1
+hilitedname	.dsb 1
 hilitedltr	.dsb 1
 letterX		.dsb 1
 numletters	.dsb 1
@@ -248,14 +247,12 @@ BTN_RIGHTARROW	= 1 << 0
 
 ; alphabet screen
 ALPHA_CURSOR_SP = $20
-ALPHA_INDIC_SP  = $3F
 MAX_NAMES		= $04				; including 0, so 5 names total
 MAX_LETTER_NAME = $08
 MIN_Y			= $8F
 MAX_Y			= $BF
 MIN_X			= $48
 MAX_X			= $A8
-INDIC_X			= $10
 NAME0_X			= $30
 NAME0_Y			= $2F
 NAME1_X			= #NAME0_X
@@ -671,6 +668,10 @@ SetInitialState:
 palette:
   .db $0F,$3D,$09,$19,  $0F,$06,$15,$36,  $0F,$05,$26,$10,  $0F,$16,$27,$18   ;;background palette
   .db $1F,$00,$27,$10,  $1F,$1C,$06,$10,  $1F,$11,$21,$10,  $1F,$07,$17,$10   ;;sprite palette
+
+palette_alphabet:
+  .db $0F,$3D,$09,$19,  $0F,$06,$15,$36,  $0F,$05,$26,$10,  $0F,$16,$27,$18   ;;background palette
+  .db $1F,$00,$27,$10,  $1F,$1C,$06,$27,  $1F,$11,$21,$10,  $1F,$07,$17,$10   ;;sprite palette
 
 palette_title:
   .db $3F,$20,$10,$17,  $3F,$10,$30,$35,  $3F,$10,$11,$12,  $3F,$13,$14,$15   ;;background palette

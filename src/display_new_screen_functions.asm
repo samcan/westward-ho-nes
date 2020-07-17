@@ -626,7 +626,7 @@ DisplayAlphabetScreen:
   LDA #$01
   JSR BankSwitch
 
-  PaletteLoad palette
+  PaletteLoad palette_alphabet
 
   LoadRLEScreen bg_alphabet_screen, $00
 
@@ -653,12 +653,6 @@ DisplayAlphabetScreen:
   STA cursorY
   LDA #MIN_X
   STA cursorX
-
-  ; set up current name indicator
-  LDA #NAME0_Y
-  STA addlCursorY
-  LDA #INDIC_X
-  STA addlCursorX
 
   LDA #$01
   STA changed
