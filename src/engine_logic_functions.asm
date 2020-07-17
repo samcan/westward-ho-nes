@@ -1330,10 +1330,14 @@ EndPaceGameState:
 ;;;;;;;;;
 EngineLogicRations:
   ;; logic associated with rations screen
+  ;; TODO replace all PACE constants with RATIONS constants
   CheckForButton #BTN_UPARROW, MoveRationsCursorUp, +
 + CheckForButton #BTN_DOWNARROW, MoveRationsCursorDown, +
 + CheckForButton #BTN_A, EndRationsGameState, +
 
++ LDA changed
+  BEQ +
+  JMP UpdateRationsCursorSprite
 + JMP GameEngineLogicDone
 
 MoveRationsCursorUp:
@@ -1395,6 +1399,9 @@ UpdateRationsCursorSprite:
   INX
   LDA cursorX
   STA $0200, x
+
+  LDA #$00
+  STA changed
 
   JMP GameEngineLogicDone
 EndRationsGameState:
