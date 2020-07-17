@@ -1673,6 +1673,9 @@ EngineLogicOccupation:
 + CheckForButton #BTN_DOWNARROW, MoveOccupationCursorDown, +
 + CheckForButton #BTN_A, EndOccupationGameState, +
   
++ LDA changed
+  BEQ +
+  JMP UpdateOccupationCursorSprite
 + JMP GameEngineLogicDone
 
 MoveOccupationCursorUp:
@@ -1734,6 +1737,9 @@ UpdateOccupationCursorSprite:
   INX
   LDA cursorX
   STA $0200, x
+
+  LDA #$00
+  STA changed
 
   JMP GameEngineLogicDone
 EndOccupationGameState:
