@@ -12,8 +12,12 @@ MIRRORING		= 1   ; background mirroring
 
 ;;;;;;;;;;;;;;;
 
-;AUDIO_YES				; define to include audio support
-;SMALL_LANDMARK_YES		; define to include small landmarks
+;AUDIO_YES					; define to include audio support
+;SMALL_LANDMARK_YES			; define to include small landmarks
+;IMMEDIATELY_START_ERASING	; on alphabet screen, if name is erased, and erase
+							; key is pressed again, immediately start deleting
+							; letters in previous name rather than just moving
+							; indicator up to previous name
 
 ;; DECLARE VARIABLES HERE
   .enum $0000  ;;start variables at ram location 0

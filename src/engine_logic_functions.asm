@@ -298,7 +298,12 @@ EngineLogicAlphabetEraseLetter:
   ; on previous row
   LDA #$01
   STA changed
+  .ifdef IMMEDIATELY_START_ERASING
+  JMP EngineLogicAlphabetEraseLetter
+  .endif
+  .ifndef IMMEDIATELY_START_ERASING
   JMP GameEngineLogicDone
+  .endif
 @Adjust:
   LDX #$00
   STX numletters
