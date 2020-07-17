@@ -1250,7 +1250,10 @@ EngineLogicPace:
 + CheckForButton #BTN_DOWNARROW, MovePaceCursorDown, +
 + CheckForButton #BTN_A, EndPaceGameState, +
 
-+ JMP UpdatePaceCursorSprite
++ LDA changed
+  BEQ +
+  JMP UpdatePaceCursorSprite
++ JMP GameEngineLogicDone
 
 MovePaceCursorUp:
   LDA pace
@@ -1311,6 +1314,9 @@ UpdatePaceCursorSprite:
   INX
   LDA cursorX
   STA $0200, x
+
+  LDA #$00
+  STA changed
 
   JMP GameEngineLogicDone
 EndPaceGameState:
