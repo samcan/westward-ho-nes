@@ -1131,6 +1131,9 @@ EngineLogicPaused:
 + CheckForButton #BTN_A, EndPausedGameStateItemSelected, +
 + CheckForButton #BTN_START, EndPausedGameState, +
 
++ LDA changed
+  BEQ +
+  JMP UpdatePausedCursorSprite
 + JMP GameEngineLogicDone
 
 MovePausedCursorUp:
@@ -1192,6 +1195,9 @@ UpdatePausedCursorSprite:
   INX
   LDA cursorX
   STA $0200, x
+
+  LDA #$00
+  STA changed
 
   JMP GameEngineLogicDone
 

@@ -671,23 +671,13 @@ DisplayPausedScreen:
   STA choice
 
   ; set up cursor
-  LDX #$04
   LDA #PAUSED_MIN_Y
   STA cursorY
-  STA $0200, X
-
-  INX
-  LDA #PAUSED_CURSOR_SPR
-  STA $0200, x
-
-  INX
-  LDA #%00100000
-  STA $0200, x
-
-  INX
   LDA #PAUSED_X
   STA cursorX
-  STA $0200, x
+
+  LDA #$01
+  STA changed
 
   ; display calendar date on screen
   ; calendar month
@@ -698,7 +688,7 @@ DisplayPausedScreen:
   ADC tempcalca
   TAY
 
-  INX
+  LDX #$08
   LDA #PAUSED_CAL_Y
   STA $0200, x
   INX
