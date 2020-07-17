@@ -56,6 +56,8 @@ storeblltpr	.dsb 2
 storepart	.dsb 1
 storepartpr	.dsb 1
 
+changed		.dsb 1
+
 sproffset	.dsb 1
 textxpos    .dsb 1
 textypos	.dsb 1
@@ -94,6 +96,8 @@ lndmrkicony .dsb 1		; whether landmark icon is shown (0 = NO, 1 = YES)
 choice		.dsb 1
 cursorX		.dsb 1
 cursorY		.dsb 1
+addlCursorX	.dsb 1
+addlCursorY	.dsb 1
 hilitedltr	.dsb 1
 letterX		.dsb 1
 numletters	.dsb 1
@@ -200,12 +204,15 @@ BTN_LEFTARROW	= 1 << 1
 BTN_RIGHTARROW	= 1 << 0
 
 ; alphabet screen
+ALPHA_CURSOR_SP = $20
+ALPHA_INDIC_SP  = $3F
 MAX_NAMES		= $04				; including 0, so 5 names total
 MAX_LETTER_NAME = $08
 MIN_Y			= $8F
 MAX_Y			= $BF
 MIN_X			= $48
 MAX_X			= $A8
+INDIC_X			= $10
 NAME0_X			= $30
 NAME0_Y			= $2F
 NAME1_X			= #NAME0_X

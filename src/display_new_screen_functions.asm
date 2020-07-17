@@ -655,17 +655,26 @@ DisplayAlphabetScreen:
   STA $0200, X
 
   INX
-  LDA #$20
+  LDA #ALPHA_CURSOR_SP
   STA $0200, x
 
   INX
-  LDA #%00100000
+  LDA #%00000000
   STA $0200, x
 
   INX
   LDA #MIN_X
   STA cursorX
   STA $0200, x
+
+  ; set up current name indicator
+  LDA #NAME0_Y
+  STA addlCursorY
+  LDA #INDIC_X
+  STA addlCursorX
+
+  LDA #$01
+  STA changed
 
   JMP FinishLoadNewScreen
 

@@ -223,10 +223,6 @@ SetCurName:
   STA curname+1
   RTS
 ;;;;;;;;;
-GameEngineLogicDoneShortcutOne:
-  ; think of some other way I can do this that maybe doesn't look so hacky
-  JMP GameEngineLogicDone
-;;;;;;;;;
 EngineLogicAlphabet:
   JSR SetCurName
 
@@ -238,8 +234,17 @@ EngineLogicAlphabet:
 + CheckForButton #BTN_A, EngineLogicAlphabetSelectLetter, +
 + CheckForButton #BTN_B, EngineLogicAlphabetEraseLetter, +
 
-+ JMP GameEngineLogicDone
++ LDA changed
+  CMP #$01
+  BEQ +
+  JMP GameEngineLogicDone
++ JMP UpdateCursorLetterSprites
 
+;;;;;;;;;
+GameEngineLogicDoneShortcutOne:
+  ; think of some other way I can do this that maybe doesn't look so hacky
+  JMP GameEngineLogicDone
+;;;;;;;;;
 EngineLogicAlphabetSelectLetter:
   LDA hilitedltr
   CMP #$6B					; user selected OK?
@@ -272,9 +277,8 @@ EngineLogicAlphabetEraseLetter:
   BEQ GameEngineLogicDoneShortcutOne
   ; we're on name0, so do nothing
 
-  ; else, move to previous name and erase letter. This means we need to iterate
-  ; through this new name to figure out the last letter so we can appropriately
-  ; set numletters
+  ; else, move to previous name. This means we need to iterate through this new
+  ; name to figure out the last letter so we can appropriately set numletters
   DEC curnameidx
   JSR SetCurName
   LDY #$00
@@ -285,7 +289,16 @@ EngineLogicAlphabetEraseLetter:
   BNE @lp
   DEY
   STY numletters
-  JMP EngineLogicAlphabetEraseLetter
+  ; shift current name indicator up
+  LDA addlCursorY
+  SEC
+  SBC #$10
+  STA addlCursorY
+  ; set changed flag to true so the cursor indicator gets drawn in new position
+  ; on previous row
+  LDA #$01
+  STA changed
+  JMP GameEngineLogicDone
 @Adjust:
   LDX #$00
   STX numletters
@@ -302,6 +315,14 @@ EngineLogicAlphabetEndState:
 + INC curnameidx
   LDA #$00
   STA numletters
+  ; shift the current name indicator down
+  LDA addlCursorY
+  CLC
+  ADC #$10
+  STA addlCursorY
+  ; set changed flag to true
+  LDA #$01
+  STA changed
   JMP GameEngineLogicDone
 
 
@@ -393,6 +414,7 @@ MoveCursorRight:
   JMP UpdateCursorLetterSprites
 
 UpdateCursorLetterSprites:
+  ;
   LDX #$04				; start display using sprite 1 rather than
 						; sprite 0
 
@@ -400,7 +422,7 @@ UpdateCursorLetterSprites:
   STA $0200, x
 
   INX
-  LDA #$20
+  LDA #ALPHA_CURSOR_SP
   STA $0200, x
 
   INX
@@ -410,8 +432,25 @@ UpdateCursorLetterSprites:
   INX
   LDA cursorX
   STA $0200, x
-  INX
 
+  ; draw current name indicator
+  INX
+  LDA addlCursorY
+  STA $0200, x
+
+  INX
+  LDA #ALPHA_INDIC_SP
+  STA $0200, x
+
+  INX
+  LDA #%00000000
+  STA $0200, x
+
+  INX
+  LDA addlCursorX
+  STA $0200, x
+  
+  INX
   ; draw names
   DrawName name0, #NAME0_X, #NAME0_Y 
   DrawName name1, #NAME1_X, #NAME1_Y
@@ -422,6 +461,8 @@ UpdateCursorLetterSprites:
   ; now that we've implemented an OK button, we don't need to look
   ; for the START button to end this state
   ;CheckForStartButton EndAlphabetState, GameEngineLogicDone
+  LDA #$00
+  STA changed
   JMP GameEngineLogicDone
 EndAlphabetState:
   ; user is exiting alphabet screen, go to occupation screen
