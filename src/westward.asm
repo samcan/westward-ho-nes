@@ -166,10 +166,25 @@ FRAME_LNDMRK_40 = $03
 
 STATUS_ICON_Y	= $17
 
-HEALTH_GOOD		= $21
-HEALTH_FAIR		= $22
-HEALTH_POOR		= $23
-HEALTH_VERYPOOR	= $24
+; General party health
+; the health status icons
+HEALTH_GOOD			= $21			; 0-34
+HEALTH_FAIR			= $22			; 35-69
+HEALTH_POOR			= $23			; 70-104
+HEALTH_VERYPOOR		= $24			; 105-139
+									; 140+ (remaining party members all die
+									; within a few days, whatever that means.
+									; I'm guessing it causes an elevated chance
+									; for others to get sick and die (see
+									; HEALTH_DYING_VAL))
+
+; health values (these are the minimums)
+HEALTH_GOOD_VAL 	= 0
+HEALTH_FAIR_VAL 	= 35
+HEALTH_POOR_VAL 	= 70
+HEALTH_VERYPOOR_VAL	= 105
+HEALTH_DYING_VAL	= 140
+
 
 OCC_FARMER		= $01
 OCC_CARPENTER	= $02
