@@ -1118,7 +1118,7 @@ DisplayTravelingScreen:
   STA $0200, x
 
   INX
-  LDA #$24
+  LDA #SPRITE_0
   STA $0200, x
 
   INX
