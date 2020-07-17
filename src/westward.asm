@@ -172,9 +172,24 @@ OCC_FARMER		= $01
 OCC_CARPENTER	= $02
 OCC_BANKER		= $03
 
-TEMP_HOT		= $26
-TEMP_FAIR		= $27
-TEMP_COLD		= $28
+; temperatures and their related sprites
+TEMP_VERYHOT	= $B0			; >=90 degrees
+TEMP_HOT		= $B1			; 70-90 degrees
+TEMP_WARM		= $B2			; 50-70 degrees
+TEMP_COOL		= $B3			; 30-50 degrees
+TEMP_COLD		= $B4			; 10-30 degrees
+TEMP_VERYCOLD	= $B5			; <10 degrees
+; min temps for above descriptors
+TEMP_MAX_F		= 126			; our "MAX" temp. We'll discard any random temps
+								; >= this temp and get a new random number.
+TEMP_MIN_F		= 0				; our "MIN" temp. For sake of argument, we'll
+								; ignore the chance of any negative temps.
+TEMP_VERYHOT_F	= 90
+TEMP_HOT_F		= 70
+TEMP_WARM_F		= 50
+TEMP_COOL_F		= 30
+TEMP_COLD_F		= 10
+; everything below 10 would be TEMP_VERYCOLD
 
 RATION_BAREBONE	= $01
 RATION_MEAGER	= $02
@@ -581,7 +596,7 @@ SetInitialState:
   STA health
 
   ; set temperature to fair
-  LDA #TEMP_FAIR
+  LDA #TEMP_WARM
   STA temperature
 
   LDA #WEATHER_PARTLY

@@ -319,31 +319,8 @@ GetRandomNumber:
 ; randomly generates weather for now
 ; Clobbers: A, Y
 UpdateWeather:
-  LDA miremaining
-  STA seed+0
-  LDA day
-  STA seed+1
-  JSR GetRandomNumber
-  STA tempernum
+  JSR UpdateTemperature
 
-  CMP #$85
-  BCS @CheckAA
-  LDA #TEMP_COLD
-  STA temperature
-  JMP @DoneTemp
-
-@CheckAA:
-  CMP #$AA
-  BCS @GreaterThanEqualAA
-  LDA #TEMP_FAIR
-  STA temperature
-  JMP @DoneTemp
-
-@GreaterThanEqualAA:
-  LDA #TEMP_HOT
-  STA temperature
-
-@DoneTemp:
   LDA tempernum
   STA weathernum
 
@@ -366,6 +343,61 @@ UpdateWeather:
   STA weather
 
 WeatherDone:
+  RTS
+;;;;;;;;;;;;;;;
+UpdateTemperature:
+  ; TODO right now using miremaining as seed for random number generator
+  LDA miremaining
+  STA seed+0
+  LDA day
+  STA seed+1
+  ; we'll get a random number to use as our temp, and we'll check against our
+  ; max temp. If >=, we'll get a new random number, and repeat until we get one
+  ; that's OK to use. I don't think we need to check for min temp.
+- JSR GetRandomNumber
+  CMP #TEMP_MAX_F
+  BCS -
+  STA tempernum
+  
+  ; we now need to set the status icon to be used
+  CMP #TEMP_VERYHOT_F
+  BCS @TempVeryHot
+  CMP #TEMP_HOT_F
+  BCS @TempHot
+  CMP #TEMP_WARM_F
+  BCS @TempWarm
+  CMP #TEMP_COOL_F
+  BCS @TempCool
+  CMP #TEMP_COLD_F
+  BCS @TempCold
+  JMP @TempVeryCold
+
+@TempVeryHot:
+  LDA #TEMP_VERYHOT
+  JMP UpdateTemperatureDone
+
+@TempHot:
+  LDA #TEMP_HOT
+  JMP UpdateTemperatureDone
+
+@TempWarm:
+  LDA #TEMP_WARM
+  JMP UpdateTemperatureDone
+
+@TempCool:
+  LDA #TEMP_COOL
+  JMP UpdateTemperatureDone
+
+@TempCold:
+  LDA #TEMP_COLD
+  JMP UpdateTemperatureDone
+
+@TempVeryCold:
+  LDA #TEMP_VERYCOLD
+  JMP UpdateTemperatureDone
+
+UpdateTemperatureDone:
+  STA temperature
   RTS
 ;;;;;;;;;;;;;;;
 DrawMetatile:
