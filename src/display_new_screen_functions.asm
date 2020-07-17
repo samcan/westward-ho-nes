@@ -19,6 +19,8 @@ MACRO PaletteLoad pltte
   JSR LoadPalettes
 ENDM
 ;;;;;;;;;;;;;;;
+;; TODO: As this is a long macro, can I replace with a JSR? How about any of the
+;; other long ones?
 MACRO DisplayNumberTens sprOffset, num, startX, startY, attr
   ; Clobbers: A, X, Y
   ; Returns: X for next sprite offset
