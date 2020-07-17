@@ -1420,6 +1420,9 @@ EngineLogicDecisionFort:
 + CheckForButton #BTN_DOWNARROW, MoveDecisionFortCursorDown, +
 + CheckForButton #BTN_A, EndDecisionFortGameState, +
 
++ LDA changed
+  BEQ +
+  JMP UpdateDecisionFortCursorSprite
 + JMP GameEngineLogicDone
 MoveDecisionFortCursorUp:
   LDA choice
@@ -1480,6 +1483,9 @@ UpdateDecisionFortCursorSprite:
   INX
   LDA cursorX
   STA $0200, x
+
+  LDA #$00
+  STA changed
 
   JMP GameEngineLogicDone
 EndDecisionFortGameState:

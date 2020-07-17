@@ -857,23 +857,13 @@ DisplayDecisionFortScreen:
   STA choice
 
 ; set up cursor
-  LDX #$04
   LDA #CHOOSEFORT_MIN_Y
   STA cursorY
-  STA $0200, X
-
-  INX
-  LDA #CHOOSEFORT_CURSOR_SPR
-  STA $0200, x
-
-  INX
-  LDA #%00100000
-  STA $0200, x
-
-  INX
   LDA #CHOOSEFORT_X
   STA cursorX
-  STA $0200, x
+
+  LDA #$01
+  STA changed
 
   JMP FinishLoadNewScreen
 
