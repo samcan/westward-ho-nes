@@ -87,8 +87,26 @@ ENDM
 MACRO DisplayNumberHundreds sprOffset, num1, num, startX, startY, attr
   ; Clobbers: A, X, Y
   ; Returns: X for next sprite offset
+  LDA #attr
+  STA numsprattr
+
+  LDA num1
+  STA htd_out+1
+  LDA num
+  STA htd_out
+
+  LDA #startY
+  STA numstartY
+  LDA #startX
+  STA numstartX
+
   LDX sprOffset
-  LDA num1					; get the hundreds value
+  JSR DisplayNumberHundredsSR
+  STX sprOffset
+ENDM
+
+DisplayNumberHundredsSR:
+  LDA htd_out+1				; get the hundreds value
   BEQ @SkipHundreds
 
 @LoadHundreds:
@@ -104,16 +122,16 @@ MACRO DisplayNumberHundreds sprOffset, num1, num, startX, startY, attr
   STA hundsshown			; store zero value in hundsshown
 
 @DisplayHundreds:
-  LDA #startY
+  LDA numstartY
   STA $0200, x
   INX
   TYA						; transfer tile index back off of Y
   STA $0200, x
   INX
-  LDA #attr
+  LDA numsprattr
   STA $0200, x
   INX
-  LDA #startX
+  LDA numstartX
   STA $0200, x
   INX
 
@@ -122,7 +140,7 @@ MACRO DisplayNumberHundreds sprOffset, num1, num, startX, startY, attr
   ; the value in the hundreds place is greater than 0
 
   ; grab the tens value
-  LDA num
+  LDA htd_out
   AND #%11110000
   LSR A
   LSR A
@@ -144,41 +162,44 @@ MACRO DisplayNumberHundreds sprOffset, num1, num, startX, startY, attr
   LDA #$00					; set tile index of $00 as we want blank space
   TAY
 @DisplayTens:
-  LDA #startY
+  LDA numstartY
   STA $0200, x
   INX
   TYA						; transfer tile index back off of Y
   STA $0200, x
   INX
-  LDA #attr
+  LDA numsprattr
   STA $0200, x
   INX
-  LDA #startX + $08
+  LDA numstartX
+  CLC
+  ADC #$08
   STA $0200, x
   INX
 
 @DisplayOnes:
   ; now we'll display ones, which are easy because we always display the
   ; ones place
-  LDA num
+  LDA htd_out
   AND #%00001111
   CLC
   ADC #$44
   PHA
-  LDA #startY
+  LDA numstartY
   STA $0200, x
   INX
   PLA
   STA $0200, x
   INX
-  LDA #attr
+  LDA numsprattr
   STA $0200, x
   INX
-  LDA #startX + $10
+  LDA numstartX
+  CLC
+  ADC #$10
   STA $0200, x
   INX
-  STX sprOffset
-ENDM
+  RTS
 ;;;;;;;;;;;;;;;
 MACRO DisplayNumberThousands sprOffset, bcd3, bcd2, bcd1, bcd, startX, startY, attr
   ; Clobbers: A, X, Y, thousshown, hundsshown

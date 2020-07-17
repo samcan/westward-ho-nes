@@ -81,6 +81,9 @@ prevbtns	.dsb 1
 newbtns		.dsb 1
 tempcalca	.dsb 1
 tempcalcb	.dsb 1
+numsprattr	.dsb 1		; attribute for drawing number sprites
+numstartX	.dsb 1
+numstartY	.dsb 1
 htd_in		.dsb 1
 htd_out		.dsb 2
 thousshown	.dsb 1
