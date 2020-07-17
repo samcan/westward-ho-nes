@@ -673,7 +673,7 @@ palette:
   .db $1F,$00,$27,$10,  $1F,$1C,$06,$10,  $1F,$11,$21,$10,  $1F,$07,$17,$10   ;;sprite palette
 
 palette_title:
-  .db $3F,$34,$10,$17,  $3F,$10,$30,$35,  $3F,$10,$11,$12,  $3F,$13,$14,$15   ;;background palette
+  .db $3F,$20,$10,$17,  $3F,$10,$30,$35,  $3F,$10,$11,$12,  $3F,$13,$14,$15   ;;background palette
   .db $3F,$17,$28,$30,  $3F,$1C,$2B,$39,  $3F,$06,$15,$36,  $3F,$07,$17,$10   ;;sprite palette
 
 palette_newgame:
