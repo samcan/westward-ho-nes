@@ -19,8 +19,6 @@ MACRO PaletteLoad pltte
   JSR LoadPalettes
 ENDM
 ;;;;;;;;;;;;;;;
-;; TODO: As this is a long macro, can I replace with a JSR? How about any of the
-;; other long ones?
 MACRO DisplayNumberTens sprOffset, num, startX, startY, attr
   ; Clobbers: A, X, Y
   ; Returns: X for next sprite offset
@@ -204,14 +202,36 @@ DisplayNumberHundredsSR:
 MACRO DisplayNumberThousands sprOffset, bcd3, bcd2, bcd1, bcd, startX, startY, attr
   ; Clobbers: A, X, Y, thousshown, hundsshown
   ; Returns: X - next sprite offset
-  LDX sprOffset
 
+  LDA #attr
+  STA numsprattr
+
+  LDA #startY
+  STA numstartY
+  LDA #startX
+  STA numstartX
+
+  LDA bcd3
+  STA bcdResult+3
+  LDA bcd2
+  STA bcdResult+2
+  LDA bcd1
+  STA bcdResult+1
+  LDA bcd
+  STA bcdResult
+
+  LDX sprOffset
+  JSR DisplayNumberThousandsSR
+  STX sprOffset
+ENDM
+
+DisplayNumberThousandsSR:
   LDA #$00
   STA thousshown
   STA hundsshown
 
   ; display thousands
-  LDA bcd3
+  LDA bcdResult+3
   BEQ @ThousandsNotShown
   JMP @ThousandsShown
 @ThousandsNotShown:
@@ -225,22 +245,22 @@ MACRO DisplayNumberThousands sprOffset, bcd3, bcd2, bcd1, bcd, startX, startY, a
   LDA #$01
   STA thousshown
 @ContThousands:
-  LDA #startY
+  LDA numstartY
   STA $0200, x
   INX
   TYA
   STA $0200, x
   INX
-  LDA #attr
+  LDA numsprattr
   STA $0200, x
   INX
-  LDA #startX
+  LDA numstartX
   STA $0200, x
   INX
 
 @DisplayHundreds:
   ; display hundreds
-  LDA bcd2
+  LDA bcdResult+2
   BEQ @HundredsZero
   JMP @HundredsShown
 @HundredsZero:
@@ -254,32 +274,34 @@ MACRO DisplayNumberThousands sprOffset, bcd3, bcd2, bcd1, bcd, startX, startY, a
 @HundredsShown:
   LDA #$01
   STA hundsshown
-  LDA bcd2
+  LDA bcdResult+2
   CLC
   ADC #$44
   TAY
 @ContHundreds:
-  LDA #startY
+  LDA numstartY
   STA $0200, x
   INX
   TYA
   STA $0200, x
   INX
-  LDA #attr
+  LDA numsprattr
   STA $0200, x
   INX
-  LDA #startX + $08
+  LDA numstartX
+  CLC
+  ADC #$08
   STA $0200, x
   INX
 
   ; display tens
-  LDA startY
+  LDA numstartY
   STA $0200, x
   INX
-  LDA bcd1
+  LDA bcdResult+1
   BEQ @TensZero
 @TensNotZero:
-  LDA bcd1
+  LDA bcdResult+1
   CLC
   ADC #$44
   JMP @ContTens
@@ -291,36 +313,35 @@ MACRO DisplayNumberThousands sprOffset, bcd3, bcd2, bcd1, bcd, startX, startY, a
 @ContTens:
   STA $0200, x
   INX
-  LDA #attr
+  LDA numsprattr
   STA $0200, x
   INX
-  LDA #startX + $10
+  LDA numstartX
+  CLC
+  ADC #$10
   STA $0200, x
   INX
   ; now we'll display ones, which are easy because we always display the
   ; ones place
-  LDA bcd
+  LDA bcdResult
   CLC
   ADC #$44
   PHA
-  LDA #startY
+  LDA numstartY
   STA $0200, x
   INX
   PLA
   STA $0200, x
   INX
-  LDA #attr
+  LDA numsprattr
   STA $0200, x
   INX
-  LDA #startX + $18
+  LDA numstartX
+  CLC
+  ADC #$18
   STA $0200, x
   INX
-  STX sprOffset
-ENDM
-
-
-
-
+  RTS
 ;;;;;;;;;;;;;;;
 DisplayTitleScreen:
   LDA #$00
