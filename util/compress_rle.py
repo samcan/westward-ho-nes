@@ -15,6 +15,8 @@ def main(input_file, output_file):
         bytes_read_int = f.read()
         rle_bytes_int = rle_encode(bytes_read_int)
         rle_bytes_int = break_apart_too_big_counts(rle_bytes_int)
+
+        rle_bytes_int = add_terminating_bytes(rle_bytes_int, 0, 0)
         rle_bytes_hex = convert_int_to_hex(rle_bytes_int)
         write_bytes(output_file, rle_bytes_hex)
 
@@ -64,6 +66,9 @@ def convert_int_to_hex(l_ints):
         l_hexs.append(bytes([b]))
     return l_hexs
 
+def add_terminating_bytes(l_ints, int_a, int_b):
+    l_ints.append((int_a, int_b))
+    return l_ints
 
 def write_bytes(output, byteslist):
     with open(output, 'ba') as g:
