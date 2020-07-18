@@ -24,6 +24,19 @@ status icons in general to display this data, it'll be fine. If "very cold" is
 anything below 10°F, the player won't know if it's 0°F or -25°F, and the effect
 on the player will be the same.
 
+## At what milepost weather should be changed
+Weather will change at these mileposts, which are approximate midpoints between
+the cities we have historical weather data for:
+
+| Mile  | City                 |
+| ----: | :------------------- |
+|     0 | Kansas City, MO      |
+|   209 | North Platte, NE     |
+|   595 | Casper, WY           |
+|   842 | Lander, WY           |
+| 1,140 | Boise, ID            |
+| 1,676 | Portland, OR         |
+
 ## Kansas City, MO
 | Month | Mean (°F) | + Anomaly (°F) | - Anomaly (°F) |
 | ----: | --------: | -------------: | -------------: |
