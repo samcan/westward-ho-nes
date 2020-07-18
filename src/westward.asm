@@ -983,10 +983,23 @@ landmarksongs:
   .db #BATTLE_HYMN_REPBLC
   .db #YANKEE_DOODLE
 
+; mileposts at which we go to the next weather zone
+weather_zones:
+  .dw 0, 209, 595, 842, 1140, 1676
+
+; weather zone number, temperature pointer
+weather_zone_temperatures:
+  .dw temperatures_kansas_city
+  .dw temperatures_kansas_city
+  .dw temperatures_kansas_city
+  .dw temperatures_kansas_city
+  .dw temperatures_kansas_city
+  .dw temperatures_kansas_city
+
 ; month, mean, +variance, -variance
 ; I'm rounding mean, +variance, and -variance to integer values
 ; set aside fake month "0"
-temperatures:
+temperatures_kansas_city:
   .db 0, 0, 0, 0
   .db 1, 29, 12, -16
   .db 2, 34, 10, -14

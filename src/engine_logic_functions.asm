@@ -2016,6 +2016,28 @@ EngineLogicTraveling:
   ADC #$00
   STA mitraveled+1
 
+  ; do we need to update weather zone?
+  LDA weatherzone
+  CLC
+  ADC #$01
+  CMP #$07   ; are we at a value of 7, which means we're done changing weather zones?
+  BEQ @DoneCheckingWeatherZone
+  ASL A
+  TAX
+  LDA weather_zones, X
+  TAY
+  LDA weather_zones+1, X
+  CMP mitraveled+1
+  BCC @UpdateWeatherZone
+  BNE @DoneCheckingWeatherZone
+  CPY mitraveled
+  BCC @UpdateWeatherZone
+  JMP @DoneCheckingWeatherZone
+
+@UpdateWeatherZone:
+  INC weatherzone
+
+@DoneCheckingWeatherZone:
   ; time to trigger landmark?
   ; is miremaining = mitraveldy?
   ;    if so, trigger landmark

@@ -356,14 +356,22 @@ GetRandomTemperature:
   ; right now. I may change my mind down the road. (Heh heh, "down the trail.")
 
   ; load mean temperature for month and store in stack
+  LDA weatherzone
+  ASL A
+  TAX
+  LDA weather_zone_temperatures, X
+  STA pointer
+  LDA weather_zone_temperatures+1, X
+  STA pointer+1
+
   LDA month
   ASL A
   ASL A
   CLC
-  ADC #$01 ; x offset for mean temp for given month
-  PHA ; store X offset on stack
-  TAX
-  LDA temperatures, X ; load the mean temp
+  ADC #$01 ; Y offset for mean temp for given month
+  PHA ; store Y offset on stack
+  TAY
+  LDA (<pointer), Y ; load the mean temp
   PHA ; store mean temp on stack
 
 @GetRandTemperature:
@@ -390,14 +398,14 @@ GetRandomTemperature:
 
 @OneAnomaly:
   PLA ; pull mean temp off of stack
-  TAY
-  PLA ; pull X offset off of stack
-  CLC
-  ADC randsigned ; inc X offset to whatever
   TAX
-  TYA
+  PLA ; pull Y offset off of stack
   CLC
-  ADC temperatures, X ; get variance
+  ADC randsigned ; inc Y offset to whatever
+  TAY
+  TXA
+  CLC
+  ADC (<pointer), Y ; get variance
 
 
 
