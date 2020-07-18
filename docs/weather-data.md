@@ -7,9 +7,22 @@ Mean is the mean temperature for the month during 1981–2010 base period.
 
 Data sourced from [NOAA's Climate at a Glance][ncdc].
 
-It feels like we need to use the anomaly data to help inform a normal distribution, to say
-that 68% of the random values are within the anomaly range, but some values can fall outside
-of the range (i.e. extreme temperatures). I'll need to find out how to do this.
+## Generating random numbers consistent with the data
+I tried to overly complicate this in my head, trying to figure out how I could
+approximate a distribution curve using 6502 assembly. But I finally decided to
+cut the Gordian knot as follows:
+
+* 75% of values should be within anomaly range around the mean
+* 22% of values should be within 2× anomaly range around the mean
+* 3% of values should be within 3× anomaly range around the mean
+
+And if some of the values don't make sense, we'll limit as necessary. For
+example, rainfall can't be less than 0 inches. And right now we're limiting
+temperature to 0°F as a minimum and 125°F as a maximum. Any values outside these
+extremes we'd just set as the extreme values. Since we're just using graphical
+status icons in general to display this data, it'll be fine. If "very cold" is
+anything below 10°F, the player won't know if it's 0°F or -25°F, and the effect
+on the player will be the same.
 
 ## Kansas City, MO
 | Month | Mean (°F) | + Anomaly (°F) | - Anomaly (°F) |
