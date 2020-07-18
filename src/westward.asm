@@ -593,19 +593,22 @@ SetInitialState:
   STA mitraveldy
 
   ; set total miles traveled to 0
-  LDA #$00
   STA mitraveled
   STA mitraveled+1
 
   ; set initial weather zone of 0
   STA weatherzone
 
-  LDA #MAX_MI_PER_DAY_A
-  STA basemileage
+  ; set index 0 as the initial landmark traveling towards
+  STA curlandmark
 
   ; set 0 oxen (until you buy some)
-  LDA #$00
   STA oxen
+
+  ; until we reach Fort Laramie, our max mileage per day is stored
+  ; in MAX_MI_PER_DAY
+  LDA #MAX_MI_PER_DAY_A
+  STA basemileage
 
   ; set initial pace of STEADY
   LDA #PACE_STEADY
@@ -638,12 +641,11 @@ SetInitialState:
   ;STA food+1
 
   LDA #$00
+  ; set horizontal scroll
   STA scrollH
 
-  LDA #$00
+  ; clear button states
   STA prevbtns
-
-  LDA #$00
   STA newbtns
 
   RTS
