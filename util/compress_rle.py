@@ -1,6 +1,8 @@
 import argparse
 import os
 
+MAX_BYTE_COUNT = 255
+
 def main(input_file, output_file):
     print('Input file:', input_file)
     print('Output file:', output_file)
@@ -13,7 +15,6 @@ def main(input_file, output_file):
         prev_byte = ''
         count = 0
         for byte in bytes_read:
-            #print('current byte:', byte)
             if prev_byte == '':
                 prev_byte = byte
                 count = 1
@@ -36,7 +37,7 @@ def main(input_file, output_file):
             # = 251
             #
             # This means I would need to limit the following count to 127
-            if count == 255:
+            if count == MAX_BYTE_COUNT:
                 write_byte(output_file, count, prev_byte)
                 prev_byte = byte
                 count = 0
