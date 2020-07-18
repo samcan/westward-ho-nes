@@ -345,14 +345,78 @@ UpdateWeather:
 WeatherDone:
   RTS
 ;;;;;;;;;;;;;;;
-UpdateTemperature:
-  ; we'll get a random number to use as our temp, and we'll check against our
-  ; max temp. If >=, we'll get a new random number, and repeat until we get one
-  ; that's OK to use. I don't think we need to check for min temp.
-- JSR GetRandomNumber
+GetRandomTemperature:
+  ; gets random temperature based on mean, variance, and month. Only uses
+  ; data for Kansas City, MO. Next we'll need to extend to use the weather
+  ; zones.
+  ;
+  ; Returns a temperature that's either the mean, mean + +variance, or
+  ; mean + -variance. There's no in-between values. Also, we don't mess with 2x
+  ; variance or 3x variance. I think this will look realistic enough, at least
+  ; right now. I may change my mind down the road. (Heh heh, "down the trail.")
+
+  ; load mean temperature for month and store in stack
+  LDA month
+  ASL A
+  ASL A
+  CLC
+  ADC #$01 ; x offset for mean temp for given month
+  PHA ; store X offset on stack
+  TAX
+  LDA temperatures, X ; load the mean temp
+  PHA ; store mean temp on stack
+
+@GetRandTemperature:
+  JSR GetRandomNumber
+  TAX ; make copy of random number generated on X
+  AND #%00000011
+  CMP #$03
+  BEQ @SubtractOne
+  JMP @ContSigned
+@SubtractOne:
+  SEC
+  SBC #$01
+@ContSigned:
+  STA randsigned
+  TXA ; transfer copy of random number back
+  CMP #$BF
+  BCC @OneAnomaly
+  BEQ @OneAnomaly
+;  CMP #$F5
+;  BCC @TwoAnomaly
+;  BEQ @TwoAnomaly
+;  JMP @ThreeAnomaly
+
+
+@OneAnomaly:
+  PLA ; pull mean temp off of stack
+  TAY
+  PLA ; pull X offset off of stack
+  CLC
+  ADC randsigned ; inc X offset to whatever
+  TAX
+  TYA
+  CLC
+  ADC temperatures, X ; get variance
+
+
+
+;@TwoAnomaly:
+
+;@ThreeAnomaly:
+
+
+@StoreTemperature:
   CMP #TEMP_MAX_F
-  BCS -
-  STA tempernum
+  BNE +
+  LDA #TEMP_MAX_F
++ STA tempernum
+
+  RTS
+;;;;;;;;;;;;;;;
+UpdateTemperature:
+  ;; Clobbers: A, X, Y
+  JSR GetRandomTemperature
   
   ; we now need to set the status icon to be used
   CMP #TEMP_VERYHOT_F

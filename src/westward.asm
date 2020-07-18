@@ -95,6 +95,7 @@ Factor		.dsb 1
 Res			.dsb 1
 Res2		.dsb 1
 seed		.dsb 2		; seed for PRNG
+randsigned	.dsb 1
 
 .ifdef SMALL_LANDMARKS_YES
 landmarkX	.dsb 1
@@ -981,6 +982,24 @@ landmarksongs:
   .db #YANKEE_DOODLE, #YANKEE_DOODLE
   .db #BATTLE_HYMN_REPBLC
   .db #YANKEE_DOODLE
+
+; month, mean, +variance, -variance
+; I'm rounding mean, +variance, and -variance to integer values
+; set aside fake month "0"
+temperatures:
+  .db 0, 0, 0, 0
+  .db 1, 29, 12, -16
+  .db 2, 34, 10, -14
+  .db 3, 44, 14, -8
+  .db 4, 55, 7, -8
+  .db 5, 65, 9, -5
+  .db 6, 74, 5, -4
+  .db 7, 78, 7, -5
+  .db 8, 77, 7, -6
+  .db 9, 68, 7, -6
+  .db 10, 56, 6, -6
+  .db 11, 44, 8, -8
+  .db 12, 31, 8, -18
 
   ; load calendar support
   .incsrc "src/calendar.asm"
