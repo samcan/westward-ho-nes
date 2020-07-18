@@ -415,7 +415,13 @@ GetRandomTemperature:
 
 
 @StoreTemperature:
-  CMP #TEMP_MAX_F
+  CMP #TEMP_MIN_F		; make sure our temperature is 0 or greater degrees F.
+						; as we're limiting our max temp, we should be able to
+						; safely use a signed comparison here to check for
+						; negative temps.
+  BPL +
+  LDA #TEMP_MIN_F
++ CMP #TEMP_MAX_F
   BNE +
   LDA #TEMP_MAX_F
 + STA tempernum
