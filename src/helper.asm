@@ -139,6 +139,57 @@ DecodeRLEScreen:
 @done:
   RTS
 
+
+DecodeRLEScreenNew:
+  ; set output address
+  LDA #PpuStatus
+  CPX #$01
+  BEQ @loadOne
+  LDA #$20
+  JMP @cont
+@loadOne:
+  LDA #$24
+@cont:
+  STA PpuAddr
+  LDA #$00
+  STA PpuAddr
+
+  ; ; copy screen to VRAM
+  ; Decode RLE
+  LDY #$00
+big:
+  ; get count and byte
+  ; get count (has to be LDA rather than LDX)
+  LDA (pointer),y
+  TAX
+  CPX #$00
+  BEQ done
+  BPL repeat
+  BMI copy
+repeat:
+  INY
+  ; get byte
+  LDA (pointer), y
+- STA PpuData
+  DEX
+  BNE -
+  INY
+  BNE big
+  INC pointer+1
+  JMP big
+copy:
+  INY
+  LDA (pointer), Y
+  STA PpuData
+  INX
+  BNE copy
+  INY
+  BNE big
+  INC pointer+1
+  JMP big
+done:
+  RTS
+
 ;;;;;;;;;;;;;;;;
 ;; LoadPalettes will load your bg and character palettes into memory.
 ;;

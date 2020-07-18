@@ -7,7 +7,7 @@ MACRO LoadRLEScreen x, nt
 
   LDX #nt
 
-  JSR DecodeRLEScreen
+  JSR DecodeRLEScreenNew
 ENDM
 ;;;;;;;;;;;;;;;
 MACRO PaletteLoad pltte

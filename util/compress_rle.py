@@ -2,7 +2,8 @@ import argparse
 import os
 from itertools import *
 
-MAX_BYTE_COUNT = 255
+MAX_BYTE_COUNT = 127
+NUM_BYTES = 8
 
 def main(input_file, output_file):
     print('Input file:', input_file)
@@ -15,9 +16,12 @@ def main(input_file, output_file):
         bytes_read_int = f.read()
         rle_bytes_int = rle_encode(bytes_read_int)
         rle_bytes_int = break_apart_too_big_counts(rle_bytes_int)
-
+        rle_bytes_int = compress_small_counts(rle_bytes_int)
+        print(rle_bytes_int)
         rle_bytes_int = add_terminating_bytes(rle_bytes_int, 0, 0)
-        rle_bytes_hex = convert_int_to_hex(rle_bytes_int)
+        rle_bytes_list_int = convert_to_straight_list_ints(rle_bytes_int)
+        print(rle_bytes_list_int)
+        rle_bytes_hex = convert_int_to_hex(rle_bytes_list_int)
         write_bytes(output_file, rle_bytes_hex)
 
     # print file compression info
@@ -60,11 +64,44 @@ def break_apart_too_big_counts(l):
 
 def convert_int_to_hex(l_ints):
     l_hexs = list()
-    for tuple_int in l_ints:
-        a, b = tuple_int
-        l_hexs.append(bytes([a]))
-        l_hexs.append(bytes([b]))
+    for item in l_ints:
+        l_hexs.append(bytes([item]))
     return l_hexs
+
+def compress_small_counts(l):
+    new_l = list()
+    are_we_in_run = False
+    for x in range(len(l)):
+        count, byte_int = l[x]
+        if count > 1:
+            new_l.append((count, byte_int))
+            are_we_in_run = False
+        elif count == 1 and not are_we_in_run:
+            new_l.append((count, (byte_int, )))
+            are_we_in_run = True
+        elif are_we_in_run:
+            if new_l[-1][0] + 1 <= MAX_BYTE_COUNT:
+                new_count = new_l[-1][0] + 1
+                new_run = new_l[-1][1] + (byte_int, )
+                new_l[-1] = (new_count, new_run)
+            else:
+                new_l.append((count, (byte_int, )))
+                are_we_in_run = True
+        x += 1
+    return new_l
+
+def convert_to_straight_list_ints(l_int):
+    new_l_int = list()
+    for item in l_int:
+        a, b = item
+        if isinstance(b, int):
+            new_l_int.append(a)
+            new_l_int.append(b)
+        else:
+            new_l_int.append(2**NUM_BYTES - a)
+            for subitem in b:
+                new_l_int.append(subitem)
+    return new_l_int
 
 def add_terminating_bytes(l_ints, int_a, int_b):
     l_ints.append((int_a, int_b))
