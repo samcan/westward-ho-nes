@@ -346,11 +346,6 @@ WeatherDone:
   RTS
 ;;;;;;;;;;;;;;;
 UpdateTemperature:
-  ; TODO right now using miremaining as seed for random number generator
-  LDA miremaining
-  STA seed+0
-  LDA day
-  STA seed+1
   ; we'll get a random number to use as our temp, and we'll check against our
   ; max temp. If >=, we'll get a new random number, and repeat until we get one
   ; that's OK to use. I don't think we need to check for min temp.
@@ -553,3 +548,14 @@ DrawMetatile:
   BEQ +
   JMP @loop
 + RTS
+;;;;;;;;;;;;;;;
+IncrementSeed:
+;; Clobbers: A
+  LDA seed
+  CLC
+  ADC #$01
+  STA seed
+  LDA seed+1
+  ADC #$00
+  STA seed+1
+  RTS

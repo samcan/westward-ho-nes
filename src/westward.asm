@@ -461,6 +461,8 @@ Forever:
 
 ;;;;;;
 NMI:
+  JSR IncrementSeed
+
   ;; NMI (vblank) has been triggered; check if we need to load a new
   ;; screen or just update our current screen.
   LDA newgmstate
