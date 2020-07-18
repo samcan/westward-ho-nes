@@ -12,9 +12,9 @@ I tried to overly complicate this in my head, trying to figure out how I could
 approximate a distribution curve using 6502 assembly. But I finally decided to
 cut the Gordian knot as follows:
 
-* 75% of values should be within anomaly range around the mean
-* 22% of values should be within 2× anomaly range around the mean
-* 3% of values should be within 3× anomaly range around the mean
+* 75% (`$40`–`$FF`) of values should be within anomaly range around the mean
+* 21% (`$0A`–`$3F`) of values should be within 2× anomaly range around the mean
+* 4% (`$00`–`$09`) of values should be within 3× anomaly range around the mean
 
 And if some of the values don't make sense, we'll limit as necessary. For
 example, rainfall can't be less than 0 inches. And right now we're limiting
