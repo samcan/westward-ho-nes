@@ -990,11 +990,11 @@ weather_zones:
 ; weather zone number, temperature pointer
 weather_zone_temperatures:
   .dw temperatures_kansas_city
-  .dw temperatures_kansas_city
-  .dw temperatures_kansas_city
-  .dw temperatures_kansas_city
-  .dw temperatures_kansas_city
-  .dw temperatures_kansas_city
+  .dw temperatures_north_platte
+  .dw temperatures_casper
+  .dw temperatures_lander
+  .dw temperatures_boise
+  .dw temperatures_portland
 
 ; month, mean, +variance, -variance
 ; I'm rounding mean, +variance, and -variance to integer values
@@ -1013,6 +1013,78 @@ temperatures_kansas_city:
   .db 10, 56, 6, -6
   .db 11, 44, 8, -8
   .db 12, 31, 8, -18
+
+temperatures_north_platte:
+  .db 0, 0, 0, 0
+  .db 1, 26, 12, -18
+  .db 2, 30, 12, -14
+  .db 3, 39, 12, -14
+  .db 4, 48, 7, -6
+  .db 5, 59, 6, -6
+  .db 6, 69, 8, -6
+  .db 7, 75, 6, -6
+  .db 8, 73, 5, -6
+  .db 9, 63, 7, -8
+  .db 10, 50, 9, -8
+  .db 11, 36, 8, -12
+  .db 12, 26, 9, -18
+
+temperatures_casper:
+  .db 1, 25, 7, -19
+  .db 2, 27, 8, -16
+  .db 3, 35, 9, -16
+  .db 4, 42, 6, -8
+  .db 5, 52, 7, -8
+  .db 6, 62, 9, -8
+  .db 7, 70, 5, -6
+  .db 8, 69, 4, -6
+  .db 9, 58, 7, -11
+  .db 10, 45, 8, -9
+  .db 11, 33, 11, -14
+  .db 12, 24, 10, -14
+
+temperatures_lander:
+  .db 1, 21, 9, -21
+  .db 2, 25, 10, -16
+  .db 3, 35, 9, -13
+  .db 4, 43, 6, -11
+  .db 5, 53, 7, -9
+  .db 6, 62, 9, -9
+  .db 7, 71, 5, -7
+  .db 8, 69, 4, -6
+  .db 9, 58, 7, -12
+  .db 10, 45, 7, -9
+  .db 11, 31, 10, -15
+  .db 12, 20, 13, -16
+
+temperatures_boise:
+  .db 1, 31, 11, -20
+  .db 2, 36, 8, -12
+  .db 3, 44, 6, -8
+  .db 4, 51, 6, -7
+  .db 5, 59, 7, -6
+  .db 6, 67, 9, -7
+  .db 7, 76, 7, -10
+  .db 8, 74, 4, -6
+  .db 9, 65, 7, -7
+  .db 10, 53, 8, -7
+  .db 11, 40, 7, -11
+  .db 12, 31, 8, -17
+
+temperatures_portland:
+  .db 1, 41, 7, -13
+  .db 2, 44, 6, -8
+  .db 3, 48, 4, -6
+  .db 4, 52, 6, -5
+  .db 5, 58, 5, -5
+  .db 6, 64, 7, -5
+  .db 7, 69, 5, -5
+  .db 8, 70, 4, -5
+  .db 9, 65, 3, -4
+  .db 10, 55, 5, -4
+  .db 11, 47, 6, -9
+  .db 12, 40, 7, -7
+
 
   ; load calendar support
   .incsrc "src/calendar.asm"
