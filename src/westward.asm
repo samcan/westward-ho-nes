@@ -38,6 +38,7 @@ month		.dsb 1		; current month (we're assuming a year of 1848)
 						; March-July are valid options for starting point
 day			.dsb 1		; current day -- start on 1st day of month
 health		.dsb 1		; current health status
+weatherzone	.dsb 1		; current weather zone (based on mileage)
 tempernum	.dsb 1		; current number for temperature (translated into status)
 temperature	.dsb 1		; current temperature status
 weathernum	.dsb 1		; current number for weather (translated into status)
@@ -596,9 +597,8 @@ SetInitialState:
   STA mitraveled
   STA mitraveled+1
 
-  ; set index 0 as the initial landmark traveling towards
-  LDA #$00
-  STA curlandmark
+  ; set initial weather zone of 0
+  STA weatherzone
 
   LDA #MAX_MI_PER_DAY_A
   STA basemileage
