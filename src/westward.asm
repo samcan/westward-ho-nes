@@ -948,7 +948,7 @@ landmarkdisplay:
   ; need to add separate bg for rafting the Columbia River
 
 landmarkbank:
-  .db $01, $01, $01
+  .db $02, $01, $01
   .db $01, $02
   .db $01, $01
   .db $02

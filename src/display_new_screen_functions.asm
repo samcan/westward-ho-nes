@@ -547,6 +547,8 @@ DisplayLandmarkScreen:
   JSR BankSwitch
 
   LDA curlandmark
+  CMP #$00
+  BEQ PALSOUTH		; use South Pass palette for Independence, MO
   CMP #$04
   BEQ PALCHIMNEY
   CMP #$07
