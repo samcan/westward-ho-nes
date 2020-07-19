@@ -553,6 +553,8 @@ DisplayLandmarkScreen:
   BEQ PALCHIMNEY
   CMP #$07
   BEQ PALSOUTH
+  CMP #$0D
+  BEQ PALBLUE
   PaletteLoad palette_landmark
   JMP LANDCONT
 PALCHIMNEY:
@@ -560,6 +562,9 @@ PALCHIMNEY:
   JMP LANDCONT
 PALSOUTH:
   PaletteLoad palette_landmark_south_pass
+  JMP LANDCONT
+PALBLUE:
+  PaletteLoad palette_landmark_blue_mountains
   JMP LANDCONT
 
 LANDCONT:

@@ -701,7 +701,9 @@ palette_landmark_south_pass:
   .hex 31 0F 3D 10   31 17 19 29   31 17 19 0F   31 09 19 29				  ;;background palette
   .hex 31 0F 27 10   31 0F 06 10   31 07 20 10   31 07 17 10				  ;;sprite palette
 
-
+palette_landmark_blue_mountains:
+  .hex 31 0F 3D 20   31 1A 2A 3A   31 2B 2B 3B   31 1B 21 3C				  ;;background palette
+  .hex 31 0F 27 10   31 0F 06 10   31 07 20 10   31 07 17 10				  ;;sprite palette
 
 ; metatile description is the following:
 ; tile num, palette num IN THE FOLLOWING ORDER:
@@ -954,7 +956,7 @@ landmarkbank:
   .db $02
   .db $01, $01
   .db $01, $01
-  .db $01, $01
+  .db $01, $02
   .db $01, $01
   .db $01
   .db $01
