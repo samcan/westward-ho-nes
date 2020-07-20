@@ -357,6 +357,13 @@ DisplayTitleScreen:
   LoadRLEScreen bg_title_screen, $00
 
   .ifdef AUDIO_YES
+  ; load audio data and initialize audio driver
+  LDA #<audio_data_music_data
+  TAX
+  LDA #>audio_data_music_data
+  TAY
+  LDA #$01
+  JSR FamiToneInit
   ; start playing title music
   LDA #TITLE_SONG
   JSR FamiToneMusicPlay
@@ -573,6 +580,13 @@ PALBLUE:
 
 LANDCONT:
   .ifdef AUDIO_YES
+  ; load audio data and initialize audio driver
+  LDA #<audio_data_music_data
+  TAX
+  LDA #>audio_data_music_data
+  TAY
+  LDA #$01
+  JSR FamiToneInit
   ; start playing landmark music
   LDX curlandmark
   LDA landmarksongs, X

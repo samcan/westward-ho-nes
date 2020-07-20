@@ -12,7 +12,7 @@ MIRRORING		= 1   ; background mirroring
 
 ;;;;;;;;;;;;;;;
 
-;AUDIO_YES					; define to include audio support
+AUDIO_YES					; define to include audio support
 ;SMALL_LANDMARK_YES			; define to include small landmarks
 ;IMMEDIATELY_START_ERASING	; on alphabet screen, if name is erased, and erase
 							; key is pressed again, immediately start deleting
@@ -443,16 +443,6 @@ clrmem:
 
   LDA #%00011110   ; enable sprites, enable background, no clipping on left side
   STA PpuMask
-
-  .ifdef AUDIO_YES
-  ; load audio data and initialize audio driver
-  LDA #<audio_data_music_data
-  TAX
-  LDA #>audio_data_music_data
-  TAY
-  LDA #$01
-  JSR FamiToneInit
-  .endif
 
 Forever:
   JMP Forever     ;jump back to Forever, infinite loop, waiting for NMI
