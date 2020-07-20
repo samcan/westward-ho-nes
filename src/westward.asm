@@ -668,8 +668,8 @@ SetInitialState:
   .include "src/helper.asm"
   .include "src/math.asm"
 
-  ; audio library (FamiTone2) and audio data file
-  .include "src/audio/famitone2/famitone2_asm6.asm"
+  ; audio library (FamiTone4.1) and audio data file
+  .include "src/audio/famitone4.1/famitone4_asm6.asm"
   .include "src/assets/audio/audio_data.asm"
 
   ; set palettes

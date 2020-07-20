@@ -57,7 +57,7 @@ MACRO UpdateStoreDisplayRegular sprOffset,item,peritempr,itempr,firstX,firstY,se
   TAY
   LDA item
 
-  JSR Multiply
+  JSR Mult8Bit
   STY bcdNum+1
   STA bcdNum
   LDA bcdNum
@@ -859,7 +859,7 @@ foodoneszero:
 
   LDA storefood
 
-  JSR Multiply
+  JSR Mult8Bit
   STY bcdNum+1
   STA bcdNum
   LDA bcdNum
