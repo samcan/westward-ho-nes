@@ -17,20 +17,24 @@ SPLIT           32
 
 # Macros
 MACRO       0   0  -1  -1   0 : 7
-MACRO       0   2  -1  -1   0 : 3
+MACRO       0   2  -1  -1   0 : 6
 MACRO       0   5  -1  -1   0 : 3 1
 MACRO       0   6  -1  -1   0 : 2 1
 MACRO       1   0  -1  -1   0 : 0 0 4 4 7 7
+MACRO       1   1  -1  -1   0 : 3 7 4
 MACRO       2   0  -1  -1   0 : 62
-MACRO       4   0  -1  -1   0 : 2 1 2 1
+MACRO       2   1  -1  -1   0 : 38 37 67 91
+MACRO       4   0  -1  -1   0 : 2
+MACRO       4   1  -1  -1   0 : 2
+MACRO       4   2  -1  -1   0 : 3
 
 # DPCM samples
 
 # Instruments
-INST2A03   0     0  -1  -1  -1  -1 "main"
-INST2A03   1     2  -1  -1  -1  -1 "harmony"
-INST2A03   4     5  -1  -1  -1  -1 "harpsi"
-INST2A03   5     6  -1  -1  -1  -1 "bass"
+INST2A03   0     0  -1  -1  -1   0 "main"
+INST2A03   1     2  -1  -1  -1   2 "harmony"
+INST2A03   4     5  -1  -1  -1   2 "harpsi"
+INST2A03   5     6  -1  -1  -1   2 "bass"
 
 # Tracks
 

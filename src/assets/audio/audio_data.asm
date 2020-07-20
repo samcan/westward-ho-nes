@@ -24,16 +24,16 @@ audio_data_music_data:
 	dw @song14ch0,@song14ch1,@song14ch2,@song14ch3,@song14ch4,133,110 ; myOldKentuckyHome
 
 @instruments:
-	db $30 ;instrument $00
+	db $b0 ;instrument $00
 	dw @env1,@env0,@env0
 	db $00
-	db $30 ;instrument $01
+	db $f0 ;instrument $01
 	dw @env2,@env0,@env0
 	db $00
-	db $30 ;instrument $04
+	db $f0 ;instrument $04
 	dw @env3,@env0,@env0
 	db $00
-	db $30 ;instrument $05
+	db $f0 ;instrument $05
 	dw @env4,@env0,@env0
 	db $00
 
@@ -43,7 +43,7 @@ audio_data_music_data:
 @env1:
 	db $c7,$00,$00
 @env2:
-	db $c3,$00,$00
+	db $c6,$00,$00
 @env3:
 	db $c3,$c1,$00,$01
 @env4:
