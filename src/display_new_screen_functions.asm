@@ -357,6 +357,13 @@ DisplayTitleScreen:
   LoadRLEScreen bg_title_screen, $00
 
   .ifdef AUDIO_YES
+  ; load audio data and initialize audio driver
+  LDA #<audio_data_music_data
+  TAX
+  LDA #>audio_data_music_data
+  TAY
+  LDA #$01
+  JSR FamiToneInit
   ; start playing title music
   LDA #TITLE_SONG
   JSR FamiToneMusicPlay
@@ -547,12 +554,13 @@ DisplayLandmarkScreen:
   JSR BankSwitch
 
   LDA curlandmark
-  CMP #$00
   BEQ PALSOUTH		; use South Pass palette for Independence, MO
   CMP #$04
   BEQ PALCHIMNEY
   CMP #$07
   BEQ PALSOUTH
+  CMP #$0B
+  BEQ PALSNAKE
   CMP #$0D
   BEQ PALBLUE
   PaletteLoad palette_landmark
@@ -563,12 +571,22 @@ PALCHIMNEY:
 PALSOUTH:
   PaletteLoad palette_landmark_south_pass
   JMP LANDCONT
+PALSNAKE:
+  PaletteLoad palette_landmark_snake_river_crossing
+  JMP LANDCONT
 PALBLUE:
   PaletteLoad palette_landmark_blue_mountains
   JMP LANDCONT
 
 LANDCONT:
   .ifdef AUDIO_YES
+  ; load audio data and initialize audio driver
+  LDA #<audio_data_music_data
+  TAX
+  LDA #>audio_data_music_data
+  TAY
+  LDA #$01
+  JSR FamiToneInit
   ; start playing landmark music
   LDX curlandmark
   LDA landmarksongs, X

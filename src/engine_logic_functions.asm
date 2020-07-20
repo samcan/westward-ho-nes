@@ -57,7 +57,7 @@ MACRO UpdateStoreDisplayRegular sprOffset,item,peritempr,itempr,firstX,firstY,se
   TAY
   LDA item
 
-  JSR Multiply
+  JSR Mult8Bit
   STY bcdNum+1
   STA bcdNum
   LDA bcdNum
@@ -516,6 +516,9 @@ EndLandmarkStateFortLaramie:
   STA basemileage
   JMP EndLandmarkStateFort
 EndLandmarkStateBlueMountains
+  .ifdef AUDIO_YES
+  JSR FamiToneMusicStop
+  .endif
   ; we're not going to INC curlandmark here, instead we need to get the decision
   ; the player makes (detour to Fort Walla Walla or not) and then update the
   ; curlandmark accordingly
@@ -523,6 +526,10 @@ EndLandmarkStateBlueMountains
   STA newgmstate
   JMP GameEngineLogicDone
 EndLandmarkStateDalles:
+  .ifdef AUDIO_YES
+  JSR FamiToneMusicStop
+  .endif
+
   LDA #STATECHOOSEDLLS
   STA newgmstate
   JMP GameEngineLogicDone
@@ -859,7 +866,7 @@ foodoneszero:
 
   LDA storefood
 
-  JSR Multiply
+  JSR Mult8Bit
   STY bcdNum+1
   STA bcdNum
   LDA bcdNum

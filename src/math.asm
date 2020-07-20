@@ -3,7 +3,7 @@
 ;Enter with A,Y, numbers to multiply
 ;Output with YA = 16-bit result (X is unchanged)
 ; see http://wiki.nesdev.com/w/index.php/8-bit_Multiply
-Multiply:
+Mult8Bit:
 	sty Factor  ;Store input factor
 	ldy #$00
 	sty Res

@@ -12,7 +12,7 @@ MIRRORING		= 1   ; background mirroring
 
 ;;;;;;;;;;;;;;;
 
-;AUDIO_YES					; define to include audio support
+AUDIO_YES					; define to include audio support
 ;SMALL_LANDMARK_YES			; define to include small landmarks
 ;IMMEDIATELY_START_ERASING	; on alphabet screen, if name is erased, and erase
 							; key is pressed again, immediately start deleting
@@ -444,16 +444,6 @@ clrmem:
   LDA #%00011110   ; enable sprites, enable background, no clipping on left side
   STA PpuMask
 
-  .ifdef AUDIO_YES
-  ; load audio data and initialize audio driver
-  LDA #<audio_data_music_data
-  TAX
-  LDA #>audio_data_music_data
-  TAY
-  LDA #$01
-  JSR FamiToneInit
-  .endif
-
 Forever:
   JMP Forever     ;jump back to Forever, infinite loop, waiting for NMI
 
@@ -668,8 +658,8 @@ SetInitialState:
   .include "src/helper.asm"
   .include "src/math.asm"
 
-  ; audio library (FamiTone2) and audio data file
-  .include "src/audio/famitone2/famitone2_asm6.asm"
+  ; audio library (FamiTone4.1) and audio data file
+  .include "src/audio/famitone4.1/famitone4_asm6.asm"
   .include "src/assets/audio/audio_data.asm"
 
   ; set palettes
@@ -702,8 +692,13 @@ palette_landmark_south_pass:
   .hex 31 0F 27 10   31 0F 06 10   31 07 20 10   31 07 17 10				  ;;sprite palette
 
 palette_landmark_blue_mountains:
-  .hex 31 0F 3D 20   31 1A 2A 3A   31 2B 2B 3B   31 1B 21 3C				  ;;background palette
+  .hex 31 0F 3D 10   31 1A 2A 3A   31 2B 2B 3B   31 1B 21 3C				  ;;background palette
   .hex 31 0F 27 10   31 0F 06 10   31 07 20 10   31 07 17 10				  ;;sprite palette
+
+palette_landmark_snake_river_crossing:
+  .hex 31 0F 3D 10   31 1A 2A 3A   31 07 17 3B   31 1B 21 3C				  ;;background palette
+  .hex 31 0F 27 10   31 0F 06 10   31 07 20 10   31 07 17 10				  ;;sprite palette
+
 
 ; metatile description is the following:
 ; tile num, palette num IN THE FOLLOWING ORDER:
@@ -955,7 +950,7 @@ landmarkbank:
   .db $01, $01
   .db $02
   .db $01, $01
-  .db $01, $01
+  .db $01, $03
   .db $01, $02
   .db $01, $01
   .db $01

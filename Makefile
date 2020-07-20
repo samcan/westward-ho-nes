@@ -22,7 +22,7 @@ PY_ADD_BUILD_NUM = util/add_build_number.py
 PY_RM_BUILD_NUM = util/rm_build_number.py
 PY_COMPRESS_RLE = util/compress_rle.py
 
-FT_TEXT2DATA = util/famitone2/text2data
+FT_TEXT2DATA = util/famitone4.1/text2vol4
 
 DIR_SRC = src
 DIR_ASSETS = src/assets
@@ -103,7 +103,7 @@ $(RLE_FILES): %.rle: %.bin
 # NOT YET WORKING FOR LINUX AS WE CALL WINDOWS PROGRAM
 # NEED TO ADD VARS FOR CALLING LINUX-COMPILED VERSION
 $(DIR_ASSETS)/audio/audio_data.asm: $(DIR_ASSETS)/audio/audio_data.txt
-	$(FT_TEXT2DATA) -asm6 $<
+	$(FT_TEXT2DATA) -asm6 -allin $<
 
 westward.nes: | $(RLE_FILES) $(DIR_ASSETS)/audio/audio_data.asm $(ASM_FILE)
 	$(ASM) $(ASM_FLAGS) $(ASM_FILE) $(NES_FILE)
